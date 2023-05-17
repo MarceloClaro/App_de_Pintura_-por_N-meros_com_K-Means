@@ -7,9 +7,10 @@ import matplotlib.pyplot as plt
 def load_image(file):
     file_bytes = np.asarray(bytearray(file.read()), dtype=np.uint8)
     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = np.array(img, dtype=np.float64) / 255
-    return img
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_rgb = np.array(img_rgb, dtype=np.float64) / 255
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return img_rgb, img_gray
 
 def apply_kmeans(img, n_clusters):
     w, h, d = original_shape = tuple(img.shape)
@@ -28,7 +29,6 @@ def reconstruct_image(mean_colors, labels, w, h):
     return image
 
 def apply_canny(img):
-    img = cv2.imread("img.png", 0)
     edges = cv2.Canny(img,100,200)
     for i in range(edges.shape[0]):
         for j in range(edges.shape[1]):
@@ -50,18 +50,18 @@ def main():
 
     uploaded_file = st.file_uploader("Escolha uma imagem...", type="jpg")
     if uploaded_file is not None:
-        img = load_image(uploaded_file)
-        st.image(img, caption="Imagem original", use_column_width=True)
+        img_rgb, img_gray = load_image(uploaded_file)
+        st.image(img_rgb, caption="Imagem original", use_column_width=True)
 
         n_clusters = st.slider("Escolha a quantidade de clusters", min_value=1, max_value=20, value=10)
         font_size = st.slider("Escolha o tamanho da fonte", min_value=1, max_value=5, value=2)
 
-        cluster_centers, labels, w, h = apply_kmeans(img, n_clusters)
+        cluster_centers, labels, w, h = apply_kmeans(img_rgb, n_clusters)
         img_kmean = reconstruct_image(cluster_centers, labels, w, h)
 
         st.image(img_kmean, caption="Imagem após K-means", use_column_width=True)
 
-        edges = apply_canny(img)
+        edges = apply_canny(img_gray)
 
         st.image(edges, caption="Detecção de borda com Canny", use_column_width=True)
 
