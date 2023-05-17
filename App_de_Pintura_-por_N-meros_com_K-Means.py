@@ -11,7 +11,7 @@ def load_image(image_file):
     return img
 
 def apply_canny(image, min_val, max_val):
-    if len(image.shape) == 3: # Se a imagem é colorida, converta para escala de cinza
+    if len(image.shape) == 3:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(image, min_val, max_val, apertureSize = 3)
     return edges
@@ -29,6 +29,18 @@ def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size
                 if np.all(img[y, x] == color):
                     if np.all(edges[y: min(h, y + size_y // 2), x: min(w, x + size_x // 2)] == 255):
                         add_text_to_image(img, x, y, str(cluster_number), 1)
+
+def plot_colors(colors):
+    fig, ax = plt.subplots(1, 1, figsize=(5, 2),
+                            dpi=80, facecolor='w', edgecolor='k')
+
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.bar(range(len(colors)), [1]*len(colors), color=colors)
+    st.pyplot(fig)
 
 def main():
     st.title("App de Pintura por Números com K-Means")
@@ -64,6 +76,9 @@ def main():
         h, w = img.shape[:2]
         add_cluster_numbers_to_edges(img_kmean, inverted_edges, cluster_centers, cluster_labels, w, h, 20, 20)
         st.image(img_kmean, caption='Imagem final.', use_column_width=True)
+
+        colors = [tuple(map(lambda x: x/255, center)) for center in cluster_centers]
+        plot_colors(colors)
 
 if __name__ == "__main__":
     main()
