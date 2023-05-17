@@ -11,12 +11,13 @@ def load_image(image_file):
     return img
 
 def apply_canny(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray,50,150,apertureSize = 3)
+    if len(image.shape) == 3: # Se a imagem é colorida, converta para escala de cinza
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(image, 50, 150, apertureSize = 3)
     return edges
 
 def invert_colors(image):
-    return 255-image
+    return 255 - image
 
 def add_text_to_image(img, x, y, text, size):
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, size, (255, 255, 255), 2, cv2.LINE_AA)
@@ -25,11 +26,9 @@ def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size
     for cluster_number, color in enumerate(cluster_centers):
         for y in range(h):
             for x in range(w):
-                if y < h and x < w:
-                    if np.all(img[y, x] == color):
-                        if np.all(edges[max(0, y - size_y // 2):min(h, y + size_y // 2),
-                                         max(0, x - size_x // 2):min(w, x + size_x // 2)] == 255):
-                            add_text_to_image(img, x, y, str(cluster_number), 1)
+                if np.all(img[y, x] == color):
+                    if np.all(edges[y: min(h, y + size_y // 2), x: min(w, x + size_x // 2)] == 255):
+                        add_text_to_image(img, x, y, str(cluster_number), 1)
 
 def main():
     st.title("App de Pintura por Números com K-Means")
@@ -53,8 +52,7 @@ def main():
 
         st.image(img_kmean, caption='Imagem processada.', use_column_width=True)
 
-        img_gray = cv2.cvtColor(img_kmean, cv2.COLOR_BGR2GRAY)
-        edges = apply_canny(img_gray)
+        edges = apply_canny(img_kmean)
         st.image(edges, caption='Imagem com bordas.', use_column_width=True)
 
         inverted_edges = invert_colors(edges)
