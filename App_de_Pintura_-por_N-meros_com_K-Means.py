@@ -13,7 +13,7 @@ def load_image(image_file):
 def apply_canny(image):
     if len(image.shape) == 3: # Se a imagem é colorida, converta para escala de cinza
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(image, 50, 150, apertureSize = 3)
+    edges = cv2.Canny(image, 30, 100, apertureSize = 3)  # Valores de limiar ajustados para tornar o detector de bordas mais sensível
     return edges
 
 def invert_colors(image):
@@ -38,7 +38,7 @@ def main():
         img = load_image(uploaded_file)
         st.image(img, caption='Imagem Original.', use_column_width=True)
 
-        number_of_clusters = st.slider("Número de Cores", 2, 55, 5)
+        number_of_clusters = st.slider("Número de Cores", 2, 15, 5)
 
         img_to_process = img.reshape((-1, 3))
         kmeans = KMeans(n_clusters=number_of_clusters)
