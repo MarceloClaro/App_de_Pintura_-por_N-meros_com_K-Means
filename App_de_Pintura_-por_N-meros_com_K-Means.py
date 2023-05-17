@@ -1,81 +1,68 @@
 import streamlit as st
-import numpy as np
 import cv2
-from sklearn.cluster import KMeans
+import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
 
-def load_image(file):
-    file_bytes = np.asarray(bytearray(file.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img_rgb = np.array(img_rgb, dtype=np.float64) / 255
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return img_rgb, img_gray
+@st.cache
+def load_image(image_file):
+    img = cv2.imdecode(np.fromstring(image_file.read(), np.uint8), 1)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return img
 
-def apply_kmeans(img, n_clusters):
-    w, h, d = original_shape = tuple(img.shape)
-    img = np.reshape(img, (w * h, d))
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(img)
-    labels = kmeans.predict(img)
-    return kmeans.cluster_centers_, labels, w, h
-
-def reconstruct_image(cluster_centers, labels, w, h):
-    image = np.zeros((w, h, cluster_centers.shape[1]))
-    label_idx = 0
-    for i in range(w):
-        for j in range(h):
-            image[i][j] = cluster_centers[labels[label_idx]]
-            label_idx += 1
-    return image
-
-def apply_canny(img):
-    edges = cv2.Canny(img,100,200)
-    for i in range(edges.shape[0]):
-        for j in range(edges.shape[1]):
-            if (edges[i][j] == 255):
-                edges[i][j] = 0
-            else:
-                edges[i][j] = 255
+def apply_canny(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray,50,150,apertureSize = 3)
     return edges
 
-def plot_color_image(img, color, cluster_number):
-    mask = np.all(img == color, axis=-1)
-    plt.imshow(mask[..., None] * img + (1 - mask[..., None]) * np.ones_like(img))
-    plt.title(f'Cor do cluster {cluster_number}')
-    st.pyplot(plt)
+def invert_colors(image):
+    return 255-image
 
-def add_text_to_image(img, x, y, text, font_size):
-    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0), 2)
+def add_text_to_image(img, x, y, text, size):
+    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, size, (255, 255, 255), 2, cv2.LINE_AA)
 
 def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size_x, size_y):
     for cluster_number, color in enumerate(cluster_centers):
-        plot_color_image(img, color, cluster_number)
         for y in range(h):
             for x in range(w):
-                if np.all(img[min(y,h-1), min(x,w-1)] == color):
-                    if np.all(edges[max(0, y - size_y // 2):min(h, y + size_y // 2),
-                                     max(0, x - size_x // 2):min(w, x + size_x // 2)] == 255):
-                        add_text_to_image(img, x, y, str(cluster_number), 1)
+                if y < h and x < w:
+                    if np.all(img[y, x] == color):
+                        if np.all(edges[max(0, y - size_y // 2):min(h, y + size_y // 2),
+                                         max(0, x - size_x // 2):min(w, x + size_x // 2)] == 255):
+                            add_text_to_image(img, x, y, str(cluster_number), 1)
 
 def main():
-    st.title("App de Pintura por Números com K-means")
+    st.title("App de Pintura por Números com K-Means")
 
-    uploaded_file = st.file_uploader("Escolha uma imagem...", type="jpg")
+    uploaded_file = st.file_uploader("Escolha uma imagem...", type=['png', 'jpg'])
     if uploaded_file is not None:
-        img_rgb, img_gray = load_image(uploaded_file)
-        st.image(img_rgb, caption="Imagem original", use_column_width=True)
+        img = load_image(uploaded_file)
+        st.image(img, caption='Imagem Original.', use_column_width=True)
 
-        n_clusters = st.slider("Escolha o número de clusters", min_value=1, max_value=10, step=1, value=3)
+        number_of_clusters = st.slider("Número de Cores", 2, 15, 5)
 
-        cluster_centers, labels, w, h = apply_kmeans(img_rgb, n_clusters)
-        img_kmean = reconstruct_image(cluster_centers, labels, w, h)
-        st.image(img_kmean, caption="Imagem após K-means", use_column_width=True)
+        img_to_process = img.reshape((-1, 3))
+        kmeans = KMeans(n_clusters=number_of_clusters)
+        labels = kmeans.fit_predict(img_to_process)
+        img_kmean = kmeans.cluster_centers_[kmeans.labels_]
 
+        cluster_centers = kmeans.cluster_centers_
+        cluster_labels = kmeans.labels_
+
+        img_kmean = img_kmean.reshape(img.shape).astype('uint8')
+
+        st.image(img_kmean, caption='Imagem processada.', use_column_width=True)
+
+        img_gray = cv2.cvtColor(img_kmean, cv2.COLOR_BGR2GRAY)
         edges = apply_canny(img_gray)
-        st.image(edges, caption="Detecção de borda com Canny", use_column_width=True)
+        st.image(edges, caption='Imagem com bordas.', use_column_width=True)
 
-        add_cluster_numbers_to_edges(img_kmean, edges, cluster_centers, labels, w, h, 20, 20)
-        st.image(img_kmean, caption="Imagem final com números", use_column_width=True)
+        inverted_edges = invert_colors(edges)
+        st.image(inverted_edges, caption='Imagem com cores invertidas.', use_column_width=True)
+
+        h, w = img.shape[:2]
+        add_cluster_numbers_to_edges(img_kmean, inverted_edges, cluster_centers, cluster_labels, w, h, 20, 20)
+        st.image(img_kmean, caption='Imagem final.', use_column_width=True)
 
 if __name__ == "__main__":
     main()
