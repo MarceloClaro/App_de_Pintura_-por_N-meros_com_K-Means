@@ -10,10 +10,10 @@ def load_image(image_file):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
 
-def apply_canny(image):
+def apply_canny(image, min_val, max_val):
     if len(image.shape) == 3: # Se a imagem é colorida, converta para escala de cinza
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(image, 30, 100, apertureSize = 3)  # Valores de limiar ajustados para tornar o detector de bordas mais sensível
+    edges = cv2.Canny(image, min_val, max_val, apertureSize = 3)
     return edges
 
 def invert_colors(image):
@@ -52,7 +52,10 @@ def main():
 
         st.image(img_kmean, caption='Imagem processada.', use_column_width=True)
 
-        edges = apply_canny(img_kmean)
+        min_val = st.slider("Valor mínimo do limiar para Canny", 0, 255, 30)
+        max_val = st.slider("Valor máximo do limiar para Canny", 0, 255, 100)
+
+        edges = apply_canny(img_kmean, min_val, max_val)
         st.image(edges, caption='Imagem com bordas.', use_column_width=True)
 
         inverted_edges = invert_colors(edges)
@@ -64,3 +67,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+``
