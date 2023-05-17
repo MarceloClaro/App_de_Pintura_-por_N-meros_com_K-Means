@@ -4,23 +4,7 @@ import cv2
 from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
 
-def load_image(image_file):
-    img = cv2.imdecode(np.fromstring(image_file.read(), np.uint8), 1)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    return img
-
-def process_image(img, n_clusters, font_size):
-    img = np.array(img, dtype=np.float64) / 255
-    w, h, d = original_shape = tuple(img.shape)
-    image_array = np.reshape(img, (w * h, d))
-    
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(image_array)
-    labels = kmeans.predict(image_array)
-    
-    new_image = adjust_image(kmeans.cluster_centers_, labels, w, h, font_size)
-    return new_image
-
-def adjust_image(mean_color_from_model, labels, w, h, font_size):
+def adjust_image(mean_color_from_model, labels, w, h):
     d = mean_color_from_model.shape[1]
     image = np.zeros((w, h, d))
     label_idx = 0
@@ -30,18 +14,61 @@ def adjust_image(mean_color_from_model, labels, w, h, font_size):
             label_idx += 1
     return image
 
-def main():
-    st.title("App de Pintura por Números com K-Means")
-    
-    image_file = st.file_uploader("Carregar Imagem", type=['jpeg', 'png', 'jpg'])
-    n_clusters = st.number_input("Escolha o número de clusters", min_value=2, max_value=60, value=10, step=1)
-    font_size = st.number_input("Escolha o tamanho da fonte", min_value=0.1, max_value=5.0, value=1.0, step=0.1)
+def put_text(img_plt, text, x, y, font_size):
+    cv2.putText(img_plt, str(text), (x,y), cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0, 0), 2)
 
-    if image_file is not None:
-        img = load_image(image_file)
-        st.image(img, caption='Imagem Carregada.', use_column_width=True)
-        new_img = process_image(img, n_clusters, font_size)
-        st.image(new_img, caption='Imagem Processada.', use_column_width=True)
+def check_bool(x, y, size_x, size_y, edges_image): 
+    for i in range(y, y + size_y):
+        for j in range(x, x+ size_x):
+            try:
+                if edges_image[j][i] != 255: #if not white
+                    return False
+            except:
+                pass
+    return True
 
-if __name__ == "__main__":
-    main()
+st.title("Paint by numbers com KMeans")
+uploaded_file = st.file_uploader("Escolha uma imagem", type=['png', 'jpg'])
+
+if uploaded_file is not None:
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    img = cv2.imdecode(file_bytes, 1)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    st.image(img, caption='Imagem original.', use_column_width=True)
+
+    w, h, d = original_shape = tuple(img.shape)
+    img_array = np.reshape(img, (w * h, d))
+
+    n_clusters = st.slider('Número de clusters', min_value=1, max_value=30, value=10)
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(img_array)
+    labels = kmeans.predict(img_array)
+
+    img_kmean = adjust_image(kmeans.cluster_centers_, labels, w, h)
+    st.image(img_kmean, caption='Imagem após KMeans.', use_column_width=True)
+
+    img_gray = cv2.imdecode(file_bytes, 0)
+    edges = cv2.Canny(img_gray,100,200)
+    st.image(edges, caption='Imagem de borda.', use_column_width=True)
+
+    edges[edges == 0] = 255
+    edges[edges == 255] = 0
+
+    size_x = 17
+    size_y = 17
+    copy_edge = edges.copy()
+    color_edge = img_kmean.copy()
+    y, x, d = color_edge.shape
+    mean_sort = sorted(kmeans.cluster_centers_, key=lambda x: sum(x))
+
+    font_size = st.slider('Tamanho da fonte', min_value=0.1, max_value=2.0, value=0.4)
+
+    for round in range(len(mean_sort)):
+        for y_ in range(0, y, size_y): 
+            for x_ in range(0, x, size_x): 
+                if sum(color_edge[y_][x_]) == sum(mean_sort[round]): 
+                    status = check_bool(x_, y_, size_x, size_y, copy_edge) 
+                    if status == True: 
+                        put_text(copy_edge, round+1, x_, y_, font_size)
+                        break
+
+    st.image(copy_edge, caption='Imagem final.', use_column_width=True)
