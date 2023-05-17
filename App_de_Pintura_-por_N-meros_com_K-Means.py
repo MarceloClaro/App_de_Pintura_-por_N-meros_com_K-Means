@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from mpl_toolkits.mplot3d import Axes3D
 
 @st.cache
 def load_image(image_file):
@@ -31,15 +32,18 @@ def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size
                         add_text_to_image(img, x, y, str(cluster_number), 1)
 
 def plot_colors(colors):
-    fig, ax = plt.subplots(1, 1, figsize=(5, 2),
-                            dpi=80, facecolor='w', edgecolor='k')
+    r = [color[0] for color in colors]
+    g = [color[1] for color in colors]
+    b = [color[2] for color in colors]
 
-    for sp in ax.spines.values():
-        sp.set_visible(False)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(r, g, b, c=colors/255.0)
 
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.bar(range(len(colors)), [1]*len(colors), color=colors)
+    ax.set_xlabel('Red')
+    ax.set_ylabel('Green')
+    ax.set_zlabel('Blue')
+
     st.pyplot(fig)
 
 def main():
@@ -68,17 +72,17 @@ def main():
         max_val = st.slider("Valor máximo do limiar para Canny", 0, 255, 100)
 
         edges = apply_canny(img_kmean, min_val, max_val)
-        st.image(edges, caption='Imagem com bordas.', use_column_width=True)
+        st.image(edges, caption='Bordas da Imagem.', use_column_width=True)
 
         inverted_edges = invert_colors(edges)
         st.image(inverted_edges, caption='Imagem com cores invertidas.', use_column_width=True)
 
         h, w = img.shape[:2]
-        add_cluster_numbers_to_edges(img_kmean, inverted_edges, cluster_centers, cluster_labels, w, h, 20, 20)
+        add_cluster_numbers_to_edges(img_kmean, inverted_edges, cluster_centers, labels, w, h, 20, 20)
         st.image(img_kmean, caption='Imagem final.', use_column_width=True)
 
         colors = [tuple(map(lambda x: x/255, center)) for center in cluster_centers]
-        plot_colors(colors)
+        plot_colors(np.array(colors))
 
 if __name__ == "__main__":
     main()
