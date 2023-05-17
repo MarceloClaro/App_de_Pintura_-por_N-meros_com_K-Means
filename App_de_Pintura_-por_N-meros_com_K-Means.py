@@ -40,7 +40,7 @@ def apply_canny(img):
 
 def plot_color_image(img, color, cluster_number):
     mask = np.all(img == color, axis=-1)
-    plt.imshow(mask * img + (1 - mask) * np.ones_like(img))
+    plt.imshow(mask[..., None] * img + (1 - mask[..., None]) * np.ones_like(img))
     plt.title(f'Cor do cluster {cluster_number}')
     st.pyplot(plt)
 
@@ -65,8 +65,7 @@ def main():
         img_rgb, img_gray = load_image(uploaded_file)
         st.image(img_rgb, caption="Imagem original", use_column_width=True)
 
-        n_clusters = st.slider("Escolha a quantidade de clusters", min_value=1, max_value=20, value=10)
-        font_size = st.slider("Escolha o tamanho da fonte", min_value=1, max_value=5, value=1)
+        n_clusters = st.slider("Escolha a quantidade de clusters", min_value=1, max_value=10, step=1, value=3)
 
         cluster_centers, labels, w, h = apply_kmeans(img_rgb, n_clusters)
         img_kmean = reconstruct_image(cluster_centers, labels, w, h)
