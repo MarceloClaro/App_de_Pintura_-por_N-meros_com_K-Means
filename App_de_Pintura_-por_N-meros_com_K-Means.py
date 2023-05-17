@@ -52,7 +52,7 @@ def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size
         plot_color_image(img, color, cluster_number)
         for y in range(h):
             for x in range(w):
-                if np.all(img[y, x] == color):
+                if np.all(img[min(y,h-1), min(x,w-1)] == color):
                     if np.all(edges[max(0, y - size_y // 2):min(h, y + size_y // 2),
                                      max(0, x - size_x // 2):min(w, x + size_x // 2)] == 255):
                         add_text_to_image(img, x, y, str(cluster_number), 1)
@@ -65,7 +65,7 @@ def main():
         img_rgb, img_gray = load_image(uploaded_file)
         st.image(img_rgb, caption="Imagem original", use_column_width=True)
 
-        n_clusters = st.slider("Escolha a quantidade de clusters", min_value=1, max_value=10, step=1, value=3)
+        n_clusters = st.slider("Escolha o número de clusters", min_value=1, max_value=10, step=1, value=3)
 
         cluster_centers, labels, w, h = apply_kmeans(img_rgb, n_clusters)
         img_kmean = reconstruct_image(cluster_centers, labels, w, h)
