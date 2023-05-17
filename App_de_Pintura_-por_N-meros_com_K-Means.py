@@ -34,7 +34,7 @@ def main():
     st.title("App de Pintura por Números com K-Means")
     
     image_file = st.file_uploader("Carregar Imagem", type=['jpeg', 'png', 'jpg'])
-    n_clusters = st.number_input("Escolha o número de clusters", min_value=2, max_value=30, value=10, step=1)
+    n_clusters = st.number_input("Escolha o número de clusters", min_value=2, max_value=60, value=10, step=1)
     font_size = st.number_input("Escolha o tamanho da fonte", min_value=0.1, max_value=5.0, value=1.0, step=0.1)
 
     if image_file is not None:
