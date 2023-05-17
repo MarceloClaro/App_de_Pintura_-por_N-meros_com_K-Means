@@ -38,7 +38,7 @@ def main():
         img = load_image(uploaded_file)
         st.image(img, caption='Imagem Original.', use_column_width=True)
 
-        number_of_clusters = st.slider("Número de Cores", 2, 15, 5)
+        number_of_clusters = st.slider("Número de Cores", 2, 55, 5)
 
         img_to_process = img.reshape((-1, 3))
         kmeans = KMeans(n_clusters=number_of_clusters)
