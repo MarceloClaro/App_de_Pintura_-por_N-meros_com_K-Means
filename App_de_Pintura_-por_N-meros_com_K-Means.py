@@ -19,12 +19,12 @@ def apply_kmeans(img, n_clusters):
     labels = kmeans.predict(img)
     return kmeans.cluster_centers_, labels, w, h
 
-def reconstruct_image(mean_colors, labels, w, h):
-    image = np.zeros((w, h, mean_colors.shape[1]))
+def reconstruct_image(cluster_centers, labels, w, h):
+    image = np.zeros((w, h, cluster_centers.shape[1]))
     label_idx = 0
     for i in range(w):
         for j in range(h):
-            image[i][j] = mean_colors[labels[label_idx]]
+            image[i][j] = cluster_centers[labels[label_idx]]
             label_idx += 1
     return image
 
@@ -32,18 +32,30 @@ def apply_canny(img):
     edges = cv2.Canny(img,100,200)
     for i in range(edges.shape[0]):
         for j in range(edges.shape[1]):
-            if (edges[i][j] == 0):
-                edges[i][j] = 255
-            elif (edges[i][j] == 255):
+            if (edges[i][j] == 255):
                 edges[i][j] = 0
+            else:
+                edges[i][j] = 255
     return edges
 
-def add_numbers(img, edges, cluster_centers, labels, font_size):
-    for i in range(img.shape[0]):
-        for j in range(img.shape[1]):
-            if edges[i][j] == 255:
-                cv2.putText(img, str(labels[i]), (j, i), cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0), 2)
-    return img
+def plot_color_image(img, color, cluster_number):
+    mask = np.all(img == color, axis=-1)
+    plt.imshow(mask * img + (1 - mask) * np.ones_like(img))
+    plt.title(f'Cor do cluster {cluster_number}')
+    st.pyplot(plt)
+
+def add_text_to_image(img, x, y, text, font_size):
+    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0), 2)
+
+def add_cluster_numbers_to_edges(img, edges, cluster_centers, labels, w, h, size_x, size_y):
+    for cluster_number, color in enumerate(cluster_centers):
+        plot_color_image(img, color, cluster_number)
+        for y in range(h):
+            for x in range(w):
+                if np.all(img[y, x] == color):
+                    if np.all(edges[max(0, y - size_y // 2):min(h, y + size_y // 2),
+                                     max(0, x - size_x // 2):min(w, x + size_x // 2)] == 255):
+                        add_text_to_image(img, x, y, str(cluster_number), 1)
 
 def main():
     st.title("App de Pintura por Números com K-means")
@@ -54,20 +66,17 @@ def main():
         st.image(img_rgb, caption="Imagem original", use_column_width=True)
 
         n_clusters = st.slider("Escolha a quantidade de clusters", min_value=1, max_value=20, value=10)
-        font_size = st.slider("Escolha o tamanho da fonte", min_value=1, max_value=5, value=2)
+        font_size = st.slider("Escolha o tamanho da fonte", min_value=1, max_value=5, value=1)
 
         cluster_centers, labels, w, h = apply_kmeans(img_rgb, n_clusters)
         img_kmean = reconstruct_image(cluster_centers, labels, w, h)
-
         st.image(img_kmean, caption="Imagem após K-means", use_column_width=True)
 
         edges = apply_canny(img_gray)
-
         st.image(edges, caption="Detecção de borda com Canny", use_column_width=True)
 
-        img_numbered = add_numbers(img_kmean.copy(), edges, cluster_centers, labels, font_size)
-
-        st.image(img_numbered, caption="Imagem final com números", use_column_width=True)
+        add_cluster_numbers_to_edges(img_kmean, edges, cluster_centers, labels, w, h, 20, 20)
+        st.image(img_kmean, caption="Imagem final com números", use_column_width=True)
 
 if __name__ == "__main__":
     main()
