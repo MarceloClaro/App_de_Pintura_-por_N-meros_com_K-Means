@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from mpl_toolkits.mplot3d import Axes3D
 
-@st.cache
+@st.cache_data
 def load_image(image_file):
-    img = cv2.imdecode(np.fromstring(image_file.read(), np.uint8), 1)
+    img = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), 1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
 
@@ -57,7 +57,7 @@ def main():
         number_of_clusters = st.slider("Número de Cores", 2, 55, 5)
 
         img_to_process = img.reshape((-1, 3))
-        kmeans = KMeans(n_clusters=number_of_clusters)
+        kmeans = KMeans(n_clusters=number_of_clusters, n_init=10)
         labels = kmeans.fit_predict(img_to_process)
         img_kmean = kmeans.cluster_centers_[kmeans.labels_]
 
