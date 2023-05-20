@@ -165,9 +165,10 @@ if uploaded_file is not None:
 
       
         # Mostrar paleta de cores
+
         for i, color in enumerate(colors):
             color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
-            st.image(color_block, width=50)
+            st.image(color_block, caption=f'Cor {i+1}', width=50)
 
             # Cálculo das proporções das cores CMYK
             r, g, b = color
