@@ -170,10 +170,10 @@ if uploaded_file is not None:
                 total_area = segmented_image.shape[0] * segmented_image.shape[1]
                 color_percentage = (color_area / total_area) * 100
 
-                st.subheader("Sketching and concept development da paleta de cor")
-                st.write(f"Porcentagem de área ocupada pela cor {i + 1}: {color_percentage:.2f}%")
+                st.subheader(f"Cor {i + 1}")
+                st.write(f"Porcentagem: {color_percentage:.2f}%")
 
-                # Cálculo das proporções das cores CMYK
+                # Calcular as proporções das cores CMYK
                 r, g, b = color
                 c, m, y, k = rgb_to_cmyk(r, g, b)
                 c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
