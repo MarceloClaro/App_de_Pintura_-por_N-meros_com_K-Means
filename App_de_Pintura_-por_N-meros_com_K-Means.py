@@ -24,6 +24,15 @@ def rgb_to_cmyk(r, g, b):
 
     return c, m, y, k
 
+# Definindo a função calculate_ml
+def calculate_ml(c, m, y, k, total_ml):
+    total_ink = c + m + y + k
+    c_ml = (c / total_ink) * total_ml
+    m_ml = (m / total_ink) * total_ml
+    y_ml = (y / total_ink) * total_ml
+    k_ml = (k / total_ink) * total_ml
+    return c_ml, m_ml, y_ml, k_ml
+
 # Definindo a classe Canvas
 class Canvas:
     def __init__(self, src, nb_color, pixel_size=4000):
