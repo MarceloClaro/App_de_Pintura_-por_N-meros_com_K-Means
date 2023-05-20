@@ -1,18 +1,45 @@
 # Importando todas as coisas necessárias para o nosso programa funcionar.
-import numpy as np
-from sklearn.cluster import KMeans
-from sklearn.utils import shuffle
-import cv2
-import streamlit as st
-from PIL import Image
-import io
-import base64
+# Esses são como os blocos de construção que vamos usar para fazer o nosso programa.
+
+import numpy as np  # Esta é uma ferramenta para lidar com listas de números.
+from sklearn.cluster import KMeans  # Essa é uma ferramenta que nos ajuda a encontrar grupos de coisas.
+from sklearn.utils import shuffle  # Isso nos ajuda a misturar coisas.
+import cv2  # Esta é uma ferramenta para trabalhar com imagens.
+import streamlit as st  # Isso é o que nos permite criar a interface do nosso programa.
+from PIL import Image  # Outra ferramenta para trabalhar com imagens.
+import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
+import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
 
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
+# Isso nos ajuda a lidar com imagens e cores.
+
+def rgb_to_cmyk(r, g, b):
+    if (r == 0) and (g == 0) and (b == 0):
+        return 0, 0, 0, 1
+    c = 1 - r / 255
+    m = 1 - g / 255
+    y = 1 - b / 255
+
+    min_cmy = min(c, m, y)
+    c = (c - min_cmy) / (1 - min_cmy)
+    m = (m - min_cmy) / (1 - min_cmy)
+    y = (y - min_cmy) / (1 - min_cmy)
+    k = min_cmy
+
+    return c, m, y, k
+
+def calculate_ml(c, m, y, k, total_ml):
+    total_ink = c + m + y + k
+    c_ml = (c / total_ink) * total_ml
+    m_ml = (m / total_ink) * total_ml
+    y_ml = (y / total_ink) * total_ml
+    k_ml = (k / total_ink) * total_ml
+    return c_ml, m_ml, y_ml, k_ml
+
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
-        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
         self.nb_color = nb_color
         self.tar_width = pixel_size
         self.colormap = []
@@ -43,7 +70,7 @@ class Canvas():
 
     def resize(self):
         (height, width) = self.src.shape[:2]
-        if height > width:
+        if height > width:  # modo retrato
             dim = (int(width * self.tar_width / float(height)), self.tar_width)
         else:
             dim = (self.tar_width, int(height * self.tar_width / float(width)))
@@ -70,34 +97,11 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
 
+# Aqui é onde começamos a construir a interface do nosso programa.
+# Estamos adicionando coisas como texto e botões para as pessoas interagirem.
 
-def rgb_to_cmyk(r, g, b):
-    if (r == 0) and (g == 0) and (b == 0):
-        return 0, 0, 0, 1
-    c = 1 - r / 255
-    m = 1 - g / 255
-    y = 1 - b / 255
-
-    min_cmy = min(c, m, y)
-    c = (c - min_cmy) / (1 - min_cmy)
-    m = (m - min_cmy) / (1 - min_cmy)
-    y = (y - min_cmy) / (1 - min_cmy)
-    k = min_cmy
-
-    return c, m, y, k
-
-
-def calculate_ml(c, m, y, k, total_ml):
-    total_ink = c + m + y + k
-    c_ml = (c / total_ink) * total_ml
-    m_ml = (m / total_ink) * total_ml
-    y_ml = (y / total_ink) * total_ml
-    k_ml = (k / total_ink) * total_ml
-    return c_ml, m_ml, y_ml, k_ml
-
-
-st.image("clube.png")
-st.title('Gerador de Paleta de Cores para Pintura por Números')
+st.image("clube.png")  # Adiciona a imagem no topo do app
+st.title('Gerador de Paleta de Cores para Pintura por Números ')
 st.subheader("Sketching and concept development")
 st.subheader("""
 Autor: Marcelo Claro
@@ -108,6 +112,7 @@ marceloclaro@geomaker.org
 
 Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
 """)
+# Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 st.write("""
@@ -120,42 +125,84 @@ No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferrame
 O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
 Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
 """)
-
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, 1)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
     st.image(image, caption='Imagem Carregada', use_column_width=True)
 
     nb_color = st.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
+
     total_ml = st.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
+    
     pixel_size = st.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
+
     if st.button('Gerar'):
-        try:
-            canvas = Canvas(image, nb_color, pixel_size)
-            result, colors, segmented_image = canvas.generate()
+        
+        # Tentativa de leitura dos metadados de resolução (DPI)
+        pil_image = Image.open(io.BytesIO(file_bytes))
+        if 'dpi' in pil_image.info:
+            dpi = pil_image.info['dpi']
+            st.write(f'Resolução da imagem: {dpi} DPI')
 
-            # Converter imagem segmentada para np.uint8
-            segmented_image = (segmented_image * 255).astype(np.uint8)
+            # Calcula a dimensão física de um pixel
+            cm_per_inch = pixel_size
+            cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
+            st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
 
-            # Agora converta de BGR para RGB
-            segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+        canvas = Canvas(image, nb_color, pixel_size)
+        result, colors, segmented_image = canvas.generate()
 
-            st.image(result, caption='Imagem Resultante', use_column_width=True)
-            st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+        # Converter imagem segmentada para np.uint8
+        segmented_image = (segmented_image * 255).astype(np.uint8)
+        
+        # Agora converta de BGR para RGB
+        segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
-            # Calcular e mostrar a paleta de cores
-            for i, color in enumerate(colors):
-                color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores no formato BGR
-                st.image(color_block, width=50)
+        st.image(result, caption='Imagem Resultante', use_column_width=True)
+        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-                # Calcular a porcentagem de área ocupada por cada cor na imagem segmentada
-                color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-                total_area = segmented_image.shape[0] * segmented_image.shape[1]
-                color_percentage = (color_area / total_area) * 100
+      
+        # Mostrar paleta de cores
+        for i, color in enumerate(colors):
+            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
+            st.image(color_block, width=50)
 
-                st.write(f"Porcentagem de área ocupada pela cor {i + 1}: {color_percentage:.2f}%")
+            # Cálculo das proporções das cores CMYK
+            r, g, b = color
+            c, m, y, k = rgb_to_cmyk(r, g, b)
+            c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
 
-        except Exception as e:
-            st.error(f"Ocorreu um erro ao gerar a paleta de cores: {e}")
+                # Calcular a área da cor na imagem segmentada
+            color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
+            total_area = segmented_image.shape[0] * segmented_image.shape[1]
+            color_percentage = (color_area / total_area) * 100
+            
+            st.subheader("Sketching and concept development da paleta de cor")
+            st.write(f"""
+            PALETAS DE COR PARA: {total_ml:.2f} ml.
+            
+            A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
+
+            Ciano (Azul) (C): {c_ml:.2f} ml
+            Magenta (Vermelho) (M): {m_ml:.2f} ml
+            Amarelo (Y): {y_ml:.2f} ml
+            Preto (K): {k_ml:.2f} ml
+                    
+            """)
+
+
+        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+        st.download_button(
+            label="Baixar imagem resultante",
+            data=result_bytes,
+            file_name='result.jpg',
+            mime='image/jpeg')
+
+        segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
+        st.download_button(
+            label="Baixar imagem segmentada",
+            data=segmented_image_bytes,
+            file_name='segmented.jpg',
+            mime='image/jpeg')
