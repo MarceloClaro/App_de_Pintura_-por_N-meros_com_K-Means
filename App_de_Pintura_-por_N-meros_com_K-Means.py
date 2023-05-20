@@ -190,7 +190,7 @@ if uploaded_file is not None:
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
 
-            Percentual de área na imagem segmentada: {color_percentage:.2f}%
+            Percentual de cores cluster na imagem segmentada: {color_percentage:.2f}%
             """)
 
 
