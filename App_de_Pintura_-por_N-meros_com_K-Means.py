@@ -8,6 +8,22 @@ from PIL import Image
 import io
 import base64
 
+# Definindo a função rgb_to_cmyk
+def rgb_to_cmyk(r, g, b):
+    if (r == 0) and (g == 0) and (b == 0):
+        return 0, 0, 0, 1
+    c = 1 - r / 255
+    m = 1 - g / 255
+    y = 1 - b / 255
+
+    min_cmy = min(c, m, y)
+    c = (c - min_cmy) / (1 - min_cmy)
+    m = (m - min_cmy) / (1 - min_cmy)
+    y = (y - min_cmy) / (1 - min_cmy)
+    k = min_cmy
+
+    return c, m, y, k
+
 # Definindo a classe Canvas
 class Canvas:
     def __init__(self, src, nb_color, pixel_size=4000):
@@ -60,8 +76,8 @@ class Canvas:
         sample = shuffle(flattened)[:1000]
         kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
         labels = kmeans.predict(flattened)
-        new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
-        return new_img, kmeans.cluster_centers_
+        new_img = self.recreate_image(kmeans.cluster_centers(), labels, width, height)
+        return new_img, kmeans.cluster_centers()
 
     def recreate_image(self, codebook, labels, width, height):
         vfunc = lambda x: codebook[labels[x]]
