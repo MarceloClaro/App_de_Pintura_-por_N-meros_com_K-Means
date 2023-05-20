@@ -76,8 +76,8 @@ class Canvas:
         sample = shuffle(flattened)[:1000]
         kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
         labels = kmeans.predict(flattened)
-        new_img = self.recreate_image(kmeans.cluster_centers(), labels, width, height)
-        return new_img, kmeans.cluster_centers()
+        new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
+        return new_img, kmeans.cluster_centers_
 
     def recreate_image(self, codebook, labels, width, height):
         vfunc = lambda x: codebook[labels[x]]
@@ -139,51 +139,55 @@ if uploaded_file is not None:
             st.write(f'Tamanho do pixel: {cm_per_pixel:.4f} centímetros')
 
         canvas = Canvas(image, nb_color, pixel_size)
-        result, colors, segmented_image = canvas.generate()
+        try:
+            result, colors, segmented_image = canvas.generate()
 
-        # Converter imagem segmentada para np.uint8
-        segmented_image = (segmented_image * 255).astype(np.uint8)
+            # Converter imagem segmentada para np.uint8
+            segmented_image = (segmented_image * 255).astype(np.uint8)
 
-        # Agora converta de BGR para RGB
-        segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+            # Agora converta de BGR para RGB
+            segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
-        st.image(result, caption='Imagem Resultante', use_column_width=True)
-        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+            st.image(result, caption='Imagem Resultante', use_column_width=True)
+            st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-        # Calcular e mostrar a paleta de cores
-        for i, color in enumerate(colors):
-            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores no formato BGR
-            st.image(color_block, width=50)
+            # Calcular e mostrar a paleta de cores
+            for i, color in enumerate(colors):
+                color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores no formato BGR
+                st.image(color_block, width=50)
 
-            # Calcular a porcentagem de área ocupada por cada cor na imagem segmentada
-            color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-            total_area = segmented_image.shape[0] * segmented_image.shape[1]
-            color_percentage = (color_area / total_area) * 100
+                # Calcular a porcentagem de área ocupada por cada cor na imagem segmentada
+                color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
+                total_area = segmented_image.shape[0] * segmented_image.shape[1]
+                color_percentage = (color_area / total_area) * 100
 
-            st.subheader("Sketching and concept development da paleta de cor")
-            st.write(f"Porcentagem de área ocupada pela cor {i + 1}: {color_percentage:.2f}%")
+                st.subheader("Sketching and concept development da paleta de cor")
+                st.write(f"Porcentagem de área ocupada pela cor {i + 1}: {color_percentage:.2f}%")
 
-            # Cálculo das proporções das cores CMYK
-            r, g, b = color
-            c, m, y, k = rgb_to_cmyk(r, g, b)
-            c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
+                # Cálculo das proporções das cores CMYK
+                r, g, b = color
+                c, m, y, k = rgb_to_cmyk(r, g, b)
+                c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
 
-            st.write(f"Proporções das cores CMYK:")
-            st.write(f"Ciano (Azul) (C): {c_ml:.2f} ml")
-            st.write(f"Magenta (Vermelho) (M): {m_ml:.2f} ml")
-            st.write(f"Amarelo (Y): {y_ml:.2f} ml")
-            st.write(f"Preto (K): {k_ml:.2f} ml")
+                st.write(f"Proporções das cores CMYK:")
+                st.write(f"Ciano (Azul) (C): {c_ml:.2f} ml")
+                st.write(f"Magenta (Vermelho) (M): {m_ml:.2f} ml")
+                st.write(f"Amarelo (Y): {y_ml:.2f} ml")
+                st.write(f"Preto (K): {k_ml:.2f} ml")
 
-        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
+            result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+            st.download_button(
+                label="Baixar imagem resultante",
+                data=result_bytes,
+                file_name='result.jpg',
+                mime='image/jpeg')
 
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem segmentada",
-            data=segmented_image_bytes,
-            file_name='segmented.jpg',
-            mime='image/jpeg')
+            segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
+            st.download_button(
+                label="Baixar imagem segmentada",
+                data=segmented_image_bytes,
+                file_name='segmented.jpg',
+                mime='image/jpeg')
+
+        except Exception as e:
+            st.error(f"Ocorreu um erro ao gerar a paleta de cores: {e}")
