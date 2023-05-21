@@ -10,6 +10,43 @@ from PIL import Image  # Outra ferramenta para trabalhar com imagens.
 import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
 import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
 
+cores_junguianas = {
+    '1': {
+        'cor': 'Preto',
+        'rgb': (0, 0, 0),
+        'anima_animus': 'A cor preta representa a sombra do inconsciente, simbolizando os aspectos desconhecidos e reprimidos de uma pessoa.',
+        'sombra': 'A cor preta é a própria sombra, representando os instintos primordiais e os aspectos ocultos da personalidade.',
+        'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
+        'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
+    },
+    '2': {
+        'cor': 'Preto carvão',
+        'rgb': (10, 10, 10),
+        'anima_animus': 'O preto carvão simboliza a sombra feminina do inconsciente, representando os aspectos desconhecidos e reprimidos da feminilidade.',
+        'sombra': 'O preto carvão é a própria sombra feminina, representando os instintos primordiais e os aspectos ocultos da feminilidade.',
+        'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
+        'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
+    },
+    '3': {
+        'cor': 'Cinza escuro',
+        'rgb': (17, 17, 17),
+        'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
+        'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
+        'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
+        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
+    },
+    '4': {
+        'cor': 'Cinza ardósia',
+        'rgb': (47, 79, 79),
+        'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
+        'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
+        'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
+        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
+    },
+    
+}
+
+
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
 # Isso nos ajuda a lidar com imagens e cores.
@@ -36,6 +73,15 @@ def calculate_ml(c, m, y, k, total_ml):
     y_ml = (y / total_ink) * total_ml
     k_ml = (k / total_ink) * total_ml
     return c_ml, m_ml, y_ml, k_ml
+
+def buscar_cor_proxima(rgb, cores_junguianas):
+    distancias = []
+    for cor_junguiana in cores_junguianas.values():
+        cor_junguiana_rgb = cor_junguiana['rgb']
+        distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
+        distancias.append(distancia)
+    cor_proxima_index = np.argmin(distancias)
+    return cores_junguianas[str(cor_proxima_index + 1)]
 
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
@@ -96,6 +142,7 @@ class Canvas():
         vfunc = lambda x: codebook[labels[x]]
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
+    
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
@@ -190,8 +237,16 @@ if uploaded_file is not None:
             Magenta (Vermelho) (M): {m_ml:.2f} ml
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
-                    
+                   
             """)
+            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
+            st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
+            st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
+            st.write(f"      Sombra: {cor_proxima['sombra']}")
+            st.write(f"      Personalidade: {cor_proxima['personalidade']}")
+            st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
+
+            
 
 
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
