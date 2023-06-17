@@ -256,9 +256,12 @@ if uploaded_file is not None:
             file_name='result.jpg',
             mime='image/jpeg')
 
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
+        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
         st.download_button(
             label="Baixar imagem segmentada",
             data=segmented_image_bytes,
             file_name='segmented.jpg',
             mime='image/jpeg')
+
+        
