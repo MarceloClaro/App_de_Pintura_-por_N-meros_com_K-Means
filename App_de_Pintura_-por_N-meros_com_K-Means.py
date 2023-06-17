@@ -416,12 +416,6 @@ cores_junguianas = {
 }
 
 
-print("Lista atualizada de cores:")
-for cor in lista_cores:
-    print(f"Cor: {cor['cor']} | RGB: {cor['rgb']}")
-
-
-
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
 # Isso nos ajuda a lidar com imagens e cores.
