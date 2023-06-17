@@ -249,17 +249,18 @@ if uploaded_file is not None:
             Magenta (Vermelho) (M): {m_ml:.2f} ml
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
+        
             """)
 
         if cor_proxima is None:
-                st.write("Nenhuma cor junguiana próxima encontrada")
-            else:
-                # Exibir informações sobre a cor junguiana mais próxima
-                st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-                st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
-                st.write(f"Sombra: {cor_proxima['sombra']}")
-                st.write(f"Personalidade: {cor_proxima['personalidade']}")
-                st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
+            st.write("Nenhuma cor junguiana próxima encontrada")
+        else:
+            # Exibir informações sobre a cor junguiana mais próxima
+            st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
+            st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
+            st.write(f"Sombra: {cor_proxima['sombra']}")
+            st.write(f"Personalidade: {cor_proxima['personalidade']}")
+            st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
         
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
         st.download_button(
