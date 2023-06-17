@@ -82,7 +82,6 @@ def calculate_ml(c, m, y, k, total_ml):
     y_ml = (y / total_ink) * total_ml
     k_ml = (k / total_ink) * total_ml
     return c_ml, m_ml, y_ml, k_ml
-
 def buscar_cor_proxima(rgb, cores_junguianas):
     distancias = []
     for cor_junguiana in cores_junguianas.values():
@@ -90,6 +89,8 @@ def buscar_cor_proxima(rgb, cores_junguianas):
         distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
         distancias.append(distancia)
     cor_proxima_index = np.argmin(distancias)
+    if distancias[cor_proxima_index] > LIMIAR_DISTANCIA:
+        return None
     return cores_junguianas[str(cor_proxima_index + 1)]
 
 def buscar_cor_dominante(segmented_image, colors):
@@ -249,13 +250,16 @@ if uploaded_file is not None:
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
             """)
-        
-            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-            st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-            st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
-            st.write(f"Sombra: {cor_proxima['sombra']}")
-            st.write(f"Personalidade: {cor_proxima['personalidade']}")
-            st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
+
+            if cor_proxima is None:
+                st.write("Nenhuma cor junguiana próxima encontrada")
+            else:
+                # Exibir informações sobre a cor junguiana mais próxima
+                st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
+                st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
+                st.write(f"Sombra: {cor_proxima['sombra']}")
+                st.write(f"Personalidade: {cor_proxima['personalidade']}")
+                st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
         
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
         st.download_button(
