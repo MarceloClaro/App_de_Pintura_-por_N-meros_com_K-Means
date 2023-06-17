@@ -52,9 +52,129 @@ cores_junguianas = {
         'sombra': 'O branco é a própria luz, representando a falta de sombra e a transparência.',
         'personalidade': 'A cor branca pode indicar uma personalidade pura, inocente e clara.',
         'diagnostico': 'O uso excessivo da cor branca pode indicar uma tendência à neutralidade, falta de personalidade ou falta de profundidade emocional.'
-    }
+    },
+    '6': {
+        'cor': 'Vermelho',
+        'rgb': (255, 0, 0),
+        'anima_animus': 'O vermelho simboliza a paixão, o poder e a energia.',
+        'sombra': 'O vermelho é a própria paixão, representando a intensidade emocional e a força de vontade.',
+        'personalidade': 'A cor vermelha pode indicar uma personalidade ardente, apaixonada e determinada.',
+        'diagnostico': 'O uso excessivo da cor vermelha pode indicar uma tendência à agressividade, impaciência ou irritabilidade.'
+    },
+    '7': {
+        'cor': 'Laranja',
+        'rgb': (255, 165, 0),
+        'anima_animus': 'O laranja representa a criatividade, a alegria e a comunicação.',
+        'sombra': 'O laranja é a própria criatividade, representando a expressão emocional e a sociabilidade.',
+        'personalidade': 'A cor laranja pode indicar uma personalidade extrovertida, sociável e cheia de energia.',
+        'diagnostico': 'O uso excessivo da cor laranja pode indicar uma tendência à impulsividade, instabilidade emocional ou falta de foco.'
+    },
+    '8': {
+        'cor': 'Amarelo',
+        'rgb': (255, 255, 0),
+        'anima_animus': 'O amarelo representa a felicidade, o otimismo e a criatividade.',
+        'sombra': 'O amarelo é a própria felicidade, representando a positividade e a alegria de viver.',
+        'personalidade': 'A cor amarela pode indicar uma personalidade otimista, entusiasmada e cheia de vida.',
+        'diagnostico': 'O uso excessivo da cor amarela pode indicar uma tendência ao exagero, superficialidade ou falta de concentração.'
+    },
+    '9': {
+        'cor': 'Verde',
+        'rgb': (0, 255, 0),
+        'anima_animus': 'O verde simboliza a natureza, a harmonia e o equilíbrio.',
+        'sombra': 'O verde é a própria natureza, representando a renovação e o crescimento.',
+        'personalidade': 'A cor verde pode indicar uma personalidade equilibrada, harmoniosa e conectada com a natureza.',
+        'diagnostico': 'O uso excessivo da cor verde pode indicar uma tendência à inveja, possessividade ou teimosia.'
+    },
+    '10': {
+        'cor': 'Azul',
+        'rgb': (0, 0, 255),
+        'anima_animus': 'O azul representa a tranquilidade, a calma e a sabedoria.',
+        'sombra': 'O azul é a própria tranquilidade, representando a serenidade e a intuição.',
+        'personalidade': 'A cor azul pode indicar uma personalidade tranquila, intuitiva e sábia.',
+        'diagnostico': 'O uso excessivo da cor azul pode indicar uma tendência à melancolia, frieza emocional ou falta de assertividade.'
+    },
+    '11': {
+        'cor': 'Roxo',
+        'rgb': (128, 0, 128),
+        'anima_animus': 'O roxo simboliza a espiritualidade, a intuição e a transformação.',
+        'sombra': 'O roxo é a própria espiritualidade, representando a busca pelo significado e a transformação interior.',
+        'personalidade': 'A cor roxa pode indicar uma personalidade intuitiva, misteriosa e espiritual.',
+        'diagnostico': 'O uso excessivo da cor roxa pode indicar uma tendência ao isolamento, fantasias excessivas ou falta de objetividade.'
+    },
+    '12': {
+        'cor': 'Rosa',
+        'rgb': (255, 192, 203),
+        'anima_animus': 'O rosa representa o amor, a ternura e a feminilidade.',
+        'sombra': 'O rosa é o próprio amor, representando a sensibilidade emocional e a conexão afetiva.',
+        'personalidade': 'A cor rosa pode indicar uma personalidade amorosa, carinhosa e afetuosa.',
+        'diagnostico': 'O uso excessivo da cor rosa pode indicar uma tendência à dependência emocional, vulnerabilidade ou dificuldade em impor limites.'
+    },
+    '13': {
+        'cor': 'Marrom',
+        'rgb': (165, 42, 42),
+        'anima_animus': 'O marrom representa a estabilidade, a confiabilidade e a segurança.',
+        'sombra': 'O marrom é a própria estabilidade, representando o alicerce e a solidez.',
+        'personalidade': 'A cor marrom pode indicar uma personalidade confiável, responsável e prática.',
+        'diagnostico': 'O uso excessivo da cor marrom pode indicar uma tendência à teimosia, inflexibilidade ou resistência à mudança.'
+    },
+    '14': {
+        'cor': 'Cinza',
+        'rgb': (128, 128, 128),
+        'anima_animus': 'O cinza representa a neutralidade, a sofisticação e a discrição.',
+        'sombra': 'O cinza é a própria neutralidade, representando a falta de polaridade e a imparcialidade.',
+        'personalidade': 'A cor cinza pode indicar uma personalidade equilibrada, sofisticada e reservada.',
+        'diagnostico': 'O uso excessivo da cor cinza pode indicar uma tendência ao conformismo, falta de energia ou falta de paixão.'
+    },
+    '15': {
+        'cor': 'Turquesa',
+        'rgb': (64, 224, 208),
+        'anima_animus': 'O turquesa representa a cura, a comunicação e a proteção.',
+        'sombra': 'O turquesa é a própria cura, representando a regeneração e a harmonia emocional.',
+        'personalidade': 'A cor turquesa pode indicar uma personalidade comunicativa, empática e protetora.',
+        'diagnostico': 'O uso excessivo da cor turquesa pode indicar uma tendência a se envolver demais, falta de limites pessoais ou dificuldade em se expressar de forma clara.'
+    },
+    '16': {
+        'cor': 'Dourado',
+        'rgb': (255, 215, 0),
+        'anima_animus': 'O dourado representa a riqueza, a prosperidade e a iluminação.',
+        'sombra': 'O dourado é a própria riqueza, representando o valor intrínseco e a busca pela abundância.',
+        'personalidade': 'A cor dourada pode indicar uma personalidade ambiciosa, confiante e iluminada.',
+        'diagnostico': 'O uso excessivo da cor dourada pode indicar uma tendência ao materialismo, egoísmo ou arrogância.'
+    },
+    '17': {
+        'cor': 'Prata',
+        'rgb': (192, 192, 192),
+        'anima_animus': 'A prata representa a intuição, a sensibilidade e a sabedoria.',
+        'sombra': 'A prata é a própria intuição, representando a percepção sutil e a conexão espiritual.',
+        'personalidade': 'A cor prata pode indicar uma personalidade intuitiva, sensível e sábia.',
+        'diagnostico': 'O uso excessivo da cor prata pode indicar uma tendência ao isolamento emocional, hipersensibilidade ou falta de clareza mental.'
+    },
+    '18': {
+        'cor': 'Ouro',
+        'rgb': (218, 165, 32),
+        'anima_animus': 'O ouro representa a sabedoria, a espiritualidade e a iluminação.',
+        'sombra': 'O ouro é a própria sabedoria, representando a realização espiritual e a busca pela verdade.',
+        'personalidade': 'A cor ouro pode indicar uma personalidade sábia, espiritualizada e iluminada.',
+        'diagnostico': 'O uso excessivo da cor ouro pode indicar uma tendência ao dogmatismo, arrogância ou busca excessiva por poder.'
+    },
+    '19': {
+        'cor': 'Verde limão',
+        'rgb': (50, 205, 50),
+        'anima_animus': 'O verde limão representa a energia, a vitalidade e o crescimento.',
+        'sombra': 'O verde limão é a própria energia, representando o impulso criativo e a renovação.',
+        'personalidade': 'A cor verde limão pode indicar uma personalidade enérgica, animada e cheia de vitalidade.',
+        'diagnostico': 'O uso excessivo da cor verde limão pode indicar uma tendência à impulsividade, agitação ou falta de estabilidade emocional.'
+    },
+    '20': {
+        'cor': 'Violeta',
+        'rgb': (238, 130, 238),
+        'anima_animus': 'O violeta representa a espiritualidade, a intuição e a transformação.',
+        'sombra': 'O violeta é a própria espiritualidade, representando a busca pelo significado e a transformação interior.',
+        'personalidade': 'A cor violeta pode indicar uma personalidade intuitiva, misteriosa e espiritual.',
+        'diagnostico': 'O uso excessivo da cor violeta pode indicar uma tendência ao isolamento, fantasias excessivas ou falta de objetividade.'
+    },
+    # Acrescente mais cores aqui
 }
-
 
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
@@ -82,6 +202,7 @@ def calculate_ml(c, m, y, k, total_ml):
     y_ml = (y / total_ink) * total_ml
     k_ml = (k / total_ink) * total_ml
     return c_ml, m_ml, y_ml, k_ml
+
 def buscar_cor_proxima(rgb, cores_junguianas):
     distancias = []
     for cor_junguiana in cores_junguianas.values():
@@ -89,17 +210,7 @@ def buscar_cor_proxima(rgb, cores_junguianas):
         distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
         distancias.append(distancia)
     cor_proxima_index = np.argmin(distancias)
-    if distancias[cor_proxima_index] > LIMIAR_DISTANCIA:
-        return None
     return cores_junguianas[str(cor_proxima_index + 1)]
-
-def buscar_cor_dominante(segmented_image, colors):
-    color_counts = []
-    for color in colors:
-        color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-        color_counts.append(color_area)
-    cor_dominante_index = np.argmax(color_counts)
-    return colors[cor_dominante_index]
 
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
@@ -221,8 +332,6 @@ if uploaded_file is not None:
         st.image(result, caption='Imagem Resultante', use_column_width=True)
         st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-        # Calcular a cor dominante
-        cor_dominante = buscar_cor_dominante(segmented_image, colors)
 
         # Mostrar paleta de cores
         for i, color in enumerate(colors):
@@ -249,19 +358,19 @@ if uploaded_file is not None:
             Magenta (Vermelho) (M): {m_ml:.2f} ml
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
-        
             """)
-
-        if cor_proxima is None:
-            st.write("Nenhuma cor junguiana próxima encontrada")
-        else:
-            # Exibir informações sobre a cor junguiana mais próxima
+        
+            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
             st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
             st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
             st.write(f"Sombra: {cor_proxima['sombra']}")
             st.write(f"Personalidade: {cor_proxima['personalidade']}")
             st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
+
         
+            
+
+
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
         st.download_button(
             label="Baixar imagem resultante",
@@ -276,3 +385,5 @@ if uploaded_file is not None:
             data=segmented_image_bytes,
             file_name='segmented.jpg',
             mime='image/jpeg')
+
+       
