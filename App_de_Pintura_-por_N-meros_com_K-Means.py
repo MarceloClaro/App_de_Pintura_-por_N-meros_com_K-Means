@@ -251,7 +251,7 @@ if uploaded_file is not None:
             Preto (K): {k_ml:.2f} ml
             """)
 
-            if cor_proxima is None:
+        if cor_proxima is None:
                 st.write("Nenhuma cor junguiana próxima encontrada")
             else:
                 # Exibir informações sobre a cor junguiana mais próxima
