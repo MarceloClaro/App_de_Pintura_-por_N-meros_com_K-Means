@@ -10,8 +10,6 @@ from PIL import Image  # Outra ferramenta para trabalhar com imagens.
 import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
 import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
 
-
-# Lista de cores junguianas ampliada
 cores_junguianas = {
     '1': {
         'cor': 'Preto',
@@ -45,136 +43,9 @@ cores_junguianas = {
         'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
         'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
-    '5': {
-        'cor': 'Branco',
-        'rgb': (255, 255, 255),
-        'anima_animus': 'O branco representa a luz, a pureza e a clareza.',
-        'sombra': 'O branco é a própria luz, representando a falta de sombra e a transparência.',
-        'personalidade': 'A cor branca pode indicar uma personalidade pura, inocente e clara.',
-        'diagnostico': 'O uso excessivo da cor branca pode indicar uma tendência à neutralidade, falta de personalidade ou falta de profundidade emocional.'
-    },
-    '6': {
-        'cor': 'Vermelho',
-        'rgb': (255, 0, 0),
-        'anima_animus': 'O vermelho simboliza a paixão, o poder e a energia.',
-        'sombra': 'O vermelho é a própria paixão, representando a intensidade emocional e a força de vontade.',
-        'personalidade': 'A cor vermelha pode indicar uma personalidade ardente, apaixonada e determinada.',
-        'diagnostico': 'O uso excessivo da cor vermelha pode indicar uma tendência à agressividade, impaciência ou irritabilidade.'
-    },
-    '7': {
-        'cor': 'Laranja',
-        'rgb': (255, 165, 0),
-        'anima_animus': 'O laranja representa a criatividade, a alegria e a comunicação.',
-        'sombra': 'O laranja é a própria criatividade, representando a expressão emocional e a sociabilidade.',
-        'personalidade': 'A cor laranja pode indicar uma personalidade extrovertida, sociável e cheia de energia.',
-        'diagnostico': 'O uso excessivo da cor laranja pode indicar uma tendência à impulsividade, instabilidade emocional ou falta de foco.'
-    },
-    '8': {
-        'cor': 'Amarelo',
-        'rgb': (255, 255, 0),
-        'anima_animus': 'O amarelo representa a felicidade, o otimismo e a criatividade.',
-        'sombra': 'O amarelo é a própria felicidade, representando a positividade e a alegria de viver.',
-        'personalidade': 'A cor amarela pode indicar uma personalidade otimista, entusiasmada e cheia de vida.',
-        'diagnostico': 'O uso excessivo da cor amarela pode indicar uma tendência ao exagero, superficialidade ou falta de concentração.'
-    },
-    '9': {
-        'cor': 'Verde',
-        'rgb': (0, 255, 0),
-        'anima_animus': 'O verde simboliza a natureza, a harmonia e o equilíbrio.',
-        'sombra': 'O verde é a própria natureza, representando a renovação e o crescimento.',
-        'personalidade': 'A cor verde pode indicar uma personalidade equilibrada, harmoniosa e conectada com a natureza.',
-        'diagnostico': 'O uso excessivo da cor verde pode indicar uma tendência à inveja, possessividade ou teimosia.'
-    },
-    '10': {
-        'cor': 'Azul',
-        'rgb': (0, 0, 255),
-        'anima_animus': 'O azul representa a tranquilidade, a calma e a sabedoria.',
-        'sombra': 'O azul é a própria tranquilidade, representando a serenidade e a intuição.',
-        'personalidade': 'A cor azul pode indicar uma personalidade tranquila, intuitiva e sábia.',
-        'diagnostico': 'O uso excessivo da cor azul pode indicar uma tendência à melancolia, frieza emocional ou falta de assertividade.'
-    },
-    '11': {
-        'cor': 'Roxo',
-        'rgb': (128, 0, 128),
-        'anima_animus': 'O roxo simboliza a espiritualidade, a intuição e a transformação.',
-        'sombra': 'O roxo é a própria espiritualidade, representando a busca pelo significado e a transformação interior.',
-        'personalidade': 'A cor roxa pode indicar uma personalidade intuitiva, misteriosa e espiritual.',
-        'diagnostico': 'O uso excessivo da cor roxa pode indicar uma tendência ao isolamento, fantasias excessivas ou falta de objetividade.'
-    },
-    '12': {
-        'cor': 'Rosa',
-        'rgb': (255, 192, 203),
-        'anima_animus': 'O rosa representa o amor, a ternura e a feminilidade.',
-        'sombra': 'O rosa é o próprio amor, representando a sensibilidade emocional e a conexão afetiva.',
-        'personalidade': 'A cor rosa pode indicar uma personalidade amorosa, carinhosa e afetuosa.',
-        'diagnostico': 'O uso excessivo da cor rosa pode indicar uma tendência à dependência emocional, vulnerabilidade ou dificuldade em impor limites.'
-    },
-    '13': {
-        'cor': 'Marrom',
-        'rgb': (165, 42, 42),
-        'anima_animus': 'O marrom representa a estabilidade, a confiabilidade e a segurança.',
-        'sombra': 'O marrom é a própria estabilidade, representando o alicerce e a solidez.',
-        'personalidade': 'A cor marrom pode indicar uma personalidade confiável, responsável e prática.',
-        'diagnostico': 'O uso excessivo da cor marrom pode indicar uma tendência à teimosia, inflexibilidade ou resistência à mudança.'
-    },
-    '14': {
-        'cor': 'Cinza',
-        'rgb': (128, 128, 128),
-        'anima_animus': 'O cinza representa a neutralidade, a sofisticação e a discrição.',
-        'sombra': 'O cinza é a própria neutralidade, representando a falta de polaridade e a imparcialidade.',
-        'personalidade': 'A cor cinza pode indicar uma personalidade equilibrada, sofisticada e reservada.',
-        'diagnostico': 'O uso excessivo da cor cinza pode indicar uma tendência ao conformismo, falta de energia ou falta de paixão.'
-    },
-    '15': {
-        'cor': 'Turquesa',
-        'rgb': (64, 224, 208),
-        'anima_animus': 'O turquesa representa a cura, a comunicação e a proteção.',
-        'sombra': 'O turquesa é a própria cura, representando a regeneração e a harmonia emocional.',
-        'personalidade': 'A cor turquesa pode indicar uma personalidade comunicativa, empática e protetora.',
-        'diagnostico': 'O uso excessivo da cor turquesa pode indicar uma tendência a se envolver demais, falta de limites pessoais ou dificuldade em se expressar de forma clara.'
-    },
-    '16': {
-        'cor': 'Dourado',
-        'rgb': (255, 215, 0),
-        'anima_animus': 'O dourado representa a riqueza, a prosperidade e a iluminação.',
-        'sombra': 'O dourado é a própria riqueza, representando o valor intrínseco e a busca pela abundância.',
-        'personalidade': 'A cor dourada pode indicar uma personalidade ambiciosa, confiante e iluminada.',
-        'diagnostico': 'O uso excessivo da cor dourada pode indicar uma tendência ao materialismo, egoísmo ou arrogância.'
-    },
-    '17': {
-        'cor': 'Prata',
-        'rgb': (192, 192, 192),
-        'anima_animus': 'A prata representa a intuição, a sensibilidade e a sabedoria.',
-        'sombra': 'A prata é a própria intuição, representando a percepção sutil e a conexão espiritual.',
-        'personalidade': 'A cor prata pode indicar uma personalidade intuitiva, sensível e sábia.',
-        'diagnostico': 'O uso excessivo da cor prata pode indicar uma tendência ao isolamento emocional, hipersensibilidade ou falta de clareza mental.'
-    },
-    '18': {
-        'cor': 'Ouro',
-        'rgb': (218, 165, 32),
-        'anima_animus': 'O ouro representa a sabedoria, a espiritualidade e a iluminação.',
-        'sombra': 'O ouro é a própria sabedoria, representando a realização espiritual e a busca pela verdade.',
-        'personalidade': 'A cor ouro pode indicar uma personalidade sábia, espiritualizada e iluminada.',
-        'diagnostico': 'O uso excessivo da cor ouro pode indicar uma tendência ao dogmatismo, arrogância ou busca excessiva por poder.'
-    },
-    '19': {
-        'cor': 'Verde limão',
-        'rgb': (50, 205, 50),
-        'anima_animus': 'O verde limão representa a energia, a vitalidade e o crescimento.',
-        'sombra': 'O verde limão é a própria energia, representando o impulso criativo e a renovação.',
-        'personalidade': 'A cor verde limão pode indicar uma personalidade enérgica, animada e cheia de vitalidade.',
-        'diagnostico': 'O uso excessivo da cor verde limão pode indicar uma tendência à impulsividade, agitação ou falta de estabilidade emocional.'
-    },
-    '20': {
-        'cor': 'Violeta',
-        'rgb': (238, 130, 238),
-        'anima_animus': 'O violeta representa a espiritualidade, a intuição e a transformação.',
-        'sombra': 'O violeta é a própria espiritualidade, representando a busca pelo significado e a transformação interior.',
-        'personalidade': 'A cor violeta pode indicar uma personalidade intuitiva, misteriosa e espiritual.',
-        'diagnostico': 'O uso excessivo da cor violeta pode indicar uma tendência ao isolamento, fantasias excessivas ou falta de objetividade.'
-    },
-    # Acrescente mais cores aqui
+    
 }
+
 
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
@@ -292,7 +163,14 @@ Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 st.write("""
-Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". ..
+Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
+Este aplicativo é uma ferramenta útil para artistas plásticos, pois oferece recursos para gerar paletas de cores, criar pinturas por números, desenvolver esboços e conceitos, e explorar diferentes combinações de cores.
+Como funciona? Primeiro, você pode fazer o upload de uma imagem de referência, que pode ser uma foto, ilustração ou qualquer imagem que você deseje usar como base. Em seguida, o aplicativo utiliza o algoritmo K-means para quantificar as cores presentes na imagem. Você pode controlar o número de cores desejado através de um controle deslizante, permitindo extrair a quantidade adequada de cores para sua pintura.
+Uma vez gerada a paleta de cores, o aplicativo exibe a imagem resultante, onde cada região da imagem original é substituída pela cor correspondente da paleta. Isso permite que você visualize como sua pintura ficaria usando essas cores específicas. Além disso, o aplicativo também exibe a imagem segmentada, onde cada região da imagem original é preenchida com uma cor sólida correspondente à cor dominante da região. Isso ajuda na identificação de áreas de destaque e contrastes na imagem, facilitando o processo de esboço e desenvolvimento de conceitos.
+Uma característica interessante do aplicativo é a possibilidade de definir o total em mililitros de tinta antes de gerar a paleta de cores. Isso permite que você obtenha doses precisas de cada cor primária para alcançar tons exatos em suas paletas.
+No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferramenta complementar para sua análise da paisagem humana. Ele reúne imagens, fotos e referências como inspiração e, em seguida, faz esboços e desenvolve conceitos usando a técnica de "Sketching and concept development". Ele explora diferentes ideias, experimenta composições e cores, e utiliza as paletas de cores geradas pelo aplicativo para criar suas pinturas finais.
+O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
+Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
 """)
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
@@ -332,42 +210,42 @@ if uploaded_file is not None:
         st.image(result, caption='Imagem Resultante', use_column_width=True)
         st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-
+      
         # Mostrar paleta de cores
+
         for i, color in enumerate(colors):
             color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
             st.image(color_block, caption=f'Cor {i+1}', width=50)
-        
+
             # Cálculo das proporções das cores CMYK
             r, g, b = color
             c, m, y, k = rgb_to_cmyk(r, g, b)
             c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-        
-            # Calcular a área da cor na imagem segmentada
+
+                # Calcular a área da cor na imagem segmentada
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
             color_percentage = (color_area / total_area) * 100
-        
+            
             st.subheader("Sketching and concept development da paleta de cor")
             st.write(f"""
             PALETAS DE COR PARA: {total_ml:.2f} ml.
-        
+            
             A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
-        
+
             Ciano (Azul) (C): {c_ml:.2f} ml
             Magenta (Vermelho) (M): {m_ml:.2f} ml
             Amarelo (Y): {y_ml:.2f} ml
             Preto (K): {k_ml:.2f} ml
+                   
             """)
-        
             cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-            st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-            st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
-            st.write(f"Sombra: {cor_proxima['sombra']}")
-            st.write(f"Personalidade: {cor_proxima['personalidade']}")
-            st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
+            st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
+            st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
+            st.write(f"      Sombra: {cor_proxima['sombra']}")
+            st.write(f"      Personalidade: {cor_proxima['personalidade']}")
+            st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
-        
             
 
 
@@ -378,12 +256,9 @@ if uploaded_file is not None:
             file_name='result.jpg',
             mime='image/jpeg')
 
-        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+        segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
         st.download_button(
             label="Baixar imagem segmentada",
             data=segmented_image_bytes,
             file_name='segmented.jpg',
             mime='image/jpeg')
-
-       
