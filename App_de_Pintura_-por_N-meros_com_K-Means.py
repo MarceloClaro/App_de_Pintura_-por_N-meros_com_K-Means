@@ -261,4 +261,4 @@ if uploaded_file is not None:
             label="Baixar imagem segmentada",
             data=segmented_image_bytes,
             file_name='segmented.jpg',
-            mime='image/jpeg')
+            mime='image/jpeg')]
