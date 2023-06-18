@@ -43,10 +43,7 @@ cores_junguianas = {
         'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
         'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
-    
 }
-
-
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
 # Isso nos ajuda a lidar com imagens e cores.
@@ -142,7 +139,7 @@ class Canvas():
         vfunc = lambda x: codebook[labels[x]]
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
-    
+
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
@@ -222,7 +219,7 @@ if uploaded_file is not None:
             c, m, y, k = rgb_to_cmyk(r, g, b)
             c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
 
-                # Calcular a área da cor na imagem segmentada
+            # Calcular a área da cor na imagem segmentada
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
             color_percentage = (color_area / total_area) * 100
@@ -231,34 +228,20 @@ if uploaded_file is not None:
             st.write(f"""
             PALETAS DE COR PARA: {total_ml:.2f} ml.
             
-            A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
-
-            Ciano (Azul) (C): {c_ml:.2f} ml
-            Magenta (Vermelho) (M): {m_ml:.2f} ml
-            Amarelo (Y): {y_ml:.2f} ml
-            Preto (K): {k_ml:.2f} ml
-                   
+            A cor pode ser alcançada pela combinação das cores primárias do modelo de cores subtrativo CMYK (ciano, magenta, amarelo e preto):
+            - Cyan: {c_ml:.2f} ml
+            - Magenta: {m_ml:.2f} ml
+            - Amarelo: {y_ml:.2f} ml
+            - Preto: {k_ml:.2f} ml
             """)
-            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-            st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-            st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
-            st.write(f"      Sombra: {cor_proxima['sombra']}")
-            st.write(f"      Personalidade: {cor_proxima['personalidade']}")
-            st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
+            st.write(f"A cor {i+1} corresponde a {color_percentage:.2f}% da imagem segmentada.")
+
+            cor_junguiana = buscar_cor_proxima(color, cores_junguianas)
+            st.write(f"Cor junguiana correspondente: {cor_junguiana['cor']}")
+            st.write(f"Anima/Animus: {cor_junguiana['anima_animus']}")
+            st.write(f"Sombra: {cor_junguiana['sombra']}")
+            st.write(f"Personalidade: {cor_junguiana['personalidade']}")
+            st.write(f"Diagnóstico: {cor_junguiana['diagnostico']}")
             
-
-
-        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
-
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem segmentada",
-            data=segmented_image_bytes,
-            file_name='segmented.jpg',
-            mime='image/jpeg')]
+        
