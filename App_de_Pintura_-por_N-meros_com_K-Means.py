@@ -9,7 +9,7 @@ import streamlit as st  # Isso é o que nos permite criar a interface do nosso p
 from PIL import Image  # Outra ferramenta para trabalhar com imagens.
 import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
 import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
-
+dpi = 300
 cores_junguianas = {
     '1': {
         'cor': 'Preto',
@@ -85,7 +85,7 @@ def buscar_cor_proxima(rgb, cores_junguianas):
 
 
 
-dpi = 300
+
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
         self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB) # Corrige a ordem dos canais de cor
