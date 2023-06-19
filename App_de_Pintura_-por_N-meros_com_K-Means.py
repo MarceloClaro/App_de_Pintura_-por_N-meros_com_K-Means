@@ -81,35 +81,39 @@ def buscar_cor_proxima(rgb, cores_junguianas):
         distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
         distancias.append(distancia)
     cor_proxima_index = np.argmin(distancias)
-    return cores_junguianas[str(cor_proxima_index + 1)
+    return cores_junguianas[str(cor_proxima_index + 1)]
 
+class Canvas():
+    def __init__(self, src, nb_color, pixel_size=4000):
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
+        self.nb_color = nb_color
+        self.tar_width = pixel_size
+        self.colormap = []
 
-    # Geração do Canvas
-def generate(self):
-        dpi = 300  
-        tamanho_em_polegadas = self.tar_width / dpi  
-        tamanho_em_centimetros = tamanho_em_polegadas * 2.54
-        st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
+    def generate(self):
         im_source = self.resize()
         clean_img = self.cleaning(im_source)
         width, height, depth = clean_img.shape
         clean_img = np.array(clean_img, dtype="uint8") / 255
         quantified_image, colors = self.quantification(clean_img)
         canvas = np.ones(quantified_image.shape[:2], dtype="uint8") * 255
+
         for ind, color in enumerate(colors):
             self.colormap.append([int(c * 255) for c in color])
             mask = cv2.inRange(quantified_image, color, color)
             cnts = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
             cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
             for contour in cnts:
                 _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
                 if width_ctr > 10 and height_ctr > 10 and cv2.contourArea(contour, True) < -100:
                     cv2.drawContours(canvas, [contour], -1, (0, 0, 0), 1)
                     txt_x, txt_y = contour[0][0]
-                    cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+                    cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+
         return canvas, colors, quantified_image
 
-    # Redimensionamento da imagem
     def resize(self):
         (height, width) = self.src.shape[:2]
         if height > width:  # modo retrato
@@ -118,7 +122,6 @@ def generate(self):
             dim = (self.tar_width, int(height * self.tar_width / float(width)))
         return cv2.resize(self.src, dim, interpolation=cv2.INTER_AREA)
 
-    # Limpeza da imagem
     def cleaning(self, picture):
         clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 10, 10, 7, 21)
         kernel = np.ones((5, 5), np.uint8)
@@ -126,13 +129,14 @@ def generate(self):
         img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
         return img_dilation
 
-    # Quantificação da imagem
     def quantification(self, picture):
         width, height, depth = picture.shape
         flattened = np.reshape(picture, (width * height, depth))
         sample = shuffle(flattened)[:1000]
-        kmeans = KMeans(n_clusters=self.nb_colorClaro, posso fazer isso. Aqui está o código traduzido para o português:
-
+        kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
+        labels = kmeans.predict(flattened)
+        new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
+        return new_img, kmeans.cluster_centers_
 
     def recreate_image(self, codebook, labels, width, height):
         vfunc = lambda x: codebook[labels[x]]
