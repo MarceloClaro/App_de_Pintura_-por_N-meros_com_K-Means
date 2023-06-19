@@ -81,14 +81,26 @@ def buscar_cor_proxima(rgb, cores_junguianas):
         distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
         distancias.append(distancia)
     cor_proxima_index = np.argmin(distancias)
-    return cores_junguianas[str(cor_proxima_index + 1)]
+    return cores_junguianas[str(cor_proxima_index + 1)
 
+
+
+dpi = 300
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
-        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB) # Corrige a ordem dos canais de cor
         self.nb_color = nb_color
         self.tar_width = pixel_size
+
+        # converter para polegadas
+        tamanho_em_polegadas = self.tar_width / dpi
+
+        # converter para centímetros
+        tamanho_em_centimetros = tamanho_em_polegadas * 2.54
+
         self.colormap = []
+        st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
+
 
     def generate(self):
         im_source = self.resize()
