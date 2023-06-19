@@ -84,16 +84,10 @@ def buscar_cor_proxima(rgb, cores_junguianas):
     return cores_junguianas[str(cor_proxima_index + 1)
 
 
-class Canvas():
-    def __init__(self, src, nb_color, pixel_size=4000):
-        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
-        self.nb_color = nb_color
-        self.tar_width = pixel_size
-        self.colormap = []
-
+    # Geração do Canvas
     def generate(self):
-        dpi = 300  # converter para polegadas
-        tamanho_em_polegadas = self.tar_width / dpi  # converter para centímetros
+        dpi = 300  
+        tamanho_em_polegadas = self.tar_width / dpi  
         tamanho_em_centimetros = tamanho_em_polegadas * 2.54
         st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
         im_source = self.resize()
@@ -111,10 +105,11 @@ class Canvas():
                 _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
                 if width_ctr > 10 and height_ctr > 10 and cv2.contourArea(contour, True) < -100:
                     cv2.drawContours(canvas, [contour], -1, (0, 0, 0), 1)
-                txt_x, txt_y = contour[0][0]
-                cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+                    txt_x, txt_y = contour[0][0]
+                    cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
         return canvas, colors, quantified_image
 
+    # Redimensionamento da imagem
     def resize(self):
         (height, width) = self.src.shape[:2]
         if height > width:  # modo retrato
@@ -123,6 +118,7 @@ class Canvas():
             dim = (self.tar_width, int(height * self.tar_width / float(width)))
         return cv2.resize(self.src, dim, interpolation=cv2.INTER_AREA)
 
+    # Limpeza da imagem
     def cleaning(self, picture):
         clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 10, 10, 7, 21)
         kernel = np.ones((5, 5), np.uint8)
@@ -130,17 +126,13 @@ class Canvas():
         img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
         return img_dilation
 
-
-
-
+    # Quantificação da imagem
     def quantification(self, picture):
         width, height, depth = picture.shape
         flattened = np.reshape(picture, (width * height, depth))
         sample = shuffle(flattened)[:1000]
-        kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
-        labels = kmeans.predict(flattened)
-        new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
-        return new_img, kmeans.cluster_centers_
+        kmeans = KMeans(n_clusters=self.nb_colorClaro, posso fazer isso. Aqui está o código traduzido para o português:
+
 
     def recreate_image(self, codebook, labels, width, height):
         vfunc = lambda x: codebook[labels[x]]
