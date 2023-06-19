@@ -85,7 +85,7 @@ def buscar_cor_proxima(rgb, cores_junguianas):
 
 
     # Geração do Canvas
-    def generate(self):
+def generate(self):
         dpi = 300  
         tamanho_em_polegadas = self.tar_width / dpi  
         tamanho_em_centimetros = tamanho_em_polegadas * 2.54
