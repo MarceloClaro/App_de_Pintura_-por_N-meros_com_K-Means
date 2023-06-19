@@ -9,7 +9,7 @@ import streamlit as st  # Isso é o que nos permite criar a interface do nosso p
 from PIL import Image  # Outra ferramenta para trabalhar com imagens.
 import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
 import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
-dpi = 300
+
 cores_junguianas = {
     '1': {
         'cor': 'Preto',
@@ -101,8 +101,25 @@ class Canvas():
         self.colormap = []
         st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
 
+___
+
+
+class Canvas():
+    def __init__(self, src, nb_color, pixel_size=4000):
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB) # Corrige a ordem dos canais de cor
+        self.nb_color = nb_color
+        self.tar_width = pixel_size
+        self.colormap = []
 
     def generate(self):
+        dpi = 300
+        # converter para polegadas
+        tamanho_em_polegadas = self.tar_width / dpi
+
+        # converter para centímetros
+        tamanho_em_centimetros = tamanho_em_polegadas * 2.54
+        st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
+
         im_source = self.resize()
         clean_img = self.cleaning(im_source)
         width, height, depth = clean_img.shape
