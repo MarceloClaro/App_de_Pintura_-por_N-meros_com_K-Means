@@ -90,14 +90,9 @@ class Canvas():
         self.nb_color = nb_color
         self.tar_width = pixel_size
 
-        # converter para polegadas
-        tamanho_em_polegadas = self.tar_width / dpi
-
-        # converter para centímetros
-        tamanho_em_centimetros = tamanho_em_polegadas * 2.54
-
+ 
         self.colormap = []
-        st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
+       
 
     def generate(self):
         dpi = 300
