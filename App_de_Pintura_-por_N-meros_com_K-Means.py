@@ -86,44 +86,33 @@ def buscar_cor_proxima(rgb, cores_junguianas):
 
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
-        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB) # Corrige a ordem dos canais de cor
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
         self.nb_color = nb_color
         self.tar_width = pixel_size
-
- 
         self.colormap = []
-       
 
     def generate(self):
-        dpi = 300
-        # converter para polegadas
-        tamanho_em_polegadas = self.tar_width / dpi
-
-        # converter para centímetros
+        dpi = 300  # converter para polegadas
+        tamanho_em_polegadas = self.tar_width / dpi  # converter para centímetros
         tamanho_em_centimetros = tamanho_em_polegadas * 2.54
         st.write(f'O tamanho da imagem é {tamanho_em_centimetros} centímetros.')
-
         im_source = self.resize()
         clean_img = self.cleaning(im_source)
         width, height, depth = clean_img.shape
         clean_img = np.array(clean_img, dtype="uint8") / 255
         quantified_image, colors = self.quantification(clean_img)
         canvas = np.ones(quantified_image.shape[:2], dtype="uint8") * 255
-
         for ind, color in enumerate(colors):
             self.colormap.append([int(c * 255) for c in color])
             mask = cv2.inRange(quantified_image, color, color)
             cnts = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
             cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-
             for contour in cnts:
                 _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
                 if width_ctr > 10 and height_ctr > 10 and cv2.contourArea(contour, True) < -100:
                     cv2.drawContours(canvas, [contour], -1, (0, 0, 0), 1)
-                    txt_x, txt_y = contour[0][0]
-                    cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
-
+                txt_x, txt_y = contour[0][0]
+                cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
         return canvas, colors, quantified_image
 
     def resize(self):
@@ -140,6 +129,9 @@ class Canvas():
         img_erosion = cv2.erode(clean_pic, kernel, iterations=1)
         img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
         return img_dilation
+
+
+
 
     def quantification(self, picture):
         width, height, depth = picture.shape
