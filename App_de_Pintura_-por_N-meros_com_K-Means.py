@@ -1,4 +1,5 @@
 # Importando todas as coisas necessárias para o nosso programa funcionar.
+# Esses são como os blocos de construção que vamos usar para fazer o nosso programa.
 
 import numpy as np  # Esta é uma ferramenta para lidar com listas de números.
 from sklearn.cluster import KMeans  # Essa é uma ferramenta que nos ajuda a encontrar grupos de coisas.
@@ -139,9 +140,12 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
 
-# Início da interface do Streamlit
-st.image("clube.png")
-st.title('Gerador de Paleta de Cores para Pintura por Números')
+
+# Aqui é onde começamos a construir a interface do nosso programa.
+# Estamos adicionando coisas como texto e botões para as pessoas interagirem.
+
+st.image("clube.png")  # Adiciona a imagem no topo do app
+st.title('Gerador de Paleta de Cores para Pintura por Números ')
 st.subheader("Sketching and concept development")
 st.subheader("""
 Autor: Marcelo Claro
@@ -152,8 +156,8 @@ marceloclaro@geomaker.org
 
 Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
 """)
-
 # Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
+
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 st.write("""
 Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
@@ -165,7 +169,6 @@ No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferrame
 O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
 Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
 """)
-
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, 1)
@@ -175,11 +178,11 @@ if uploaded_file is not None:
     nb_color = st.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
 
     total_ml = st.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-
+    
     pixel_size = st.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
     if st.button('Gerar'):
-
+        
         # Tentativa de leitura dos metadados de resolução (DPI)
         pil_image = Image.open(io.BytesIO(file_bytes))
         if 'dpi' in pil_image.info:
@@ -196,60 +199,46 @@ if uploaded_file is not None:
 
         # Converter imagem segmentada para np.uint8
         segmented_image = (segmented_image * 255).astype(np.uint8)
-
+        
         # Agora converta de BGR para RGB
         segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-
-        st.image(result, caption='Imagem Resultante', use_column_width=True)
+        
+        st.image(result, caption='Pintura por Números', use_column_width=True)
         st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-        # Mostrar paleta de cores
-
+        # Calcular a quantidade de tinta necessária para cada cor
+        tinta_necessaria = {}
         for i, color in enumerate(colors):
-            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
-            st.image(color_block, caption=f'Cor {i+1}', width=50)
-
-            # Cálculo das proporções das cores CMYK
             r, g, b = color
             c, m, y, k = rgb_to_cmyk(r, g, b)
             c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
+            tinta_necessaria[f'Cor {i+1}'] = {
+                'RGB': (r, g, b),
+                'CMYK': (c, m, y, k),
+                'Quantidade ML': {
+                    'Ciano': c_ml,
+                    'Magenta': m_ml,
+                    'Amarelo': y_ml,
+                    'Preto': k_ml,
+                }
+            }
+        
+        st.subheader('Quantidade de Tinta Necessária (ML) para Cada Cor:')
+        st.write(tinta_necessaria)
+        
+        # Encontrar a cor dominante na imagem segmentada
+        altura, largura, _ = segmented_image.shape
+        cor_dominante = buscar_cor_proxima(segmented_image[altura // 2, largura // 2], cores_junguianas)
+        st.subheader('Cor Dominante na Imagem Segmentada:')
+        st.write(cor_dominante['cor'])
+        
+        # Análise Junguiana da Cor Dominante
+        st.subheader('Análise Junguiana da Cor Dominante:')
+        st.write('**Anima/Animus:**', cor_dominante['anima_animus'])
+        st.write('**Sombra:**', cor_dominante['sombra'])
+        st.write('**Personalidade:**', cor_dominante['personalidade'])
+        st.write('**Diagnóstico:**', cor_dominante['diagnostico'])
 
-            # Calcular a área da cor na imagem segmentada
-            color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-            total_area = segmented_image.shape[0] * segmented_image.shape[1]
-            color_percentage = (color_area / total_area) * 100
+# Vamos adicionar um rodapé com um agradecimento.
 
-            st.subheader("Sketching and concept development da paleta de cor")
-            st.write(f'Cor {i+1}:')
-            st.write(f'   - RGB: ({r}, {g}, {b})')
-            st.write(f'   - Proporção na imagem segmentada: {color_percentage:.2f}%')
-            st.write(f'   - Tinta CMYK: C={c_ml:.2f} mL, M={m_ml:.2f} mL, Y={y_ml:.2f} mL, K={k_ml:.2f} mL')
-            cor_junguiana = buscar_cor_proxima((r, g, b), cores_junguianas)
-            st.write(f'   - Cor Junguiana: {cor_junguiana["cor"]}')
-            st.write(f'   - Significado Junguiano:')
-            st.write(f'       - Anima/Animus: {cor_junguiana["anima_animus"]}')
-            st.write(f'       - Sombra: {cor_junguiana["sombra"]}')
-            st.write(f'       - Personalidade: {cor_junguiana["personalidade"]}')
-            st.write(f'       - Diagnóstico: {cor_junguiana["diagnostico"]}')
-
-st.subheader("Sketching and concept development na prática")
-st.write("""
-Aqui estão alguns exemplos de como Marcelo Claro utiliza o aplicativo "Gerador de Paleta de Cores para Pintura por Números" em seu processo criativo de "Sketching and concept development":
-1. **Escolha de Imagem de Referência**: Marcelo começa escolhendo uma imagem de referência que o inspire. Pode ser uma paisagem, uma cena cotidiana, uma foto de pessoas ou qualquer coisa que ele queira retratar em sua obra.
-
-2. **Upload da Imagem**: Ele faz o upload da imagem no aplicativo e, em seguida, ajusta as configurações, como o número de cores desejado, o total em ml de tinta de cada cor e o tamanho do pixel da pintura.
-
-3. **Geração da Paleta de Cores**: Ao clicar em "Gerar", o aplicativo utiliza o algoritmo K-means para identificar as cores presentes na imagem. Ele exibe a paleta de cores resultante, onde cada cor é numerada e exibida em quadrados.
-
-4. **Análise das Cores**: Marcelo analisa as cores da paleta e suas proporções na imagem. Ele também verifica as informações sobre cada cor, incluindo a tinta CMYK correspondente e o significado Junguiano associado.
-
-5. **Desenvolvimento de Conceitos**: Com a paleta de cores em mãos, Marcelo começa a desenvolver conceitos para sua pintura. Ele utiliza a paleta como guia para escolher as cores certas para cada parte da obra.
-
-6. **Esboços e Experimentações**: Marcelo faz esboços e experimentações, testando diferentes combinações de cores e composições. Ele pode criar várias versões da obra usando a paleta de cores como referência.
-
-7. **Pintura Final**: Com o conceito finalizado, Marcelo inicia a pintura final. Ele utiliza a paleta de cores gerada pelo aplicativo para garantir que as cores escolhidas sejam precisas e reflitam sua visão artística.
-
-8. **Resultado**: O resultado final é uma obra de arte única que retrata sua interpretação da paisagem humana. A paleta de cores gerada pelo aplicativo desempenha um papel fundamental na criação da obra e na expressão de sua mensagem.
-
-Essa abordagem combina a análise geográfica da paisagem humana com a expressão artística, resultando em pinturas que capturam a essência da vida cotidiana e das interações humanas. É uma forma inovadora de utilizar a tecnologia para enriquecer o processo criativo e explorar novas possibilidades na arte.
-""")
+st.text("Agradecemos a participação do artista Marcelo Claro na criação deste aplicativo.")
