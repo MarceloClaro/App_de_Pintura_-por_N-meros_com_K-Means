@@ -142,7 +142,12 @@ class Canvas():
         vfunc = lambda x: codebook[labels[x]]
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
-    
+
+st.set_page_config(
+    page_title="Gerador de Paleta de Cores",
+    page_icon="🎨",
+    layout="wide"
+)
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
@@ -156,11 +161,6 @@ class Canvas():
 
 # Interface do usuário com melhorias estéticas
 
-st.set_page_config(
-    page_title="Gerador de Paleta de Cores",
-    page_icon="🎨",
-    layout="wide"
-)
 
 st.title('Gerador de Paleta de Cores para Pintura por Números')
 st.subheader("Sketching and concept development")
