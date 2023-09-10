@@ -118,7 +118,7 @@ class Canvas():
         return np.resize(out, (width, height, codebook.shape[1]))
 
 # Configurações da barra lateral
-st.sidebar.title("Configurações do Aplicativo")
+st.sidebar.title("Sketching and concept development da paleta de cor")
 
 # Separador
 st.sidebar.write("---")
@@ -134,7 +134,7 @@ st.sidebar.write("WhatsApp: (88) 98158-7145")
 st.sidebar.write("---")
 
 # Seção de Configurações
-st.sidebar.header("Sketching and concept development da paleta de cor")
+st.sidebar.header("Configurações do Aplicativo")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem para tela", type=["jpg", "png"])
 nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
