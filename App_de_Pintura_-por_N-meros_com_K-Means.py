@@ -255,6 +255,8 @@ if uploaded_file is not None:
             st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+        st.image(result, caption='Imagem Resultante', use_column_width=True)
+
         st.download_button(
             label="Baixar imagem resultante",
             data=result_bytes,
@@ -263,6 +265,7 @@ if uploaded_file is not None:
 
         segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
         segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
         st.download_button(
             label="Baixar imagem segmentada",
             data=segmented_image_bytes,
