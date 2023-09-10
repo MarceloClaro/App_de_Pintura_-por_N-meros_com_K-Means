@@ -80,10 +80,10 @@ def analyze_and_show_color(color_index, rgb_color, total_ml, segmented_image):
 
 # Restante do código...
 
+
 # Início da interface do Streamlit
 st.image("clube.png")
 st.title('Gerador de Paleta de Cores para Pintura por Números')
-# ... (outros elementos de UI aqui)
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 
@@ -121,18 +121,24 @@ if uploaded_file is not None:
 
         # Encontrar a cor junguiana mais próxima da cor dominante
         dominant_color = colors[dominant_color_index]
-        closest_jungian_color = buscar_cor_proxima(dominant_color, cores_junguianas)
+        closest_jungian_color = find_closest_jungian_color(dominant_color, cores_junguianas)
 
         # Exibir a análise da cor junguiana dominante
         st.write(f"A cor junguiana dominante é: {closest_jungian_color['cor']}")
-        st.write(f"Anima/Animus: {closest_junguian_color['anima_animus']}")
-        st.write(f"Sombra: {closest_junguian_color['sombra']}")
-        st.write(f"Personalidade: {closest_junguian_color['personalidade']}")
-        st.write(f"Diagnóstico: {closest_junguian_color['diagnostico']}")
+        st.write(f"Anima/Animus: {closest_jungian_color['anima_animus']}")
+        st.write(f"Sombra: {closest_jungian_color['sombra']}")
+        st.write(f"Personalidade: {closest_jungian_color['personalidade']}")
+        st.write(f"Diagnóstico: {closest_jungian_color['diagnostico']}")
 
         # Loop para analisar e mostrar todas as cores
         for i, color in enumerate(colors):
-            analyze_and_show_color(i, color, total_ml, segmented_image)
+            c_ml, m_ml, y_ml, k_ml = calculate_ink_amount(color, total_ml)
+            st.write(f"Cor {i + 1}:")
+            st.write(f"Quantidade de tinta necessária:")
+            st.write(f"   - Ciano: {c_ml:.2f} mL")
+            st.write(f"   - Magenta: {m_ml:.2f} mL")
+            st.write(f"   - Amarelo: {y_ml:.2f} mL")
+            st.write(f"   - Preto: {k_ml:.2f} mL")
 
         # O código para download permanece o mesmo
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
