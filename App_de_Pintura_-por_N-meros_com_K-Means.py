@@ -7,7 +7,7 @@ from PIL import Image
 import io
 
 # Dicionário de cores Junguianas
-cores_junguianas =  {
+cores_junguianas = {
     '1': {
         'cor': 'Preto',
         'rgb': (0, 0, 0),
@@ -40,9 +40,7 @@ cores_junguianas =  {
         'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
         'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
-    
 }
-
 
 # Funções auxiliares
 
