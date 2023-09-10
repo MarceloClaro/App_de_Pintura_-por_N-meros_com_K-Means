@@ -163,7 +163,7 @@ if uploaded_file is not None:
         # Exibir as proporções da tinta CMYK e a cor Junguiana mais próxima para cada cor na paleta
         for i, color in enumerate(colors):
             r, g, b = color
-            c, m, y, k = calcular_proporcoes_tinta(c, m, y, k, total_ml)
+            c, m, y, k = rgb_to_cmyk(r, g, b)
             c_ml, m_ml, y_ml, k_ml = calcular_proporcoes_tinta(c, m, y, k, total_ml)
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
