@@ -164,10 +164,6 @@ st.image("clube.png")  # Adiciona a imagem no topo do app
 
 
 
-marceloclaro@geomaker.org
-
-Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
-""")
 # Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
