@@ -149,8 +149,8 @@ class Canvas():
 
 st.image("clube.png")  # Adiciona a imagem no topo do app
 st.title('Gerador de Paleta de Cores para Pintura por Números ')
-st.subheader("Sketching and concept development")
-st.subheader("""
+st.sidebar.subheader("Sketching and concept development")
+st.sidebar.subheader("""
 Autor: Marcelo Claro
 
 https://orcid.org/0000-0001-8996-2887
