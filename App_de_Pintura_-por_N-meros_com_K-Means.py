@@ -146,7 +146,11 @@ class Canvas():
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
-
+st.set_page_config(
+    page_title="Gerador de Paleta de Cores",
+    page_icon="🎨",
+    layout="wide"
+)
 st.image("clube.png")  # Adiciona a imagem no topo do app
 st.title('Gerador de Paleta de Cores para Pintura por Números ')
 st.sidebar.subheader("Sketching and concept development")
@@ -162,7 +166,7 @@ Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
 # Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
-st.write("""
+st.sidebar.subheader("""
 Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
 Este aplicativo é uma ferramenta útil para artistas plásticos, pois oferece recursos para gerar paletas de cores, criar pinturas por números, desenvolver esboços e conceitos, e explorar diferentes combinações de cores.
 Como funciona? Primeiro, você pode fazer o upload de uma imagem de referência, que pode ser uma foto, ilustração ou qualquer imagem que você deseje usar como base. Em seguida, o aplicativo utiliza o algoritmo K-means para quantificar as cores presentes na imagem. Você pode controlar o número de cores desejado através de um controle deslizante, permitindo extrair a quantidade adequada de cores para sua pintura.
