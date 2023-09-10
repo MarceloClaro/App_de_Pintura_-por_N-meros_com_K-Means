@@ -224,10 +224,7 @@ if st.sidebar.button('Gerar'):
         st.write(f"      Sombra: {cor_proxima['sombra']}")
         st.write(f"      Personalidade: {cor_proxima['personalidade']}")
         st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
-        # Separador
-        st.write("---")
-        # Separador
-        st.write("---")
+
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
     st.image(result, caption='Imagem para pintar', use_column_width=True)
     st.download_button(
@@ -235,11 +232,13 @@ if st.sidebar.button('Gerar'):
         data=result_bytes,
         file_name='result.jpg',
         mime='image/jpeg')
-    # Separador
-    st.write("---")
+
 
     segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
     segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+    # Separador
+    st.write("---")
+     
     st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
     st.download_button(
         label="Baixar imagem segmentada",
