@@ -3,6 +3,8 @@ from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 import cv2
 import streamlit as st
+import tempfile
+import os
 
 # Definição das cores Junguianas
 cores_junguianas = {
@@ -228,11 +230,19 @@ if uploaded_file is not None:
             st.write(f"Personalidade: {cor_proxima['personalidade']}")
             st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
 
-        # Exibir botões de download para a imagem resultante e imagem segmentada
-        st.subheader("Download")
-        result_bytes = cv2.imdecode(cv2.imencode('.jpg', result)[1], cv2.IMREAD_COLOR)
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
+            # Exibir botões de download para a imagem resultante e imagem segmentada
+            st.subheader("Download")
+            result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+            result_tempfile = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
+            result_tempfile.write(result_bytes)
+            
+            st.download_button(
+                label="Baixar imagem resultante",
+                data=result_tempfile.name,
+                file_name='result.jpg',
+                mime='image/jpeg')
+            
+            # Certifique-se de fechar o arquivo temporário após o uso
+            result_tempfile.close()
+            os.remove(result_tempfile.name)
+
