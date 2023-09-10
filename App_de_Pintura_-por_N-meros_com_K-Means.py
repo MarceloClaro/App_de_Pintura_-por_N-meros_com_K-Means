@@ -201,7 +201,7 @@ if st.sidebar.button('Gerar'):
         color_percentage = (color_area / total_area) * 100
 
         
-
+        st.write("---")
         st.subheader("Sketching and concept development da paleta de cor")
         st.write(f"""
         PALETAS DE COR PARA: {total_ml:.2f} ml.
@@ -222,6 +222,7 @@ if st.sidebar.button('Gerar'):
         st.write(f"      Sombra: {cor_proxima['sombra']}")
         st.write(f"      Personalidade: {cor_proxima['personalidade']}")
         st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
+        st.write("---")
 
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
     # Separador
