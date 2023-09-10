@@ -236,7 +236,7 @@ if st.sidebar.button('Gerar'):
         file_name='result.jpg',
         mime='image/jpeg')
     # Separador
-st.sidebar.write("---")
+    st.sidebar.write("---")
 
     segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
     segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
