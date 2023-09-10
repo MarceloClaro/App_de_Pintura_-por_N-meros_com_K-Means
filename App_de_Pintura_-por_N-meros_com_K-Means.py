@@ -140,20 +140,25 @@ nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
 pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
+# ...
 if st.sidebar.button('Gerar'):
-    # Tentativa de leitura dos metadados de resolução (DPI)
-    pil_image = Image.open(io.BytesIO(file_bytes))
-    if 'dpi' in pil_image.info:
-        dpi = pil_image.info['dpi']
-        st.write(f'Resolução da imagem: {dpi} DPI')
+    if uploaded_file is not None:
+        # Abrir a imagem diretamente do arquivo carregado
+        pil_image = Image.open(uploaded_file)
+        if 'dpi' in pil_image.info:
+            dpi = pil_image.info['dpi']
+            st.write(f'Resolução da imagem: {dpi} DPI')
 
-        # Calcula a dimensão física de um pixel
-        cm_per_inch = pixel_size
-        cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
-        st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
+            # Calcula a dimensão física de um pixel
+            cm_per_inch = pixel_size
+            cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
+            st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
 
-    canvas = Canvas(image, nb_color, pixel_size)
-    result, colors, segmented_image = canvas.generate()
+        canvas = Canvas(pil_image, nb_color, pixel_size)  # Use pil_image aqui
+        result, colors, segmented_image = canvas.generate()
+        
+        # O restante do código permanece inalterado
+
 
     # Converter imagem segmentada para np.uint8
     segmented_image = (segmented_image * 255).astype(np.uint8)
