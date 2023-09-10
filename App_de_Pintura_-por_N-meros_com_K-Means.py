@@ -143,27 +143,22 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
     
-st.set_page_config(
-    page_title="Gerador de Paleta de Cores",
-    page_icon="🎨",
-    layout="wide"
-)
-
-
-# Interface do usuário com melhorias estéticas
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
 
-st.title('Gerador de Paleta de Cores para Pintura por Números')
-st.subheader("Sketching and concept development")
-st.subheader("Autor: Marcelo Claro")
-
 st.image("clube.png")  # Adiciona a imagem no topo do app
+st.title('Gerador de Paleta de Cores para Pintura por Números ')
+st.subheader("Sketching and concept development")
+st.subheader("""
+Autor: Marcelo Claro
 
+https://orcid.org/0000-0001-8996-2887
 
+marceloclaro@geomaker.org
 
-
+Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
+""")
 # Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
@@ -177,6 +172,8 @@ No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferrame
 O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
 Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
 """)
+# ... (seu código anterior) ...
+
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, 1)
@@ -212,10 +209,16 @@ if uploaded_file is not None:
         # Agora converta de BGR para RGB
         segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
-        st.image(result, caption='Imagem Resultante', use_column_width=True)
-        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+        # Análise da Cor Dominante Junguiana
+        cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
 
-      
+        st.subheader("Análise da Cor Dominante Junguiana")
+        st.write(f"A cor dominante na paleta é {cor_dominante['cor']}.")
+        st.write(f"Anima/Animus: {cor_dominante['anima_animus']}")
+        st.write(f"Sombra: {cor_dominante['sombra']}")
+        st.write(f"Personalidade: {cor_dominante['personalidade']}")
+        st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
+
         # Mostrar paleta de cores
 
         for i, color in enumerate(colors):
@@ -251,10 +254,8 @@ if uploaded_file is not None:
             st.write(f"      Personalidade: {cor_proxima['personalidade']}")
             st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
-            
-
-
         result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+        st.image(result, caption='Imagem Resultante', use_column_width=True)
         st.download_button(
             label="Baixar imagem resultante",
             data=result_bytes,
@@ -263,10 +264,12 @@ if uploaded_file is not None:
 
         segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
         segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
         st.download_button(
             label="Baixar imagem segmentada",
             data=segmented_image_bytes,
             file_name='segmented.jpg',
             mime='image/jpeg')
 
+                
         
