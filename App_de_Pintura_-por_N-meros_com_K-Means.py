@@ -184,6 +184,8 @@ if st.sidebar.button('Gerar'):
     st.write(f"Sombra: {cor_dominante['sombra']}")
     st.write(f"Personalidade: {cor_dominante['personalidade']}")
     st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
+    # Separador
+    st.write("---")
 
     # Mostrar paleta de cores
 
@@ -216,8 +218,6 @@ if st.sidebar.button('Gerar'):
         Preto (K): {k_ml:.2f} ml
 
         """)
-        # Separador
-        st.write("---")
         cor_proxima = buscar_cor_proxima(color, cores_junguianas)
         st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
         st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
@@ -226,6 +226,8 @@ if st.sidebar.button('Gerar'):
         st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+    # Separador
+    st.write("---")
     st.image(result, caption='Imagem para pintar', use_column_width=True)
     st.download_button(
         label="Baixar Imagem para pintar",
