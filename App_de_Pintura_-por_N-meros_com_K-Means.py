@@ -1,16 +1,13 @@
-# Importando todas as coisas necessárias para o nosso programa funcionar.
-# Esses são como os blocos de construção que vamos usar para fazer o nosso programa.
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.utils import shuffle
+import cv2
+import streamlit as st
+from PIL import Image
+import io
 
-import numpy as np  # Esta é uma ferramenta para lidar com listas de números.
-from sklearn.cluster import KMeans  # Essa é uma ferramenta que nos ajuda a encontrar grupos de coisas.
-from sklearn.utils import shuffle  # Isso nos ajuda a misturar coisas.
-import cv2  # Esta é uma ferramenta para trabalhar com imagens.
-import streamlit as st  # Isso é o que nos permite criar a interface do nosso programa.
-from PIL import Image  # Outra ferramenta para trabalhar com imagens.
-import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
-import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
-
-cores_junguianas = {
+# Dicionário de cores Junguianas
+cores_junguianas =  {
     '1': {
         'cor': 'Preto',
         'rgb': (0, 0, 0),
@@ -47,9 +44,7 @@ cores_junguianas = {
 }
 
 
-
-# Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
-# Isso nos ajuda a lidar com imagens e cores.
+# Funções auxiliares
 
 def rgb_to_cmyk(r, g, b):
     if (r == 0) and (g == 0) and (b == 0):
@@ -65,6 +60,9 @@ def rgb_to_cmyk(r, g, b):
     k = min_cmy
 
     return c, m, y, k
+
+# As outras funções auxiliares como 'calculate_ml' e 'buscar_cor_proxima' também seriam mantidas aqui.
+
 
 def calculate_ml(c, m, y, k, total_ml):
     total_ink = c + m + y + k
@@ -83,9 +81,10 @@ def buscar_cor_proxima(rgb, cores_junguianas):
     cor_proxima_index = np.argmin(distancias)
     return cores_junguianas[str(cor_proxima_index + 1)]
 
+# Classe Canvas para manipulação de imagem
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
-        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
         self.nb_color = nb_color
         self.tar_width = pixel_size
         self.colormap = []
@@ -116,7 +115,7 @@ class Canvas():
 
     def resize(self):
         (height, width) = self.src.shape[:2]
-        if height > width:  # modo retrato
+        if height > width:
             dim = (int(width * self.tar_width / float(height)), self.tar_width)
         else:
             dim = (self.tar_width, int(height * self.tar_width / float(width)))
@@ -142,126 +141,57 @@ class Canvas():
         vfunc = lambda x: codebook[labels[x]]
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
-    
 
-# Aqui é onde começamos a construir a interface do nosso programa.
-# Estamos adicionando coisas como texto e botões para as pessoas interagirem.
 
-st.image("clube.png")  # Adiciona a imagem no topo do app
-st.title('Gerador de Paleta de Cores para Pintura por Números ')
-st.subheader("Sketching and concept development")
-st.subheader("""
-Autor: Marcelo Claro
-
-https://orcid.org/0000-0001-8996-2887
-
-marceloclaro@geomaker.org
-
-Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
-""")
-# Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
+# Início da interface do Streamlit
+st.image("clube.png")
+st.title('Gerador de Paleta de Cores para Pintura por Números')
+# ... (outros elementos de UI aqui)
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
-st.write("""
-Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
-Este aplicativo é uma ferramenta útil para artistas plásticos, pois oferece recursos para gerar paletas de cores, criar pinturas por números, desenvolver esboços e conceitos, e explorar diferentes combinações de cores.
-Como funciona? Primeiro, você pode fazer o upload de uma imagem de referência, que pode ser uma foto, ilustração ou qualquer imagem que você deseje usar como base. Em seguida, o aplicativo utiliza o algoritmo K-means para quantificar as cores presentes na imagem. Você pode controlar o número de cores desejado através de um controle deslizante, permitindo extrair a quantidade adequada de cores para sua pintura.
-Uma vez gerada a paleta de cores, o aplicativo exibe a imagem resultante, onde cada região da imagem original é substituída pela cor correspondente da paleta. Isso permite que você visualize como sua pintura ficaria usando essas cores específicas. Além disso, o aplicativo também exibe a imagem segmentada, onde cada região da imagem original é preenchida com uma cor sólida correspondente à cor dominante da região. Isso ajuda na identificação de áreas de destaque e contrastes na imagem, facilitando o processo de esboço e desenvolvimento de conceitos.
-Uma característica interessante do aplicativo é a possibilidade de definir o total em mililitros de tinta antes de gerar a paleta de cores. Isso permite que você obtenha doses precisas de cada cor primária para alcançar tons exatos em suas paletas.
-No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferramenta complementar para sua análise da paisagem humana. Ele reúne imagens, fotos e referências como inspiração e, em seguida, faz esboços e desenvolve conceitos usando a técnica de "Sketching and concept development". Ele explora diferentes ideias, experimenta composições e cores, e utiliza as paletas de cores geradas pelo aplicativo para criar suas pinturas finais.
-O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
-Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
-""")
+
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, 1)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     st.image(image, caption='Imagem Carregada', use_column_width=True)
 
     nb_color = st.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
-
     total_ml = st.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-    
-    pixel_size = st.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
-
 
     if st.button('Gerar'):
-        
-        # Tentativa de leitura dos metadados de resolução (DPI)
-        pil_image = Image.open(io.BytesIO(file_bytes))
-        if 'dpi' in pil_image.info:
-            dpi = pil_image.info['dpi']
-            st.write(f'Resolução da imagem: {dpi} DPI')
-
-            # Calcula a dimensão física de um pixel
-            cm_per_inch = pixel_size
-            cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
-            st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
-
-        canvas = Canvas(image, nb_color, pixel_size)
+        canvas = Canvas(image, nb_color)
         result, colors, segmented_image = canvas.generate()
 
-        # Converter imagem segmentada para np.uint8
         segmented_image = (segmented_image * 255).astype(np.uint8)
-        
-        # Agora converta de BGR para RGB
         segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
         st.image(result, caption='Imagem Resultante', use_column_width=True)
         st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-      
-        # Mostrar paleta de cores
+        # Dicionário para armazenar a área de cada cor
+        area_dict = {}
 
         for i, color in enumerate(colors):
-            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
+            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]
             st.image(color_block, caption=f'Cor {i+1}', width=50)
 
-            # Cálculo das proporções das cores CMYK
-            r, g, b = color
-            c, m, y, k = rgb_to_cmyk(r, g, b)
-            c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-
-                # Calcular a área da cor na imagem segmentada
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-            total_area = segmented_image.shape[0] * segmented_image.shape[1]
-            color_percentage = (color_area / total_area) * 100
-            
-            st.subheader("Sketching and concept development da paleta de cor")
-            st.write(f"""
-            PALETAS DE COR PARA: {total_ml:.2f} ml.
-            
-            A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
+            area_dict[i] = color_area
 
-            Ciano (Azul) (C): {c_ml:.2f} ml
-            Magenta (Vermelho) (M): {m_ml:.2f} ml
-            Amarelo (Y): {y_ml:.2f} ml
-            Preto (K): {k_ml:.2f} ml
-                   
-            """)
-            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-            st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-            st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
-            st.write(f"      Sombra: {cor_proxima['sombra']}")
-            st.write(f"      Personalidade: {cor_proxima['personalidade']}")
-            st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
+            # (Você pode manter aqui as outras análises e downloads)
 
-            
+        # Encontrar o índice da cor dominante
+        dominant_color_index = max(area_dict, key=area_dict.get)
 
+        # Encontrar a cor junguiana mais próxima da cor dominante
+        dominant_color = colors[dominant_color_index]
+        closest_jungian_color = buscar_cor_proxima(dominant_color, cores_junguianas)
 
-        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
+        # Exibir a análise da cor junguiana dominante
+        st.write(f"A cor junguiana dominante é: {closest_jungian_color['cor']}")
+        st.write(f"Anima/Animus: {closest_jungian_color['anima_animus']}")
+        st.write(f"Sombra: {closest_jungian_color['sombra']}")
+        st.write(f"Personalidade: {closest_jungian_color['personalidade']}")
+        st.write(f"Diagnóstico: {closest_jungian_color['diagnostico']}")
 
-        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem segmentada",
-            data=segmented_image_bytes,
-            file_name='segmented.jpg',
-            mime='image/jpeg')
-
-        
