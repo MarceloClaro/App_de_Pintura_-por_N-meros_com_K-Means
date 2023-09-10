@@ -25,22 +25,6 @@ cores_junguianas = {
         'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
         'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
     },
-    '3': {
-        'cor': 'Cinza escuro',
-        'rgb': (17, 17, 17),
-        'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
-        'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
-        'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
-        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
-    },
-    '4': {
-        'cor': 'Cinza ardósia',
-        'rgb': (47, 79, 79),
-        'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
-        'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
-    },
     # Adicione mais cores Junguianas conforme necessário
 }
 
@@ -63,33 +47,67 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
     cor_proxima_index = np.argmin(distancias)
     return cores_junguianas[str(cor_proxima_index + 1)]
 
-# Função para gerar a paleta de cores e análise da cor Junguiana
-def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
-    # Converte a imagem para o formato RGB
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    
-    # Define a classe Canvas
-    class Canvas():
-        def __init__(self, src, nb_color, pixel_size=4000):
-            self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
-            self.nb_color = nb_color
-            self.tar_width = pixel_size
-            self.colormap = []
+# Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
+# Isso nos ajuda a lidar com imagens e cores.
+class Canvas():
+    def __init__(self, src, nb_color, pixel_size=4000):
+        self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
+        self.nb_color = nb_color
+        self.tar_width = pixel_size
+        self.colormap = []
 
-        # ... (métodos da classe Canvas)
+    def generate(self):
+        im_source = self.resize()
+        clean_img = self.cleaning(im_source)
+        width, height, depth = clean_img.shape
+        clean_img = np.array(clean_img, dtype="uint8") / 255
+        quantified_image, colors = self.quantification(clean_img)
+        canvas = np.ones(quantified_image.shape[:2], dtype="uint8") * 255
 
-    # Cria uma instância da classe Canvas
-    canvas = Canvas(image, nb_color, pixel_size)
-    
-    # Gera a paleta de cores e imagens segmentadas
-    result, colors, segmented_image = canvas.generate()
-    
-    # Encontra a cor Junguiana mais próxima da cor dominante na paleta
-    cor_dominante = encontrar_cor_proxima(colors[0], cores_junguianas)
-    
-    # Retorna os resultados
-    return result, colors, segmented_image, cor_dominante
+        for ind, color in enumerate(colors):
+            self.colormap.append([int(c * 255) for c in color])
+            mask = cv2.inRange(quantified_image, color, color)
+            cnts = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
 
+            for contour in cnts:
+                _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
+                if width_ctr > 10 and height_ctr > 10 and cv2.contourArea(contour, True) < -100:
+                    cv2.drawContours(canvas, [contour], -1, (0, 0, 0), 1)
+                    txt_x, txt_y = contour[0][0]
+                    cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+
+        return canvas, colors, quantified_image
+
+    def resize(self):
+        (height, width) = self.src.shape[:2]
+        if height > width:  # modo retrato
+            dim = (int(width * self.tar_width / float(height)), self.tar_width)
+        else:
+            dim = (self.tar_width, int(height * self.tar_width / float(width)))
+        return cv2.resize(self.src, dim, interpolation=cv2.INTER_AREA)
+
+    def cleaning(self, picture):
+        clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 10, 10, 7, 21)
+        kernel = np.ones((5, 5), np.uint8)
+        img_erosion = cv2.erode(clean_pic, kernel, iterations=1)
+        img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
+        return img_dilation
+
+    def quantification(self, picture):
+        width, height, depth = picture.shape
+        flattened = np.reshape(picture, (width * height, depth))
+        sample = shuffle(flattened)[:1000]
+        kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
+        labels = kmeans.predict(flattened)
+        new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
+        return new_img, kmeans.cluster_centers_
+
+    def recreate_image(self, codebook, labels, width, height):
+        vfunc = lambda x: codebook[labels[x]]
+        out = vfunc(np.arange(width * height))
+        return np.resize(out, (width, height, codebook.shape[1]))
 
 # Configuração do Streamlit
 st.set_page_config(
@@ -118,7 +136,10 @@ if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, 1)
         
-        result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size)
+        # Crie uma instância da classe Canvas
+        canvas = Canvas(image, nb_color, pixel_size)
+        
+        result, colors, segmented_image = canvas.generate()
         
         # Exibir a imagem original
         st.subheader("Imagem Original")
@@ -126,12 +147,8 @@ if uploaded_file is not None:
 
         # Análise da Cor Dominante Junguiana
         st.subheader("Análise da Cor Dominante Junguiana")
-        st.write(f"A cor dominante na paleta é {cor_dominante['cor']}.")
-        st.write(f"Anima/Animus: {cor_dominante['anima_animus']}")
-        st.write(f"Sombra: {cor_dominante['sombra']}")
-        st.write(f"Personalidade: {cor_dominante['personalidade']}")
-        st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
-
+        st.write(f"A cor dominante na paleta é {encontrar_cor_proxima(colors[0], cores_junguianas)['cor']}.")
+        
         # Exibir a paleta de cores
         st.subheader("Paleta de Cores")
         for i, color in enumerate(colors):
