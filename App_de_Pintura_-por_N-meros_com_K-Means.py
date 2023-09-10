@@ -19,30 +19,7 @@ cores_junguianas = {
         'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
         'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
     },
-    '2': {
-        'cor': 'Preto carvão',
-        'rgb': (10, 10, 10),
-        'anima_animus': 'O preto carvão simboliza a sombra feminina do inconsciente, representando os aspectos desconhecidos e reprimidos da feminilidade.',
-        'sombra': 'O preto carvão é a própria sombra feminina, representando os instintos primordiais e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
-    },
-    '3': {
-        'cor': 'Cinza escuro',
-        'rgb': (17, 17, 17),
-        'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
-        'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
-        'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
-        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
-    },
-    '4': {
-        'cor': 'Cinza ardósia',
-        'rgb': (47, 79, 79),
-        'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
-        'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
-    },
+    # ... (outras cores Junguianas)
 }
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
@@ -140,38 +117,49 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
 
+# Configurações da barra lateral
+st.sidebar.title("Configurações do Aplicativo")
 
-# Aqui é onde começamos a construir a interface do nosso programa.
-# Estamos adicionando coisas como texto e botões para as pessoas interagirem.
+# Separador
+st.sidebar.write("---")
 
-st.image("clube.png")  # Adiciona a imagem no topo do app
-st.title('Gerador de Paleta de Cores para Pintura por Números')
-
-# Título e seção de informações do autor na barra lateral
-st.sidebar.title("Informações do Autor")
+# Seção de Informações do Autor
+st.sidebar.header("Informações do Autor")
 st.sidebar.image("autor_foto.jpg", use_column_width=True)
-st.sidebar.write("Autor: Marcelo Claro")
+st.sidebar.write("Nome: Marcelo Claro")
 st.sidebar.write("Email: marceloclaro@geomaker.org")
 st.sidebar.write("WhatsApp: (88) 98158-7145")
 
-# Seção de configurações na barra lateral
-st.sidebar.title("Configurações")
+# Separador
+st.sidebar.write("---")
+
+# Seção de Configurações
+st.sidebar.header("Configurações da Aplicação")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
-nb_color = st.sidebar.slider('Número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
-total_ml = st.sidebar.slider('Total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-pixel_size = st.sidebar.slider('Tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
+nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
+total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
+pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
 if st.sidebar.button('Gerar'):
     # Tentativa de leitura dos metadados de resolução (DPI)
-    pil_image = Image.open(io.BytesIO(uploaded_file.read()))
+    pil_image = Image.open(io.BytesIO(file_bytes))
     if 'dpi' in pil_image.info:
         dpi = pil_image.info['dpi']
+        st.write(f'Resolução da imagem: {dpi} DPI')
 
-    canvas = Canvas(np.array(pil_image), nb_color, pixel_size)
+        # Calcula a dimensão física de um pixel
+        cm_per_inch = pixel_size
+        cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
+        st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
+
+    canvas = Canvas(image, nb_color, pixel_size)
     result, colors, segmented_image = canvas.generate()
 
     # Converter imagem segmentada para np.uint8
     segmented_image = (segmented_image * 255).astype(np.uint8)
+
+    # Agora converta de BGR para RGB
+    segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
     # Análise da Cor Dominante Junguiana
     cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
@@ -184,6 +172,7 @@ if st.sidebar.button('Gerar'):
     st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
 
     # Mostrar paleta de cores
+
     for i, color in enumerate(colors):
         color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
         st.image(color_block, caption=f'Cor {i+1}', width=50)
@@ -201,7 +190,7 @@ if st.sidebar.button('Gerar'):
         st.subheader("Sketching and concept development da paleta de cor")
         st.write(f"""
         PALETAS DE COR PARA: {total_ml:.2f} ml.
-        
+
         A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
 
         Ciano (Azul) (C): {c_ml:.2f} ml
@@ -209,34 +198,27 @@ if st.sidebar.button('Gerar'):
         Amarelo (Y): {y_ml:.2f} ml
         Preto (K): {k_ml:.2f} ml
 
-        **Observação:** Lembre-se de agitar bem a tinta antes de usar.
-        
-        """
-        )
+        """)
+        cor_proxima = buscar_cor_proxima(color, cores_junguianas)
+        st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
+        st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
+        st.write(f"      Sombra: {cor_proxima['sombra']}")
+        st.write(f"      Personalidade: {cor_proxima['personalidade']}")
+        st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
 
-    # Mostrar imagem segmentada
-    st.subheader("Imagem Segmentada")
-    st.image(segmented_image, caption="Imagem Segmentada", use_column_width=True)
+    result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+    st.image(result, caption='Imagem Resultante', use_column_width=True)
+    st.download_button(
+        label="Baixar imagem resultante",
+        data=result_bytes,
+        file_name='result.jpg',
+        mime='image/jpeg')
 
-    # Download da paleta de cores em formato CSV
-    st.subheader("Download da Paleta de Cores")
-    csv_data = ""
-    for i, color in enumerate(colors):
-        color_name = f"Cor {i + 1}"
-        r, g, b = color
-        c, m, y, k = rgb_to_cmyk(r, g, b)
-        c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-        csv_data += f"{color_name},R:{r},G:{g},B:{b},C:{c_ml:.2f},M:{m_ml:.2f},Y:{y_ml:.2f},K:{k_ml:.2f}\n"
-
-    csv_encoded = base64.b64encode(csv_data.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{csv_encoded}" download="paleta_de_cores.csv">Clique aqui para fazer o download da paleta de cores</a>'
-    st.markdown(href, unsafe_allow_html=True)
-
-# Rodapé
-st.sidebar.markdown("---")
-st.sidebar.markdown("Feito com ❤️ por Marcelo Claro")
-
-# Nota de rodapé
-st.write("""
-**Nota:** Este aplicativo é destinado apenas para fins educacionais e de entretenimento. A análise das cores com base na psicologia de Carl Jung é uma interpretação subjetiva e não deve ser usada para fins diagnósticos ou terapêuticos. A precisão das cores geradas pode variar dependendo da qualidade e resolução da imagem de entrada.
-""")
+    segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+    segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+    st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+    st.download_button(
+        label="Baixar imagem segmentada",
+        data=segmented_image_bytes,
+        file_name='segmented.jpg',
+        mime='image/jpeg')
