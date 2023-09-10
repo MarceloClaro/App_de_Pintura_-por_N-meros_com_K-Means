@@ -189,7 +189,7 @@ if uploaded_file is not None:
         st.write(f"Anima/Animus: {closest_jungian_color['anima_animus']}")
         st.write(f"Sombra: {closest_jungian_color['sombra']}")
         st.write(f"Personalidade: {closest_jungian_color['personalidade']}")
-        st.write(f"Diagnóstico: {closest_junguian_color['diagnostico']}")
+        st.write(f"Diagnóstico: {closest_jungian_color['diagnostico']}")
 
         # Loop para analisar e mostrar todas as cores
         for i, color in enumerate(colors):
