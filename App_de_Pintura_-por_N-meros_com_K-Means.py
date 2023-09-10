@@ -202,7 +202,7 @@ if st.sidebar.button('Gerar'):
         color_percentage = (color_area / total_area) * 100
 
         # Separador
-        st.sidebar.write("---")
+        st.write("---")
 
         st.subheader("Sketching and concept development da paleta de cor")
         st.write(f"""
@@ -217,7 +217,7 @@ if st.sidebar.button('Gerar'):
 
         """)
         # Separador
-        st.sidebar.write("---")
+        st.write("---")
         cor_proxima = buscar_cor_proxima(color, cores_junguianas)
         st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
         st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
@@ -225,9 +225,9 @@ if st.sidebar.button('Gerar'):
         st.write(f"      Personalidade: {cor_proxima['personalidade']}")
         st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
         # Separador
-        st.sidebar.write("---")
+        st.write("---")
         # Separador
-        st.sidebar.write("---")
+        st.write("---")
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
     st.image(result, caption='Imagem para pintar', use_column_width=True)
     st.download_button(
@@ -236,7 +236,7 @@ if st.sidebar.button('Gerar'):
         file_name='result.jpg',
         mime='image/jpeg')
     # Separador
-    st.sidebar.write("---")
+    st.write("---")
 
     segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
     segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
