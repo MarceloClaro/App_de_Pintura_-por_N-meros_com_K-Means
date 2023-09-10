@@ -164,16 +164,7 @@ if st.sidebar.button('Gerar'):
         canvas = Canvas(src, nb_color, pixel_size)  # Use src aqui em vez de pil_image
         result, colors, segmented_image = canvas.generate()
         
-        st.sidebar.write("""A expressão "Sketching and concept development da paleta de cor" refere-se a um processo criativo que envolve a criação e desenvolvimento de ideias para uma paleta de cores. Vamos quebrar essa expressão em partes:
         
-        1. **Sketching**: "Sketching" é uma palavra em inglês que significa esboçar ou fazer um rascunho. No contexto criativo, "sketching" refere-se à prática de criar desenhos, esboços ou representações visuais rápidas e não detalhadas de ideias. É uma maneira de visualizar conceitos de forma rápida e solta, muitas vezes antes de se comprometer com um projeto mais elaborado.
-        
-        2. **Concept Development**: "Concept development" se traduz como desenvolvimento de conceito. Nesse contexto, envolve o processo de aprimorar e aprofundar as ideias iniciais. Isso pode incluir a exploração de diferentes abordagens, a definição de um tema ou estilo específico e a tomada de decisões sobre como as ideias serão executadas.
-        
-        3. **Paleta de Cor**: Uma paleta de cores é um conjunto selecionado de cores que são usadas em um projeto ou obra de arte. A escolha das cores em uma paleta desempenha um papel fundamental na estética e no impacto visual de uma criação. Uma paleta de cores bem desenvolvida pode transmitir emoções, criar harmonia visual e reforçar a mensagem de uma obra.
-        
-        Portanto, "Sketching and concept development da paleta de cor" se refere ao processo criativo de esboçar e desenvolver ideias relacionadas às cores que serão usadas em um projeto, obra de arte, design ou qualquer outro contexto criativo. Isso pode envolver a criação de esboços de como as cores serão usadas, a exploração de combinações de cores e a tomada de decisões sobre quais cores são mais apropriadas para alcançar um determinado objetivo estético ou comunicativo. É uma parte importante do processo de design e criação visual.
-        """)
 
     # Converter imagem segmentada para np.uint8
     segmented_image = (segmented_image * 255).astype(np.uint8)
