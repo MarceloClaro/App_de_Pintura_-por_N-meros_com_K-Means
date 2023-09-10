@@ -168,5 +168,3 @@ if uploaded_file is not None:
             data=result_bytes,
             file_name='result.jpg',
             mime='image/jpeg')
-
-       
