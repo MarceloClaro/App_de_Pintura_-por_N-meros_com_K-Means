@@ -64,7 +64,7 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
 def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
     # Converte a imagem para o formato RGB
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    
+
     class Canvas():
         def __init__(self, src, nb_color, pixel_size=4000):
             self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
@@ -127,13 +127,13 @@ def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
 
     # Cria uma instância da classe Canvas
     canvas = Canvas(image, nb_color, pixel_size)
-    
+
     # Gera a paleta de cores e imagens segmentadas
     result, colors, segmented_image = canvas.generate()
-    
+
     # Encontra a cor Junguiana mais próxima da cor dominante na paleta
     cor_dominante = encontrar_cor_proxima(colors[0], cores_junguianas)
-    
+
     # Retorna os resultados
     return result, colors, segmented_image, cor_dominante
 
@@ -159,13 +159,13 @@ if uploaded_file is not None:
     nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
     total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
     pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
-    
+
     if st.sidebar.button('Gerar Paleta de Cores'):
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, 1)
-        
+
         result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size)
-        
+
         # Exibir a imagem original
         st.subheader("Imagem Original")
         st.image(image, caption='Imagem Carregada', use_column_width=True)
@@ -192,7 +192,7 @@ if uploaded_file is not None:
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
             color_percentage = (color_area / total_area) * 100
-            
+
             st.subheader(f"Detalhes da Cor {i+1}")
             st.write(f"Proporções da tinta CMYK:")
             st.write(f"Ciano (Azul) (C): {c_ml:.2f} ml")
