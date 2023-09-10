@@ -225,6 +225,7 @@ if st.sidebar.button('Gerar'):
         st.write("---")
 
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+    st.write("Tela e Esboço")
     # Separador
     st.write("---")
     st.image(result, caption='Imagem para pintar', use_column_width=True)
