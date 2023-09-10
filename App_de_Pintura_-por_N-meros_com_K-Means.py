@@ -138,19 +138,19 @@ st.sidebar.header("Configurações da Aplicação")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=4000, value=4000, step=100)
+pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
 if st.sidebar.button('Gerar'):
- # Tentativa de leitura dos metadados de resolução (DPI)
-        pil_image = Image.open(io.BytesIO(file_bytes))
-        if 'dpi' in pil_image.info:
-            dpi = pil_image.info['dpi']
-            st.write(f'Resolução da imagem: {dpi} DPI')
+    # Tentativa de leitura dos metadados de resolução (DPI)
+    pil_image = Image.open(io.BytesIO(file_bytes))
+    if 'dpi' in pil_image.info:
+        dpi = pil_image.info['dpi']
+        st.write(f'Resolução da imagem: {dpi} DPI')
 
-            # Calcula a dimensão física de um pixel
-            cm_per_inch = pixel_size
-            cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
-            st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
+        # Calcula a dimensão física de um pixel
+        cm_per_inch = pixel_size
+        cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
+        st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
 
     canvas = Canvas(image, nb_color, pixel_size)
     result, colors, segmented_image = canvas.generate()
