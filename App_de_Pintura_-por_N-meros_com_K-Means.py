@@ -231,7 +231,7 @@ if st.sidebar.button('Gerar'):
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
     st.image(result, caption='Imagem para pintar', use_column_width=True)
     st.download_button(
-        label="Baixar imagem resultante",
+        label="Baixar Imagem para pintar",
         data=result_bytes,
         file_name='result.jpg',
         mime='image/jpeg')
