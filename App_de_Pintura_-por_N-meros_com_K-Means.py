@@ -61,8 +61,7 @@ def rgb_to_cmyk(r, g, b):
 
     return c, m, y, k
 
-# As outras funções auxiliares como 'calculate_ml' e 'buscar_cor_proxima' também seriam mantidas aqui.
-
+# Outras funções auxiliares como 'calculate_ml' e 'buscar_cor_proxima' também seriam mantidas aqui.
 
 def calculate_ml(c, m, y, k, total_ml):
     total_ink = c + m + y + k
@@ -142,7 +141,6 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
 
-
 # Início da interface do Streamlit
 st.image("clube.png")
 st.title('Gerador de Paleta de Cores para Pintura por Números')
@@ -179,8 +177,6 @@ if uploaded_file is not None:
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             area_dict[i] = color_area
 
-            # (Você pode manter aqui as outras análises e downloads)
-
         # Encontrar o índice da cor dominante
         dominant_color_index = max(area_dict, key=area_dict.get)
 
@@ -193,47 +189,24 @@ if uploaded_file is not None:
         st.write(f"Anima/Animus: {closest_jungian_color['anima_animus']}")
         st.write(f"Sombra: {closest_jungian_color['sombra']}")
         st.write(f"Personalidade: {closest_jungian_color['personalidade']}")
-        st.write(f"Diagnóstico: {closest_jungian_color['diagnostico']}")
+        st.write(f"Diagnóstico: {closest_junguian_color['diagnostico']}")
 
-#---
+        # Loop para analisar e mostrar todas as cores
+        for i, color in enumerate(colors):
+            analyze_and_show_color(i, color, total_ml, segmented_image)
 
-def analyze_and_show_color(i, color, total_ml, segmented_image):
-    color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
-    st.image(color_block, caption=f'Cor {i+1}', width=50)
-    
-    # Cálculo das proporções das cores CMYK
-    r, g, b = color
-    c, m, y, k = rgb_to_cmyk(r, g, b)
-    c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-    
-    # Calcular a área da cor na imagem segmentada
-    color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-    total_area = segmented_image.shape[0] * segmented_image.shape[1]
-    color_percentage = (color_area / total_area) * 100
-    
-    st.subheader("Sketching and concept development da paleta de cor")
-    st.write(f"""
-    PALETAS DE COR PARA: {total_ml:.2f} ml.
-    
-    A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
+        # O código para download permanece o mesmo
+        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+        st.download_button(
+            label="Baixar imagem resultante",
+            data=result_bytes,
+            file_name='result.jpg',
+            mime='image/jpeg')
 
-    Ciano (Azul) (C): {c_ml:.2f} ml
-    Magenta (Vermelho) (M): {m_ml:.2f} ml
-    Amarelo (Y): {y_ml:.2f} ml
-    Preto (K): {k_ml:.2f} ml
-    """)
-    
-    cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-    st.write(f"Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-    st.write(f"Anima/Animus: {cor_proxima['anima_animus']}")
-    st.write(f"Sombra: {cor_proxima['sombra']}")
-    st.write(f"Personalidade: {cor_proxima['personalidade']}")
-    st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
-    
-# No loop:
-for i, color in enumerate(colors):
-    analyze_and_show_color(i, color, total_ml, segmented_image)
-
-# O código para download permanece o mesmo
-result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-# ...
+        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+        st.download_button(
+            label="Baixar imagem segmentada",
+            data=segmented_image_bytes,
+            file_name='segmented.jpg',
+            mime='image/jpeg')
