@@ -166,7 +166,21 @@ st.title('Gerador de Paleta de Cores para Pintura por Números')
 st.subheader("Sketching and concept development")
 st.subheader("Autor: Marcelo Claro")
 
+# ... (código anterior)
+
 uploaded_file = st.file_uploader("Escolha uma imagem (formato JPG ou PNG)", type=["jpg", "png"])
+
+if uploaded_file is not None:
+    pil_image = Image.open(uploaded_file)
+    dpi = pil_image.info.get("dpi", (96, 96))
+    
+    image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)  # Converter para formato OpenCV BGR
+
+    # Resto do código permanece igual
+    # Certifique-se de manter a variável 'image' definida corretamente
+
+# ... (resto do código)
+
 
 if uploaded_file is not None:
     st.sidebar.title("Configurações")
