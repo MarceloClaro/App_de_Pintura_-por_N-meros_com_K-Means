@@ -195,7 +195,7 @@ if uploaded_file is not None:
         st.write(f"Personalidade: {closest_jungian_color['personalidade']}")
         st.write(f"Diagnóstico: {closest_jungian_color['diagnostico']}")
 
----
+#---
 
 def analyze_and_show_color(i, color, total_ml, segmented_image):
     color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
