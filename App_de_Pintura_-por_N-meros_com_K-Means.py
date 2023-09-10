@@ -43,10 +43,7 @@ cores_junguianas = {
         'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
         'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
-    
 }
-
-
 
 # Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
 # Isso nos ajuda a lidar com imagens e cores.
@@ -142,137 +139,104 @@ class Canvas():
         vfunc = lambda x: codebook[labels[x]]
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
-    
+
 
 # Aqui é onde começamos a construir a interface do nosso programa.
 # Estamos adicionando coisas como texto e botões para as pessoas interagirem.
-st.set_page_config(
-    page_title="Gerador de Paleta de Cores",
-    page_icon="🎨",
-    layout="wide"
-)
-st.sidebar.subheader("Sobre o Aplicativo")
-st.sidebar.write("""
-Este aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, 
-conhecido pelo pseudônimo Marcelo Claro. Ele é um professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
-""")
-st.sidebar.subheader("Contato")
-st.sidebar.write("""
-- **E-mail:** marceloclaro@geomaker.org
-- **WhatsApp:** (88) 98158-7145
-- **Site:** [geomaker.org](https://www.geomaker.org/)
-""")
-st.sidebar.subheader("Autor")
-st.sidebar.image("foto_marcelo.jpg", caption="Marcelo Claro", use_column_width=True)
-st.sidebar.write("""
-Marcelo Claro é um artista plástico autodidata e professor de geografia na cidade de Crateús, Ceará. 
-Ele utiliza este aplicativo como uma ferramenta complementar para sua análise da paisagem humana e desenvolvimento de suas pinturas. 
-A abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
-""")
-st.sidebar.subheader("Redes Sociais")
-st.sidebar.write("""
-- **Instagram:** [@marceloclaroarte](https://www.instagram.com/marceloclaroarte/)
-- **Facebook:** [Marcelo Claro Arte](https://www.facebook.com/marceloclaroarte/)
-""")
 
-# ... (seu código anterior) ...
+st.image("clube.png")  # Adiciona a imagem no topo do app
+st.title('Gerador de Paleta de Cores para Pintura por Números')
 
-if uploaded_file is not None:
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    image = cv2.imdecode(file_bytes, 1)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
-    st.image(image, caption='Imagem Carregada', use_column_width=True)
+# Título e seção de informações do autor na barra lateral
+st.sidebar.title("Informações do Autor")
+st.sidebar.image("autor_foto.jpg", use_column_width=True)
+st.sidebar.write("Autor: Marcelo Claro")
+st.sidebar.write("Email: marceloclaro@geomaker.org")
+st.sidebar.write("WhatsApp: (88) 98158-7145")
 
-    nb_color = st.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
+# Seção de configurações na barra lateral
+st.sidebar.title("Configurações")
+uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
+nb_color = st.sidebar.slider('Número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
+total_ml = st.sidebar.slider('Total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
+pixel_size = st.sidebar.slider('Tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
-    total_ml = st.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-    
-    pixel_size = st.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
+if st.sidebar.button('Gerar'):
+    # Tentativa de leitura dos metadados de resolução (DPI)
+    pil_image = Image.open(io.BytesIO(uploaded_file.read()))
+    if 'dpi' in pil_image.info:
+        dpi = pil_image.info['dpi']
 
+    canvas = Canvas(np.array(pil_image), nb_color, pixel_size)
+    result, colors, segmented_image = canvas.generate()
 
-    if st.button('Gerar'):
+    # Converter imagem segmentada para np.uint8
+    segmented_image = (segmented_image * 255).astype(np.uint8)
+
+    # Análise da Cor Dominante Junguiana
+    cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
+
+    st.subheader("Análise da Cor Dominante Junguiana")
+    st.write(f"A cor dominante na paleta é {cor_dominante['cor']}.")
+    st.write(f"Anima/Animus: {cor_dominante['anima_animus']}")
+    st.write(f"Sombra: {cor_dominante['sombra']}")
+    st.write(f"Personalidade: {cor_dominante['personalidade']}")
+    st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
+
+    # Mostrar paleta de cores
+    for i, color in enumerate(colors):
+        color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
+        st.image(color_block, caption=f'Cor {i+1}', width=50)
+
+        # Cálculo das proporções das cores CMYK
+        r, g, b = color
+        c, m, y, k = rgb_to_cmyk(r, g, b)
+        c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
+
+        # Calcular a área da cor na imagem segmentada
+        color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
+        total_area = segmented_image.shape[0] * segmented_image.shape[1]
+        color_percentage = (color_area / total_area) * 100
+
+        st.subheader("Sketching and concept development da paleta de cor")
+        st.write(f"""
+        PALETAS DE COR PARA: {total_ml:.2f} ml.
         
-        # Tentativa de leitura dos metadados de resolução (DPI)
-        pil_image = Image.open(io.BytesIO(file_bytes))
-        if 'dpi' in pil_image.info:
-            dpi = pil_image.info['dpi']
-            st.write(f'Resolução da imagem: {dpi} DPI')
+        A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
 
-            # Calcula a dimensão física de um pixel
-            cm_per_inch = pixel_size
-            cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
-            st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
+        Ciano (Azul) (C): {c_ml:.2f} ml
+        Magenta (Vermelho) (M): {m_ml:.2f} ml
+        Amarelo (Y): {y_ml:.2f} ml
+        Preto (K): {k_ml:.2f} ml
 
-        canvas = Canvas(image, nb_color, pixel_size)
-        result, colors, segmented_image = canvas.generate()
-
-        # Converter imagem segmentada para np.uint8
-        segmented_image = (segmented_image * 255).astype(np.uint8)
+        **Observação:** Lembre-se de agitar bem a tinta antes de usar.
         
-        # Agora converta de BGR para RGB
-        segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+        """
+        )
 
-        # Análise da Cor Dominante Junguiana
-        cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
+    # Mostrar imagem segmentada
+    st.subheader("Imagem Segmentada")
+    st.image(segmented_image, caption="Imagem Segmentada", use_column_width=True)
 
-        st.subheader("Análise da Cor Dominante Junguiana")
-        st.write(f"A cor dominante na paleta é {cor_dominante['cor']}.")
-        st.write(f"Anima/Animus: {cor_dominante['anima_animus']}")
-        st.write(f"Sombra: {cor_dominante['sombra']}")
-        st.write(f"Personalidade: {cor_dominante['personalidade']}")
-        st.write(f"Diagnóstico: {cor_dominante['diagnostico']}")
+    # Download da paleta de cores em formato CSV
+    st.subheader("Download da Paleta de Cores")
+    csv_data = ""
+    for i, color in enumerate(colors):
+        color_name = f"Cor {i + 1}"
+        r, g, b = color
+        c, m, y, k = rgb_to_cmyk(r, g, b)
+        c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
+        csv_data += f"{color_name},R:{r},G:{g},B:{b},C:{c_ml:.2f},M:{m_ml:.2f},Y:{y_ml:.2f},K:{k_ml:.2f}\n"
 
-        # Mostrar paleta de cores
+    csv_encoded = base64.b64encode(csv_data.encode()).decode()
+    href = f'<a href="data:file/csv;base64,{csv_encoded}" download="paleta_de_cores.csv">Clique aqui para fazer o download da paleta de cores</a>'
+    st.markdown(href, unsafe_allow_html=True)
 
-        for i, color in enumerate(colors):
-            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
-            st.image(color_block, caption=f'Cor {i+1}', width=50)
+# Rodapé
+st.sidebar.markdown("---")
+st.sidebar.markdown("Feito com ❤️ por Marcelo Claro")
 
-            # Cálculo das proporções das cores CMYK
-            r, g, b = color
-            c, m, y, k = rgb_to_cmyk(r, g, b)
-            c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-
-                # Calcular a área da cor na imagem segmentada
-            color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
-            total_area = segmented_image.shape[0] * segmented_image.shape[1]
-            color_percentage = (color_area / total_area) * 100
-            
-            st.subheader("Sketching and concept development da paleta de cor")
-            st.write(f"""
-            PALETAS DE COR PARA: {total_ml:.2f} ml.
-            
-            A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
-
-            Ciano (Azul) (C): {c_ml:.2f} ml
-            Magenta (Vermelho) (M): {m_ml:.2f} ml
-            Amarelo (Y): {y_ml:.2f} ml
-            Preto (K): {k_ml:.2f} ml
-                   
-            """)
-            cor_proxima = buscar_cor_proxima(color, cores_junguianas)
-            st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
-            st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
-            st.write(f"      Sombra: {cor_proxima['sombra']}")
-            st.write(f"      Personalidade: {cor_proxima['personalidade']}")
-            st.write(f"      Diagnóstico: {cor_proxima['diagnostico']}")
-
-        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-        st.image(result, caption='Imagem Resultante', use_column_width=True)
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
-
-        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
-        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
-        st.download_button(
-            label="Baixar imagem segmentada",
-            data=segmented_image_bytes,
-            file_name='segmented.jpg',
-            mime='image/jpeg')
-
-                
-        
+# Nota de rodapé
+st.write("""
+**Nota:** Este aplicativo é destinado apenas para fins educacionais e de entretenimento. A análise das cores com base na psicologia de Carl Jung é uma interpretação subjetiva e não deve ser usada para fins diagnósticos ou terapêuticos. A precisão das cores geradas pode variar dependendo da qualidade e resolução da imagem de entrada.
+""")
