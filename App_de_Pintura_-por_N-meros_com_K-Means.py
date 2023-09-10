@@ -140,7 +140,10 @@ nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
 pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
+import numpy as np
+
 # ...
+
 if st.sidebar.button('Gerar'):
     if uploaded_file is not None:
         # Abrir a imagem diretamente do arquivo carregado
@@ -154,8 +157,14 @@ if st.sidebar.button('Gerar'):
             cm_per_pixel = cm_per_inch / dpi[0]  # Supõe-se que a resolução seja a mesma em ambas as direções
             st.write(f'Tamanho de cada pixel: {cm_per_pixel:.4f} centímetros')
 
-        canvas = Canvas(pil_image, nb_color, pixel_size)  # Use pil_image aqui
+        # Converter pil_image em uma matriz NumPy
+        src = np.array(pil_image)
+
+        canvas = Canvas(src, nb_color, pixel_size)  # Use src aqui em vez de pil_image
         result, colors, segmented_image = canvas.generate()
+        
+        # O restante do código permanece inalterado
+
         
         # O restante do código permanece inalterado
 
