@@ -126,7 +126,7 @@ st.sidebar.write("---")
 # Seção de Informações do Autor
 st.sidebar.header("Sketching and concept development da paleta de cor")
 st.sidebar.image("clube.png", use_column_width=True)
-st.sidebar.write("A expressão "Sketching and concept development da paleta de cor" refere-se a um processo criativo que envolve a criação e desenvolvimento de ideias para uma paleta de cores. Vamos quebrar essa expressão em partes:
+st.sidebar.write("""A expressão "Sketching and concept development da paleta de cor" refere-se a um processo criativo que envolve a criação e desenvolvimento de ideias para uma paleta de cores. Vamos quebrar essa expressão em partes:
 
 1. **Sketching**: "Sketching" é uma palavra em inglês que significa esboçar ou fazer um rascunho. No contexto criativo, "sketching" refere-se à prática de criar desenhos, esboços ou representações visuais rápidas e não detalhadas de ideias. É uma maneira de visualizar conceitos de forma rápida e solta, muitas vezes antes de se comprometer com um projeto mais elaborado.
 
@@ -134,7 +134,8 @@ st.sidebar.write("A expressão "Sketching and concept development da paleta de c
 
 3. **Paleta de Cor**: Uma paleta de cores é um conjunto selecionado de cores que são usadas em um projeto ou obra de arte. A escolha das cores em uma paleta desempenha um papel fundamental na estética e no impacto visual de uma criação. Uma paleta de cores bem desenvolvida pode transmitir emoções, criar harmonia visual e reforçar a mensagem de uma obra.
 
-Portanto, "Sketching and concept development da paleta de cor" se refere ao processo criativo de esboçar e desenvolver ideias relacionadas às cores que serão usadas em um projeto, obra de arte, design ou qualquer outro contexto criativo. Isso pode envolver a criação de esboços de como as cores serão usadas, a exploração de combinações de cores e a tomada de decisões sobre quais cores são mais apropriadas para alcançar um determinado objetivo estético ou comunicativo. É uma parte importante do processo de design e criação visual.")
+Portanto, "Sketching and concept development da paleta de cor" se refere ao processo criativo de esboçar e desenvolver ideias relacionadas às cores que serão usadas em um projeto, obra de arte, design ou qualquer outro contexto criativo. Isso pode envolver a criação de esboços de como as cores serão usadas, a exploração de combinações de cores e a tomada de decisões sobre quais cores são mais apropriadas para alcançar um determinado objetivo estético ou comunicativo. É uma parte importante do processo de design e criação visual.
+""")
 st.sidebar.write("Nome: Marcelo Claro")
 st.sidebar.write("Email: marceloclaro@geomaker.org")
 st.sidebar.write("WhatsApp: (88) 98158-7145")
