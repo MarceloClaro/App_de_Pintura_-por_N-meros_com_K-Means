@@ -125,7 +125,7 @@ st.sidebar.write("---")
 
 # Seção de Informações do Autor
 st.sidebar.header("Informações do Autor")
-st.sidebar.image("autor_foto.jpg", use_column_width=True)
+st.sidebar.image("clube.png", use_column_width=True)
 st.sidebar.write("Nome: Marcelo Claro")
 st.sidebar.write("Email: marceloclaro@geomaker.org")
 st.sidebar.write("WhatsApp: (88) 98158-7145")
