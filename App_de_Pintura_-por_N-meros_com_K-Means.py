@@ -162,7 +162,7 @@ st.subheader("Autor: Marcelo Claro")
 st.image("clube.png")  # Adiciona a imagem no topo do app
 
 
-https://orcid.org/0000-0001-8996-2887
+
 
 marceloclaro@geomaker.org
 
