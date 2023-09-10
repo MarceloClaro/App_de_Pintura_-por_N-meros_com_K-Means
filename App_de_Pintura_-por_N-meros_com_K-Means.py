@@ -14,30 +14,6 @@ cores_junguianas = {
         'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
         'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
     },
-    '2': {
-        'cor': 'Preto carvão',
-        'rgb': (10, 10, 10),
-        'anima_animus': 'O preto carvão simboliza a sombra feminina do inconsciente, representando os aspectos desconhecidos e reprimidos da feminilidade.',
-        'sombra': 'O preto carvão é a própria sombra feminina, representando os instintos primordiais e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
-    },
-    '3': {
-        'cor': 'Cinza escuro',
-        'rgb': (17, 17, 17),
-        'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
-        'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
-        'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
-        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
-    },
-    '4': {
-        'cor': 'Cinza ardósia',
-        'rgb': (47, 79, 79),
-        'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
-        'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
-    },
     # Adicione mais cores Junguianas conforme necessário
 }
 
@@ -63,7 +39,7 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
 # Função para gerar a paleta de cores e análise da cor Junguiana
 def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
     # Converte a imagem para o formato RGB
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
     class Canvas():
         def __init__(self, src, nb_color, pixel_size=4000):
@@ -125,8 +101,8 @@ def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
             out = vfunc(np.arange(width * height))
             return np.resize(out, (width, height, codebook.shape[1]))
 
-    # Cria uma instância da classe Canvas
-    canvas = Canvas(image, nb_color, pixel_size)
+    # Cria uma instância da classe Canvas com a imagem RGB
+    canvas = Canvas(image_rgb, nb_color, pixel_size)
     
     # Gera a paleta de cores e imagens segmentadas
     result, colors, segmented_image = canvas.generate()
@@ -187,7 +163,7 @@ if uploaded_file is not None:
         # Exibir as proporções da tinta CMYK e a cor Junguiana mais próxima para cada cor na paleta
         for i, color in enumerate(colors):
             r, g, b = color
-            c, m, y, k = rgb_to_cmyk(r, g, b)
+            c, m, y, k = calcular_proporcoes_tinta(c, m, y, k, total_ml)
             c_ml, m_ml, y_ml, k_ml = calcular_proporcoes_tinta(c, m, y, k, total_ml)
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
@@ -214,3 +190,4 @@ if uploaded_file is not None:
             data=result_bytes,
             file_name='result.jpg',
             mime='image/jpeg')
+
