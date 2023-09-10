@@ -134,11 +134,11 @@ st.sidebar.write("WhatsApp: (88) 98158-7145")
 st.sidebar.write("---")
 
 # Seção de Configurações
-st.sidebar.header("Configurações da Aplicação")
-uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
+st.sidebar.header("Sketching and concept development da paleta de cor")
+uploaded_file = st.sidebar.file_uploader("Escolha uma imagem para tela", type=["jpg", "png"])
 nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
+pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=4000, value=4000, step=100)
 
 import numpy as np
 
@@ -165,16 +165,13 @@ if st.sidebar.button('Gerar'):
         
         # O restante do código permanece inalterado
 
-        
-        # O restante do código permanece inalterado
-
-
     # Converter imagem segmentada para np.uint8
     segmented_image = (segmented_image * 255).astype(np.uint8)
 
     # Agora converta de BGR para RGB
     segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-
+    # Separador
+    st.write("---")
     # Análise da Cor Dominante Junguiana
     cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
 
@@ -203,8 +200,7 @@ if st.sidebar.button('Gerar'):
         total_area = segmented_image.shape[0] * segmented_image.shape[1]
         color_percentage = (color_area / total_area) * 100
 
-        # Separador
-        st.write("---")
+        
 
         st.subheader("Sketching and concept development da paleta de cor")
         st.write(f"""
@@ -216,7 +212,8 @@ if st.sidebar.button('Gerar'):
         Magenta (Vermelho) (M): {m_ml:.2f} ml
         Amarelo (Y): {y_ml:.2f} ml
         Preto (K): {k_ml:.2f} ml
-
+        # Separador
+        st.write("---")
         """)
         cor_proxima = buscar_cor_proxima(color, cores_junguianas)
         st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
