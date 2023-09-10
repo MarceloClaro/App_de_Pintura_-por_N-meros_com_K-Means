@@ -169,6 +169,9 @@ st.sidebar.title("Opções")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 
 # Área principal do aplicativo
+# ...
+
+# Área principal do aplicativo
 if uploaded_file is not None:
     st.sidebar.info("Imagem carregada com sucesso!")
 
@@ -179,15 +182,12 @@ if uploaded_file is not None:
     if st.sidebar.button('Gerar Paleta de Cores'):
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         
-        # Carregue a imagem como RGB
+        # Carregue a imagem como BGR e converta para RGB
         image_bgr = cv2.imdecode(file_bytes, 1)
-        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)  # Corrija para RGB
+        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
         
         result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image_rgb, nb_color, total_ml, pixel_size)
-
-        # ... (o restante do código permanece inalterado)
-        # ... (o restante do código permanece inalterado)
-        
+      
         # Exibir a imagem original
         st.subheader("Imagem Original")
         st.image(image_rgb, caption='Imagem Carregada', use_column_width=True)
