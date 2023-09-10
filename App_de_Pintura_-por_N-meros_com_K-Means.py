@@ -4,7 +4,6 @@ from sklearn.utils import shuffle
 import cv2
 import streamlit as st
 import tempfile
-import os
 
 # Definição das cores Junguianas
 cores_junguianas = {
@@ -15,30 +14,6 @@ cores_junguianas = {
         'sombra': 'A cor preta é a própria sombra, representando os instintos primordiais e os aspectos ocultos da personalidade.',
         'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
         'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
-    },
-    '2': {
-        'cor': 'Preto carvão',
-        'rgb': (10, 10, 10),
-        'anima_animus': 'O preto carvão simboliza a sombra feminina do inconsciente, representando os aspectos desconhecidos e reprimidos da feminilidade.',
-        'sombra': 'O preto carvão é a própria sombra feminina, representando os instintos primordiais e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
-    },
-    '3': {
-        'cor': 'Cinza escuro',
-        'rgb': (17, 17, 17),
-        'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
-        'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
-        'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
-        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
-    },
-    '4': {
-        'cor': 'Cinza ardósia',
-        'rgb': (47, 79, 79),
-        'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
-        'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
-        'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
     # Adicione mais cores Junguianas conforme necessário
 }
@@ -66,16 +41,11 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
 def rgb_to_cmyk(r, g, b):
     if (r == 0) and (g == 0) and (b == 0):
         return 0, 0, 0, 1
-    c = 1 - r / 255
-    m = 1 - g / 255
-    y = 1 - b / 255
-
-    min_cmy = min(c, m, y)
-    c = (c - min_cmy) / (1 - min_cmy)
-    m = (m - min_cmy) / (1 - min_cmy)
-    y = (y - min_cmy) / (1 - min_cmy)
-    k = min_cmy
-
+    r, g, b = r / 255, g / 255, b / 255
+    k = 1 - max(r, g, b)
+    c = (1 - r - k) / (1 - k)
+    m = (1 - g - k) / (1 - k)
+    y = (1 - b - k) / (1 - k)
     return c, m, y, k
 
 # Função para gerar a paleta de cores e análise da cor Junguiana
@@ -94,7 +64,7 @@ def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
             im_source = self.resize()
             clean_img = self.cleaning(im_source)
             width, height, depth = clean_img.shape
-            clean_img = np.array(clean_img, dtype="uint8") / 255
+            clean_img = clean_img.astype("float32") / 255
             quantified_image, colors = self.quantification(clean_img)
             canvas = np.ones(quantified_image.shape[:2], dtype="uint8") * 255
 
@@ -171,9 +141,6 @@ st.sidebar.title("Opções")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 
 # Área principal do aplicativo
-# ...
-
-# Área principal do aplicativo
 if uploaded_file is not None:
     st.sidebar.info("Imagem carregada com sucesso!")
 
@@ -186,13 +153,12 @@ if uploaded_file is not None:
         
         # Carregue a imagem como BGR e converta para RGB
         image_bgr = cv2.imdecode(file_bytes, 1)
-        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
         
-        result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image_rgb, nb_color, total_ml, pixel_size)
+        result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image_bgr, nb_color, total_ml, pixel_size)
       
         # Exibir a imagem original
         st.subheader("Imagem Original")
-        st.image(image_rgb, caption='Imagem Carregada', use_column_width=True)
+        st.image(cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB), caption='Imagem Carregada', use_column_width=True)
 
         # Análise da Cor Dominante Junguiana
         st.subheader("Análise da Cor Dominante Junguiana")
@@ -206,7 +172,7 @@ if uploaded_file is not None:
         st.subheader("Paleta de Cores")
         for i, color in enumerate(colors):
             color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato RGB
-            st.image(color_block, caption=f'Cor {i+1}', width=50)
+            st.image(cv2.cvtColor(color_block, cv2.COLOR_BGR2RGB), caption=f'Cor {i+1}', width=50)
 
         # Exibir as proporções da tinta CMYK e a cor Junguiana mais próxima para cada cor na paleta
         for i, color in enumerate(colors):
@@ -243,5 +209,3 @@ if uploaded_file is not None:
                 data=result_tempfile.name,
                 file_name='result.jpg',
                 mime='image/jpeg')
-
-
