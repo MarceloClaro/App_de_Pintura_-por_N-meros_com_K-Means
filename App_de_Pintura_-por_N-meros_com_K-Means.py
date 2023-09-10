@@ -212,9 +212,10 @@ if st.sidebar.button('Gerar'):
         Magenta (Vermelho) (M): {m_ml:.2f} ml
         Amarelo (Y): {y_ml:.2f} ml
         Preto (K): {k_ml:.2f} ml
+
+        """)
         # Separador
         st.write("---")
-        """)
         cor_proxima = buscar_cor_proxima(color, cores_junguianas)
         st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
         st.write(f"      Anima/Animus: {cor_proxima['anima_animus']}")
