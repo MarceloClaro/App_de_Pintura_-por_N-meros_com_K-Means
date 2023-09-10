@@ -60,26 +60,10 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
     cor_proxima_index = np.argmin(distancias)
     return cores_junguianas[str(cor_proxima_index + 1)]
 
-# Função para converter RGB para CMYK
-def rgb_to_cmyk(r, g, b):
-    if (r == 0) and (g == 0) and (b == 0):
-        return 0, 0, 0, 1
-    c = 1 - r / 255
-    m = 1 - g / 255
-    y = 1 - b / 255
-
-    min_cmy = min(c, m, y)
-    c = (c - min_cmy) / (1 - min_cmy)
-    m = (m - min_cmy) / (1 - min_cmy)
-    y = (y - min_cmy) / (1 - min_cmy)
-    k = min_cmy
-
-    return c, m, y, k
-
 # Função para gerar a paleta de cores e análise da cor Junguiana
 def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
     # Converte a imagem para o formato RGB
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
     class Canvas():
         def __init__(self, src, nb_color, pixel_size=4000):
@@ -142,7 +126,7 @@ def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
             return np.resize(out, (width, height, codebook.shape[1]))
 
     # Cria uma instância da classe Canvas
-    canvas = Canvas(image_rgb, nb_color, pixel_size)
+    canvas = Canvas(image, nb_color, pixel_size)
     
     # Gera a paleta de cores e imagens segmentadas
     result, colors, segmented_image = canvas.generate()
@@ -178,19 +162,13 @@ if uploaded_file is not None:
     
     if st.sidebar.button('Gerar Paleta de Cores'):
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+        image = cv2.imdecode(file_bytes, 1)
         
-        # Carregue a imagem como RGB
-        image_bgr = cv2.imdecode(file_bytes, 1)
-        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)  # Corrija para RGB
-        
-        result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image_rgb, nb_color, total_ml, pixel_size)
-
-        # ... (o restante do código permanece inalterado)
-        # ... (o restante do código permanece inalterado)
+        result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size)
         
         # Exibir a imagem original
         st.subheader("Imagem Original")
-        st.image(image_rgb, caption='Imagem Carregada', use_column_width=True)
+        st.image(image, caption='Imagem Carregada', use_column_width=True)
 
         # Análise da Cor Dominante Junguiana
         st.subheader("Análise da Cor Dominante Junguiana")
@@ -203,7 +181,7 @@ if uploaded_file is not None:
         # Exibir a paleta de cores
         st.subheader("Paleta de Cores")
         for i, color in enumerate(colors):
-            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato RGB
+            color_block = np.ones((50, 50, 3), np.uint8) * color[::-1]  # Cores em formato BGR
             st.image(color_block, caption=f'Cor {i+1}', width=50)
 
         # Exibir as proporções da tinta CMYK e a cor Junguiana mais próxima para cada cor na paleta
@@ -230,7 +208,7 @@ if uploaded_file is not None:
 
         # Exibir botões de download para a imagem resultante e imagem segmentada
         st.subheader("Download")
-        result_bytes = cv2.imdecode(cv2.imencode('.jpg', result)[1], cv2.IMREAD_COLOR)
+        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
         st.download_button(
             label="Baixar imagem resultante",
             data=result_bytes,
