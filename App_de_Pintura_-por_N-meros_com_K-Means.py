@@ -59,8 +59,6 @@ def rgb_to_cmyk(r, g, b):
 
     return c, m, y, k
 
-# Outras funções auxiliares como 'calculate_ml' e 'buscar_cor_proxima' também seriam mantidas aqui.
-
 def calculate_ml(c, m, y, k, total_ml):
     total_ink = c + m + y + k
     c_ml = (c / total_ink) * total_ml
@@ -142,7 +140,6 @@ class Canvas():
 # Início da interface do Streamlit
 st.image("clube.png")
 st.title('Gerador de Paleta de Cores para Pintura por Números')
-# ... (outros elementos de UI aqui)
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 
@@ -193,39 +190,37 @@ if uploaded_file is not None:
         for i, color in enumerate(colors):
             analyze_and_show_color(i, color, total_ml, segmented_image)
 
+def analyze_and_show_color(color_index, rgb_color, total_ml, segmented_image):
+    # Calcular a porcentagem de pixels da cor em relação à imagem segmentada
+    total_pixels = segmented_image.shape[0] * segmented_image.shape[1]
+    color_pixels = np.count_nonzero(np.all(segmented_image == rgb_color, axis=-1))
+    color_percentage = (color_pixels / total_pixels) * 100
 
-        def analyze_and_show_color(color_index, rgb_color, total_ml, segmented_image):
-        # Calcular a porcentagem de pixels da cor em relação à imagem segmentada
-        total_pixels = segmented_image.shape[0] * segmented_image.shape[1]
-        color_pixels = np.count_nonzero(np.all(segmented_image == rgb_color, axis=-1))
-        color_percentage = (color_pixels / total_pixels) * 100
-    
-        # Calcular a quantidade de tinta necessária
-        c, m, y, k = rgb_to_cmyk(*rgb_color)
-        c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-    
-        # Exibir informações sobre a cor
-        st.write(f"Cor {color_index + 1}:")
-        st.write(f"Porcentagem da imagem: {color_percentage:.2f}%")
-        st.write(f"Quantidade de tinta necessária:")
-        st.write(f"   - Ciano: {c_ml:.2f} mL")
-        st.write(f"   - Magenta: {m_ml:.2f} mL")
-        st.write(f"   - Amarelo: {y_ml:.2f} mL")
-        st.write(f"   - Preto: {k_ml:.2f} mL")
+    # Calcular a quantidade de tinta necessária
+    c, m, y, k = rgb_to_cmyk(*rgb_color)
+    c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
 
+    # Exibir informações sobre a cor
+    st.write(f"Cor {color_index + 1}:")
+    st.write(f"Porcentagem da imagem: {color_percentage:.2f}%")
+    st.write(f"Quantidade de tinta necessária:")
+    st.write(f"   - Ciano: {c_ml:.2f} mL")
+    st.write(f"   - Magenta: {m_ml:.2f} mL")
+    st.write(f"   - Amarelo: {y_ml:.2f} mL")
+    st.write(f"   - Preto: {k_ml:.2f} mL")
 
-        # O código para download permanece o mesmo
-        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem resultante",
-            data=result_bytes,
-            file_name='result.jpg',
-            mime='image/jpeg')
+# O código para download permanece o mesmo
+result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+st.download_button(
+    label="Baixar imagem resultante",
+    data=result_bytes,
+    file_name='result.jpg',
+    mime='image/jpeg')
 
-        segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-        segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
-        st.download_button(
-            label="Baixar imagem segmentada",
-            data=segmented_image_bytes,
-            file_name='segmented.jpg',
-            mime='image/jpeg')
+segmented_image_rgb = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
+segmented_image_bytes = cv2.imencode('.jpg', segmented_image_rgb)[1].tobytes()
+st.download_button(
+    label="Baixar imagem segmentada",
+    data=segmented_image_bytes,
+    file_name='segmented.jpg',
+    mime='image/jpeg')
