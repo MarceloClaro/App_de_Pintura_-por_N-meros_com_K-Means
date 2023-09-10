@@ -203,7 +203,7 @@ if st.sidebar.button('Gerar'):
         
 
         st.subheader("Sketching and concept development da paleta de cor")
-    st.write(f"""
+        st.write(f"""
         PALETAS DE COR PARA: {total_ml:.2f} ml.
 
         A cor pode ser alcançada pela combinação das cores primárias do modelo CMYK, utilizando a seguinte dosagem:
@@ -213,7 +213,7 @@ if st.sidebar.button('Gerar'):
         Amarelo (Y): {y_ml:.2f} ml
         Preto (K): {k_ml:.2f} ml
         # Separador
-    st.write("---")
+        st.write("---")
         """)
         cor_proxima = buscar_cor_proxima(color, cores_junguianas)
         st.write(f"      Cor Junguiana Mais Próxima: {cor_proxima['cor']}")
