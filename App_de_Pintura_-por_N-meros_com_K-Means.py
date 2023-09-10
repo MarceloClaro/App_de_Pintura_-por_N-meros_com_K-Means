@@ -168,8 +168,6 @@ st.subheader("Autor: Marcelo Claro")
 
 # ... (código anterior)
 
-# ... (código anterior)
-
 uploaded_file = st.file_uploader("Escolha uma imagem (formato JPG ou PNG)", type=["jpg", "png"])
 
 if uploaded_file is not None:
@@ -180,22 +178,6 @@ if uploaded_file is not None:
 
     # Resto do código permanece igual
     # Certifique-se de manter a variável 'image' definida corretamente
-
-    # Agora, a variável 'image' está definida corretamente
-
-    st.sidebar.title("Configurações")
-    st.sidebar.write("Personalize as configurações abaixo:")
-    
-    nb_color = st.sidebar.slider('Número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
-    total_ml = st.sidebar.slider('Total de ml de tinta por cor', min_value=1, max_value=1000, value=10, step=1)
-    pixel_size = st.sidebar.slider('Tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
-    
-    st.sidebar.write("\n\n")
-
-    if st.sidebar.button('Gerar Paleta'):
-        # Resto do código permanece igual
-
-# ... (resto do código)
 
 # ... (resto do código)
 
@@ -272,5 +254,4 @@ No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferrame
 
 O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
 """)
-
 
