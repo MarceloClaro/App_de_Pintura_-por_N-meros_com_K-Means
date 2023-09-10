@@ -151,31 +151,30 @@ st.set_page_config(
     page_icon="🎨",
     layout="wide"
 )
-st.image("clube.png")  # Adiciona a imagem no topo do app
-st.title('Gerador de Paleta de Cores para Pintura por Números ')
-st.sidebar.subheader("Sketching and concept development")
-st.sidebar.subheader("""
-Autor: Marcelo Claro
-
-https://orcid.org/0000-0001-8996-2887
-
-marceloclaro@geomaker.org
-
-Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
+st.sidebar.subheader("Sobre o Aplicativo")
+st.sidebar.write("""
+Este aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, 
+conhecido pelo pseudônimo Marcelo Claro. Ele é um professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
 """)
-# Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
-
-uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
-st.sidebar.subheader("""
-Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
-Este aplicativo é uma ferramenta útil para artistas plásticos, pois oferece recursos para gerar paletas de cores, criar pinturas por números, desenvolver esboços e conceitos, e explorar diferentes combinações de cores.
-Como funciona? Primeiro, você pode fazer o upload de uma imagem de referência, que pode ser uma foto, ilustração ou qualquer imagem que você deseje usar como base. Em seguida, o aplicativo utiliza o algoritmo K-means para quantificar as cores presentes na imagem. Você pode controlar o número de cores desejado através de um controle deslizante, permitindo extrair a quantidade adequada de cores para sua pintura.
-Uma vez gerada a paleta de cores, o aplicativo exibe a imagem resultante, onde cada região da imagem original é substituída pela cor correspondente da paleta. Isso permite que você visualize como sua pintura ficaria usando essas cores específicas. Além disso, o aplicativo também exibe a imagem segmentada, onde cada região da imagem original é preenchida com uma cor sólida correspondente à cor dominante da região. Isso ajuda na identificação de áreas de destaque e contrastes na imagem, facilitando o processo de esboço e desenvolvimento de conceitos.
-Uma característica interessante do aplicativo é a possibilidade de definir o total em mililitros de tinta antes de gerar a paleta de cores. Isso permite que você obtenha doses precisas de cada cor primária para alcançar tons exatos em suas paletas.
-No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferramenta complementar para sua análise da paisagem humana. Ele reúne imagens, fotos e referências como inspiração e, em seguida, faz esboços e desenvolve conceitos usando a técnica de "Sketching and concept development". Ele explora diferentes ideias, experimenta composições e cores, e utiliza as paletas de cores geradas pelo aplicativo para criar suas pinturas finais.
-O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
-Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
+st.sidebar.subheader("Contato")
+st.sidebar.write("""
+- **E-mail:** marceloclaro@geomaker.org
+- **WhatsApp:** (88) 98158-7145
+- **Site:** [geomaker.org](https://www.geomaker.org/)
 """)
+st.sidebar.subheader("Autor")
+st.sidebar.image("foto_marcelo.jpg", caption="Marcelo Claro", use_column_width=True)
+st.sidebar.write("""
+Marcelo Claro é um artista plástico autodidata e professor de geografia na cidade de Crateús, Ceará. 
+Ele utiliza este aplicativo como uma ferramenta complementar para sua análise da paisagem humana e desenvolvimento de suas pinturas. 
+A abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
+""")
+st.sidebar.subheader("Redes Sociais")
+st.sidebar.write("""
+- **Instagram:** [@marceloclaroarte](https://www.instagram.com/marceloclaroarte/)
+- **Facebook:** [Marcelo Claro Arte](https://www.facebook.com/marceloclaroarte/)
+""")
+
 # ... (seu código anterior) ...
 
 if uploaded_file is not None:
