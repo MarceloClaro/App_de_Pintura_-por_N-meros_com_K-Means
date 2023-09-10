@@ -230,10 +230,12 @@ if uploaded_file is not None:
             st.write(f"Personalidade: {cor_proxima['personalidade']}")
             st.write(f"Diagnóstico: {cor_proxima['diagnostico']}")
 
-            # Exibir botões de download para a imagem resultante e imagem segmentada
-            st.subheader("Download")
-            result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
-            result_tempfile = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
+        # Exibir botões de download para a imagem resultante e imagem segmentada
+        st.subheader("Download")
+        result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
+        
+        # Crie um arquivo temporário para a imagem resultante
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as result_tempfile:
             result_tempfile.write(result_bytes)
             
             st.download_button(
@@ -241,8 +243,5 @@ if uploaded_file is not None:
                 data=result_tempfile.name,
                 file_name='result.jpg',
                 mime='image/jpeg')
-            
-            # Certifique-se de fechar o arquivo temporário após o uso
-            result_tempfile.close()
-            os.remove(result_tempfile.name)
+
 
