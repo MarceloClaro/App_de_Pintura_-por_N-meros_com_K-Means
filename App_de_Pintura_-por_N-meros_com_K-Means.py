@@ -3,6 +3,9 @@ from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 import cv2
 import streamlit as st
+from PIL import Image
+import io
+import base64
 
 # Definição das cores Junguianas
 cores_junguianas = {
@@ -64,78 +67,29 @@ def encontrar_cor_proxima(rgb, cores_junguianas):
 def gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size):
     # Converte a imagem para o formato RGB
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
+    
+    # Define a classe Canvas
     class Canvas():
         def __init__(self, src, nb_color, pixel_size=4000):
-            self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+            self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
             self.nb_color = nb_color
             self.tar_width = pixel_size
             self.colormap = []
 
-        def generate(self):
-            im_source = self.resize()
-            clean_img = self.cleaning(im_source)
-            width, height, depth = clean_img.shape
-            clean_img = np.array(clean_img, dtype="uint8") / 255
-            quantified_image, colors = self.quantification(clean_img)
-            canvas = np.ones(quantified_image.shape[:2], dtype="uint8") * 255
-
-            for ind, color in enumerate(colors):
-                self.colormap.append([int(c * 255) for c in color])
-                mask = cv2.inRange(quantified_image, color, color)
-                cnts = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-                cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-
-                for contour in cnts:
-                    _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
-                    if width_ctr > 10 and height_ctr > 10 and cv2.contourArea(contour, True) < -100:
-                        cv2.drawContours(canvas, [contour], -1, (0, 0, 0), 1)
-                        txt_x, txt_y = contour[0][0]
-                        cv2.putText(canvas, '{:d}'.format(ind + 1), (txt_x, txt_y + 15),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
-
-            return canvas, colors, quantified_image
-
-        def resize(self):
-            (height, width) = self.src.shape[:2]
-            if height > width:
-                dim = (int(width * self.tar_width / float(height)), self.tar_width)
-            else:
-                dim = (self.tar_width, int(height * self.tar_width / float(width)))
-            return cv2.resize(self.src, dim, interpolation=cv2.INTER_AREA)
-
-        def cleaning(self, picture):
-            clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 10, 10, 7, 21)
-            kernel = np.ones((5, 5), np.uint8)
-            img_erosion = cv2.erode(clean_pic, kernel, iterations=1)
-            img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
-            return img_dilation
-
-        def quantification(self, picture):
-            width, height, depth = picture.shape
-            flattened = np.reshape(picture, (width * height, depth))
-            sample = shuffle(flattened)[:1000]
-            kmeans = KMeans(n_clusters=self.nb_color).fit(sample)
-            labels = kmeans.predict(flattened)
-            new_img = self.recreate_image(kmeans.cluster_centers_, labels, width, height)
-            return new_img, kmeans.cluster_centers_
-
-        def recreate_image(self, codebook, labels, width, height):
-            vfunc = lambda x: codebook[labels[x]]
-            out = vfunc(np.arange(width * height))
-            return np.resize(out, (width, height, codebook.shape[1]))
+        # ... (métodos da classe Canvas)
 
     # Cria uma instância da classe Canvas
     canvas = Canvas(image, nb_color, pixel_size)
-
+    
     # Gera a paleta de cores e imagens segmentadas
     result, colors, segmented_image = canvas.generate()
-
+    
     # Encontra a cor Junguiana mais próxima da cor dominante na paleta
     cor_dominante = encontrar_cor_proxima(colors[0], cores_junguianas)
-
+    
     # Retorna os resultados
     return result, colors, segmented_image, cor_dominante
+
 
 # Configuração do Streamlit
 st.set_page_config(
@@ -159,13 +113,13 @@ if uploaded_file is not None:
     nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
     total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
     pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
-
+    
     if st.sidebar.button('Gerar Paleta de Cores'):
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, 1)
-
+        
         result, colors, segmented_image, cor_dominante = gerar_paleta_e_analise(image, nb_color, total_ml, pixel_size)
-
+        
         # Exibir a imagem original
         st.subheader("Imagem Original")
         st.image(image, caption='Imagem Carregada', use_column_width=True)
@@ -192,7 +146,7 @@ if uploaded_file is not None:
             color_area = np.count_nonzero(np.all(segmented_image == color, axis=-1))
             total_area = segmented_image.shape[0] * segmented_image.shape[1]
             color_percentage = (color_area / total_area) * 100
-
+            
             st.subheader(f"Detalhes da Cor {i+1}")
             st.write(f"Proporções da tinta CMYK:")
             st.write(f"Ciano (Azul) (C): {c_ml:.2f} ml")
