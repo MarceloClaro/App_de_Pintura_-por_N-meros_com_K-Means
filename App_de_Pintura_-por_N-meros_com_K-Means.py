@@ -1,15 +1,15 @@
-# Importando todas as coisas necessárias para o nosso programa funcionar.
-# Esses são como os blocos de construção que vamos usar para fazer o nosso programa.
+# Importando todas as bibliotecas necessárias para o nosso programa funcionar.
 
-import numpy as np  # Esta é uma ferramenta para lidar com listas de números.
-from sklearn.cluster import KMeans  # Essa é uma ferramenta que nos ajuda a encontrar grupos de coisas.
-from sklearn.utils import shuffle  # Isso nos ajuda a misturar coisas.
-import cv2  # Esta é uma ferramenta para trabalhar com imagens.
+import numpy as np  # Esta é uma biblioteca para lidar com matrizes numéricas.
+from sklearn.cluster import KMeans  # Esta é uma biblioteca que nos ajuda a encontrar grupos de itens.
+from sklearn.utils import shuffle  # Isso nos ajuda a embaralhar itens.
+import cv2  # Esta é uma biblioteca para trabalhar com imagens.
 import streamlit as st  # Isso é o que nos permite criar a interface do nosso programa.
-from PIL import Image  # Outra ferramenta para trabalhar com imagens.
-import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
-import base64  # Essa é uma ferramenta que nos ajuda a converter dados.
+from PIL import Image  # Outra biblioteca para trabalhar com imagens.
+import io  # Esta é uma biblioteca que nos ajuda a lidar com arquivos e dados.
+import base64  # Esta é uma biblioteca que nos ajuda a converter dados em diferentes formatos.
 
+# Dicionário de cores junguianas com informações associadas
 cores_junguianas = {
     '1': {
         'cor': 'Preto',
@@ -17,7 +17,7 @@ cores_junguianas = {
         'anima_animus': 'A cor preta representa a sombra do inconsciente, simbolizando os aspectos desconhecidos e reprimidos de uma pessoa.',
         'sombra': 'A cor preta é a própria sombra, representando os instintos primordiais e os aspectos ocultos da personalidade.',
         'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
-        'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
+        'diagnóstico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
     },
     '2': {
         'cor': 'Preto carvão',
@@ -25,7 +25,7 @@ cores_junguianas = {
         'anima_animus': 'O preto carvão simboliza a sombra feminina do inconsciente, representando os aspectos desconhecidos e reprimidos da feminilidade.',
         'sombra': 'O preto carvão é a própria sombra feminina, representando os instintos primordiais e os aspectos ocultos da feminilidade.',
         'personalidade': 'A cor preto carvão pode indicar uma personalidade poderosa, misteriosa e enigmática com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
+        'diagnóstico': 'O uso excessivo da cor preto carvão pode indicar uma tendência à negatividade, depressão ou repressão emocional na expressão feminina.'
     },
     '3': {
         'cor': 'Cinza escuro',
@@ -33,7 +33,7 @@ cores_junguianas = {
         'anima_animus': 'O cinza escuro representa a parte sombria e desconhecida do inconsciente, relacionada aos aspectos reprimidos e negligenciados da personalidade.',
         'sombra': 'O cinza escuro simboliza a sombra interior, representando a reserva de energia não utilizada e os aspectos ocultos da personalidade.',
         'personalidade': 'A cor cinza escuro pode indicar uma personalidade reservada, misteriosa e com profundidade interior.',
-        'diagnostico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
+        'diagnóstico': 'O uso excessivo da cor cinza escuro pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento.'
     },
     '4': {
         'cor': 'Cinza ardósia',
@@ -41,45 +41,11 @@ cores_junguianas = {
         'anima_animus': 'O cinza ardósia representa a sombra feminina do inconsciente, relacionada aos aspectos reprimidos e negligenciados da feminilidade.',
         'sombra': 'O cinza ardósia é a própria sombra feminina, representando a reserva de energia não utilizada e os aspectos ocultos da feminilidade.',
         'personalidade': 'A cor cinza ardósia pode indicar uma personalidade reservada, misteriosa e com uma forte presença feminina.',
-        'diagnostico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
+        'diagnóstico': 'O uso excessivo da cor cinza ardósia pode indicar uma tendência a se esconder, reprimir emoções ou evitar o autoconhecimento na expressão feminina.'
     },
 }
 
-# Aqui estamos criando uma nova ferramenta que chamamos de "Canvas".
-# Isso nos ajuda a lidar com imagens e cores.
-
-def rgb_to_cmyk(r, g, b):
-    if (r == 0) and (g == 0) and (b == 0):
-        return 0, 0, 0, 1
-    c = 1 - r / 255
-    m = 1 - g / 255
-    y = 1 - b / 255
-
-    min_cmy = min(c, m, y)
-    c = (c - min_cmy) / (1 - min_cmy)
-    m = (m - min_cmy) / (1 - min_cmy)
-    y = (y - min_cmy) / (1 - min_cmy)
-    k = min_cmy
-
-    return c, m, y, k
-
-def calculate_ml(c, m, y, k, total_ml):
-    total_ink = c + m + y + k
-    c_ml = (c / total_ink) * total_ml
-    m_ml = (m / total_ink) * total_ml
-    y_ml = (y / total_ink) * total_ml
-    k_ml = (k / total_ink) * total_ml
-    return c_ml, m_ml, y_ml, k_ml
-
-def buscar_cor_proxima(rgb, cores_junguianas):
-    distancias = []
-    for cor_junguiana in cores_junguianas.values():
-        cor_junguiana_rgb = cor_junguiana['rgb']
-        distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
-        distancias.append(distancia)
-    cor_proxima_index = np.argmin(distancias)
-    return cores_junguianas[str(cor_proxima_index + 1)]
-
+# Classe Canvas para lidar com imagens e cores
 class Canvas():
     def __init__(self, src, nb_color, pixel_size=4000):
         self.src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
@@ -140,12 +106,44 @@ class Canvas():
         out = vfunc(np.arange(width * height))
         return np.resize(out, (width, height, codebook.shape[1]))
 
+# Função para converter RGB em CMYK
+def rgb_to_cmyk(r, g, b):
+    if (r == 0) and (g == 0) and (b == 0):
+        return 0, 0, 0, 1
+    c = 1 - r / 255
+    m = 1 - g / 255
+    y = 1 - b / 255
 
-# Aqui é onde começamos a construir a interface do nosso programa.
-# Estamos adicionando coisas como texto e botões para as pessoas interagirem.
+    min_cmy = min(c, m, y)
+    c = (c - min_cmy) / (1 - min_cmy)
+    m = (m - min_cmy) / (1 - min_cmy)
+    y = (y - min_cmy) / (1 - min_cmy)
+    k = min_cmy
 
+    return c, m, y, k
+
+# Função para calcular a quantidade de tinta em ML para cada cor CMYK
+def calculate_ml(c, m, y, k, total_ml):
+    total_ink = c + m + y + k
+    c_ml = (c / total_ink) * total_ml
+    m_ml = (m / total_ink) * total_ml
+    y_ml = (y / total_ink) * total_ml
+    k_ml = (k / total_ink) * total_ml
+    return c_ml, m_ml, y_ml, k_ml
+
+# Função para buscar a cor junguiana mais próxima com base em um RGB
+def buscar_cor_proxima(rgb, cores_junguianas):
+    distancias = []
+    for cor_junguiana in cores_junguianas.values():
+        cor_junguiana_rgb = cor_junguiana['rgb']
+        distancia = np.sqrt(np.sum((np.array(rgb) - np.array(cor_junguiana_rgb)) ** 2))
+        distancias.append(distancia)
+    cor_proxima_index = np.argmin(distancias)
+    return cores_junguianas[str(cor_proxima_index + 1)]
+
+# Interface do Streamlit
 st.image("clube.png")  # Adiciona a imagem no topo do app
-st.title('Gerador de Paleta de Cores para Pintura por Números ')
+st.title('Gerador de Paleta de Cores para Pintura por Números')
 st.subheader("Sketching and concept development")
 st.subheader("""
 Autor: Marcelo Claro
@@ -156,9 +154,6 @@ marceloclaro@geomaker.org
 
 Whatsapp:(88)98158-7145 (https://www.geomaker.org/)
 """)
-# Isso é para as pessoas fazerem o upload de uma imagem que elas querem usar.
-
-uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
 st.write("""
 Apresento a vocês um aplicativo chamado "Gerador de Paleta de Cores para Pintura por Números". Esse aplicativo foi desenvolvido pelo artista plástico Marcelo Claro Laranjeira, conhecido pelo pseudônimo Marcelo Claro. Marcelo é professor de geografia na cidade de Crateús, Ceará, e também é um artista plástico autodidata.
 Este aplicativo é uma ferramenta útil para artistas plásticos, pois oferece recursos para gerar paletas de cores, criar pinturas por números, desenvolver esboços e conceitos, e explorar diferentes combinações de cores.
@@ -169,20 +164,21 @@ No processo criativo de Marcelo Claro, ele utiliza o aplicativo como uma ferrame
 O trabalho de Marcelo Claro tem como conceito central "Retratando a paisagem humana: a intersecção entre a arte e a geografia". Ele busca retratar a beleza nas coisas simples e cotidianas, explorando como a paisagem humana afeta nossa vida e como nós a modificamos. Sua abordagem geográfica e estética se complementam, permitindo uma análise mais profunda da paisagem e sua relação com nossa existência.
 Em resumo, o aplicativo "Gerador de Paleta de Cores para Pintura por Números" é uma ferramenta valiosa para artistas plásticos, oferecendo recursos para criar paletas de cores, desenvolver conceitos e explorar diferentes combinações de cores. Ele auxilia no processo criativo, permitindo visualizar e experimentar as cores antes mesmo de começar a pintar. É uma ferramenta inovadora que combina arte, tecnologia e geografia, permitindo uma análise mais profunda da paisagem humana e sua relação com nossa existência.
 """)
+uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "png"])
+st.write("""
+Para começar, faça o upload de uma imagem que você deseja usar como base para a paleta de cores. Você pode usar uma foto, ilustração ou qualquer imagem de sua escolha.
+""")
 if uploaded_file is not None:
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, 1)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Corrige a ordem dos canais de cor
     st.image(image, caption='Imagem Carregada', use_column_width=True)
 
-    nb_color = st.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
-
+    nb_color = st.slider('Escolha o número de cores para a paleta', min_value=1, max_value=80, value=2, step=1)
     total_ml = st.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
-    
     pixel_size = st.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
-    if st.button('Gerar'):
-        
+    if st.button('Gerar Paleta de Cores'):
         # Tentativa de leitura dos metadados de resolução (DPI)
         pil_image = Image.open(io.BytesIO(file_bytes))
         if 'dpi' in pil_image.info:
@@ -199,46 +195,39 @@ if uploaded_file is not None:
 
         # Converter imagem segmentada para np.uint8
         segmented_image = (segmented_image * 255).astype(np.uint8)
-        
-        # Agora converta de BGR para RGB
-        segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
-        
-        st.image(result, caption='Pintura por Números', use_column_width=True)
-        st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
 
-        # Calcular a quantidade de tinta necessária para cada cor
-        tinta_necessaria = {}
-        for i, color in enumerate(colors):
-            r, g, b = color
-            c, m, y, k = rgb_to_cmyk(r, g, b)
-            c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml)
-            tinta_necessaria[f'Cor {i+1}'] = {
-                'RGB': (r, g, b),
-                'CMYK': (c, m, y, k),
-                'Quantidade ML': {
-                    'Ciano': c_ml,
-                    'Magenta': m_ml,
-                    'Amarelo': y_ml,
-                    'Preto': k_ml,
-                }
-            }
-        
-        st.subheader('Quantidade de Tinta Necessária (ML) para Cada Cor:')
-        st.write(tinta_necessaria)
-        
-        # Encontrar a cor dominante na imagem segmentada
-        altura, largura, _ = segmented_image.shape
-        cor_dominante = buscar_cor_proxima(segmented_image[altura // 2, largura // 2], cores_junguianas)
-        st.subheader('Cor Dominante na Imagem Segmentada:')
-        st.write(cor_dominante['cor'])
-        
-        # Análise Junguiana da Cor Dominante
-        st.subheader('Análise Junguiana da Cor Dominante:')
-        st.write('**Anima/Animus:**', cor_dominante['anima_animus'])
-        st.write('**Sombra:**', cor_dominante['sombra'])
-        st.write('**Personalidade:**', cor_dominante['personalidade'])
-        st.write('**Diagnóstico:**', cor_dominante['diagnostico'])
+        # Exibir a imagem segmentada
+        st.image(result, caption=f'Paleta de Cores ({nb_color} cores)', use_column_width=True)
 
-# Vamos adicionar um rodapé com um agradecimento.
+        # Converter cores da paleta para CMYK
+        cmyk_colors = [rgb_to_cmyk(int(color[0]), int(color[1]), int(color[2])) for color in colors]
 
-st.text("Agradecemos a participação do artista Marcelo Claro na criação deste aplicativo.")
+        # Calcular a quantidade de tinta em ML para cada cor CMYK
+        tinta_ml = [calculate_ml(c, m, y, k, total_ml) for (c, m, y, k) in cmyk_colors]
+
+        # Mostrar a quantidade de tinta em ML para cada cor
+        st.write('Quantidade de tinta em ML para cada cor:')
+        for i, color_ml in enumerate(tinta_ml):
+            st.write(f'Cor {i + 1}:')
+            st.write(f'Ciano: {color_ml[0]:.2f} mL')
+            st.write(f'Magenta: {color_ml[1]:.2f} mL')
+            st.write(f'Amarelo: {color_ml[2]:.2f} mL')
+            st.write(f'Preto: {color_ml[3]:.2f} mL')
+
+        # Encontre a cor junguiana mais próxima para cada cor dominante
+        cores_junguianas_proximas = [buscar_cor_proxima(color, cores_junguianas) for color in colors]
+
+        # Exibir análise junguiana
+        st.write('Análise Junguiana das Cores Dominantes:')
+        for i, cor_junguiana in enumerate(cores_junguianas_proximas):
+            st.write(f'Cor Dominante {i + 1}: {cor_junguiana["cor"]}')
+            st.write(f'Descrição Junguiana:')
+            st.write(f'Anima/Animus: {cor_junguiana["anima_animus"]}')
+            st.write(f'Sombra: {cor_junguiana["sombra"]}')
+            st.write(f'Personalidade: {cor_junguiana["personalidade"]}')
+            st.write(f'Diagnóstico: {cor_junguiana["diagnóstico"]}')
+            st.write('---')
+
+st.write("""
+Espero que você aproveite o uso deste aplicativo para aprimorar seu processo criativo e explorar diferentes paletas de cores para suas obras de arte. Se tiver alguma dúvida ou feedback, sinta-se à vontade para entrar em contato com o autor, Marcelo Claro, usando os dados de contato fornecidos acima.
+""")
