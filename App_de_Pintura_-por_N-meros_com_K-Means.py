@@ -136,7 +136,7 @@ st.sidebar.write("---")
 # Seção de Configurações
 st.sidebar.header("Configurações da Aplicação")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png"])
-nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=80, value=2, step=1)
+nb_color = st.sidebar.slider('Escolha o número de cores para pintar', min_value=1, max_value=100, value=2, step=1)
 total_ml = st.sidebar.slider('Escolha o total em ml da tinta de cada cor', min_value=1, max_value=1000, value=10, step=1)
 pixel_size = st.sidebar.slider('Escolha o tamanho do pixel da pintura', min_value=500, max_value=8000, value=4000, step=100)
 
