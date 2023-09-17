@@ -176,6 +176,7 @@ if st.sidebar.button('Gerar'):
     segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
     # Análise da Cor Dominante Junguiana
+    st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
     cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
 
     st.subheader("Análise da Cor Dominante Junguiana")
