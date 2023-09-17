@@ -178,6 +178,9 @@ if st.sidebar.button('Gerar'):
     # Análise da Cor Dominante Junguiana
     st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
     cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
+    st.write("---")
+    st.image(result, caption='Imagem para pintar', use_column_width=True)
+    st.write("---")
 
     st.subheader("Análise da Cor Dominante Junguiana")
     st.write(f"A cor dominante na paleta é {cor_dominante['cor']}.")
