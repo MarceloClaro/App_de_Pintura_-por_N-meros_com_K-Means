@@ -118,7 +118,7 @@ class Canvas():
         return np.resize(out, (width, height, codebook.shape[1]))
 
 # Configurações da barra lateral
-st.sidebar.title("Criação de Paleta e Tela numerada")
+st.sidebar.title("Criação das Paletas de cores e Tela numerada")
 
 # Separador
 st.sidebar.write("---")
