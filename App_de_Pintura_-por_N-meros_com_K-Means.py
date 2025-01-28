@@ -125,7 +125,7 @@ st.sidebar.write("---")
 
 # Seção de Informações do Autor
 st.sidebar.header("Informações do Autor")
-st.sidebar.image("clube.png", use_column_width=True)
+st.sidebar.image("clube.png", use_container_width=True)
 st.sidebar.write("Nome: Marcelo Claro")
 st.sidebar.write("Email: marceloclaro@geomaker.org")
 st.sidebar.write("WhatsApp: (88) 98158-7145")
@@ -176,10 +176,10 @@ if st.sidebar.button('Gerar'):
     segmented_image = cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB)
 
     # Análise da Cor Dominante Junguiana
-    st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+    st.image(segmented_image, caption='Imagem Segmentada', use_container_width=True)
     cor_dominante = buscar_cor_proxima(colors[0], cores_junguianas)
     st.write("---")
-    st.image(result, caption='Imagem para pintar', use_column_width=True)
+    st.image(result, caption='Imagem para pintar', use_container_width=True)
     st.write("---")
 
     st.subheader("Análise da Cor Dominante Junguiana")
@@ -232,7 +232,7 @@ if st.sidebar.button('Gerar'):
     result_bytes = cv2.imencode('.jpg', result)[1].tobytes()
     # Separador
     st.write("---")
-    st.image(result, caption='Imagem para pintar', use_column_width=True)
+    st.image(result, caption='Imagem para pintar', use_container_width=True)
     st.download_button(
         label="Baixar Imagem para pintar",
         data=result_bytes,
@@ -245,7 +245,7 @@ if st.sidebar.button('Gerar'):
     # Separador
     st.write("---")
      
-    st.image(segmented_image, caption='Imagem Segmentada', use_column_width=True)
+    st.image(segmented_image, caption='Imagem Segmentada', use_container_width=True)
     st.download_button(
         label="Baixar imagem segmentada",
         data=segmented_image_bytes,
