@@ -505,11 +505,11 @@ st.sidebar.write("---")
 
 st.sidebar.header("⚙️ Configurações da Aplicação")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png", "jpeg"])
-nb_color_slider = st.sidebar.slider('Número de cores na paleta', min_value=1, max_value=30, value=5, step=1) 
+nb_color_slider = st.sidebar.slider('Número de cores na paleta', min_value=1, max_value=42, value=5, step=1) 
 total_ml_slider = st.sidebar.slider('Total em ml da tinta (por cor)', min_value=10, max_value=1000, value=50, step=10)
 target_dimension_slider = st.sidebar.slider(
     'Dimensão alvo da imagem (pixels)', 
-    min_value=300, max_value=2000, value=800, step=50,
+    min_value=300, max_value=4000, value=800, step=50,
     help="A maior dimensão (largura ou altura) da imagem será ajustada para este valor, mantendo a proporção."
 )
 
