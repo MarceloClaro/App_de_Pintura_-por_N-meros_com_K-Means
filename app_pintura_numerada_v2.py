@@ -9,57 +9,277 @@ import streamlit as st  # Isso é o que nos permite criar a interface do nosso p
 from PIL import Image  # Outra ferramenta para trabalhar com imagens.
 import io  # Essa é uma ferramenta que nos ajuda a lidar com arquivos e dados.
 
-# TODO: Expandir este dicionário com mais cores e suas respectivas análises Junguianas.
 cores_junguianas = {
     '1': {
         'cor': 'Preto',
         'rgb': (0, 0, 0),
-        'anima_animus': 'A cor preta representa a sombra do inconsciente, simbolizando os aspectos desconhecidos e reprimidos de uma pessoa.',
-        'sombra': 'A cor preta é a própria sombra, representando os instintos primordiais e os aspectos ocultos da personalidade.',
-        'personalidade': 'A cor preta pode indicar uma personalidade enigmática, poderosa e misteriosa.',
-        'diagnostico': 'O uso excessivo da cor preta pode indicar uma tendência à negatividade, depressão ou repressão emocional.'
+        'anima_animus': 'O inconsciente profundo, o mistério, o potencial não manifesto, a Grande Mãe Terra (aspecto ctônico).',
+        'sombra': 'Repressão, medo do desconhecido, negação, luto não processado, vazio existencial, instintos primordiais não integrados.',
+        'personalidade': 'Enigmática, introspectiva, poderosa, séria, pode buscar profundidade ou se isolar.',
+        'diagnostico': 'Pode indicar um mergulho necessário no inconsciente, luto, depressão, ou a necessidade de confrontar a própria sombra e o desconhecido.',
+        'referencias': 'Interpretações baseadas nos conceitos de Sombra, Inconsciente Coletivo e simbolismo arquetípico de C.G. Jung (e.g., "O Homem e Seus Símbolos", "Arquétipos e o Inconsciente Coletivo"). O preto frequentemente simboliza o nigredo alquímico.'
     },
     '2': {
         'cor': 'Branco',
         'rgb': (255, 255, 255),
-        'anima_animus': 'Pureza, totalidade, o Self não diferenciado, potencialidade.',
-        'sombra': 'Frieza, vazio, negação da vida instintiva, perfeccionismo estéril.',
-        'personalidade': 'Pode indicar busca por clareza, simplicidade, ou um ideal de perfeição.',
-        'diagnostico': 'Uso excessivo pode sugerir distanciamento emocional, dificuldade em lidar com a "sujeira" da vida.'
+        'anima_animus': 'Pureza, totalidade, o Self não diferenciado, potencialidade, transcendência, clareza espiritual.',
+        'sombra': 'Frieza, vazio, negação da vida instintiva e da "sujeira" terrena, perfeccionismo estéril, isolamento idealista.',
+        'personalidade': 'Idealista, busca clareza e perfeição, pode ser espiritualizada ou distante das realidades mundanas.',
+        'diagnostico': 'Pode sugerir busca por paz e pureza, um novo começo, ou um distanciamento excessivo da realidade e das emoções "negativas".',
+        'referencias': 'Simbolismo do Self, individuação e o albedo alquímico. Ver obras de C.G. Jung sobre o Self e a totalidade psíquica.'
     },
     '3': {
-        'cor': 'Vermelho',
+        'cor': 'Vermelho (Puro)',
         'rgb': (255, 0, 0),
-        'anima_animus': 'Paixão, energia vital, libido, o princípio masculino ativo.',
-        'sombra': 'Raiva, agressividade descontrolada, perigo, impulsividade destrutiva.',
-        'personalidade': 'Personalidade extrovertida, assertiva, energética, competitiva.',
-        'diagnostico': 'Excesso pode indicar stress, inflamação, ou uma necessidade de extravasar emoções intensas.'
+        'anima_animus': 'Energia vital (libido), paixão, ação, coragem, o princípio masculino ativo (Eros dinâmico).',
+        'sombra': 'Raiva, agressividade descontrolada, impulsividade destrutiva, perigo, luxúria, inflamação.',
+        'personalidade': 'Extrovertida, assertiva, energética, competitiva, apaixonada, pode ser impulsiva.',
+        'diagnostico': 'Excesso pode indicar stress, raiva contida, necessidade de ação e expressão da vitalidade, ou inflamação física/psíquica.',
+        'referencias': 'Associações com a função sentimento extrovertido, libido e o arquétipo do Guerreiro. O rubedo alquímico. Ver "Tipos Psicológicos" de Jung.'
     },
     '4': {
-        'cor': 'Azul',
-        'rgb': (0, 0, 255),
-        'anima_animus': 'Espiritualidade, pensamento, introspecção, o princípio feminino receptivo (logos).',
-        'sombra': 'Frieza emocional, distanciamento, depressão, melancolia.',
-        'personalidade': 'Calma, ponderada, intelectual, leal, conservadora.',
-        'diagnostico': 'Excesso pode indicar isolamento, falta de conexão emocional ou rigidez de pensamento.'
+        'cor': 'Azul (Cobalto)',
+        'rgb': (0, 71, 171),
+        'anima_animus': 'Espiritualidade, pensamento (Logos), introspecção, verdade, lealdade, o feminino receptivo, profundidade psíquica.',
+        'sombra': 'Frieza emocional, distanciamento, depressão, melancolia, rigidez de pensamento, dogmatismo.',
+        'personalidade': 'Calma, ponderada, intelectual, leal, conservadora, busca profundidade e significado.',
+        'diagnostico': 'Pode indicar necessidade de introspecção, busca por verdade e calma, ou um período de tristeza e isolamento.',
+        'referencias': 'Associações com a função pensamento introvertido, o arquétipo do Sábio, e o simbolismo do céu e do mar profundo. Ver "Tipos Psicológicos" de Jung.'
     },
     '5': {
-        'cor': 'Verde',
-        'rgb': (0, 128, 0), # Verde padrão, não verde limão (0,255,0)
-        'anima_animus': 'Natureza, crescimento, cura, fertilidade, esperança, sentimento.',
-        'sombra': 'Inveja, ciúme, imaturidade, estagnação, possessividade.',
-        'personalidade': 'Equilibrada, harmoniosa, compassiva, generosa, prática.',
-        'diagnostico': 'Pode indicar necessidade de renovação, contato com a natureza ou questões de saúde/crescimento pessoal.'
+        'cor': 'Verde (Esmeralda)',
+        'rgb': (80, 200, 120),
+        'anima_animus': 'Natureza, crescimento, cura, fertilidade, esperança, sentimento (Eros conectado à natureza), renovação.',
+        'sombra': 'Inveja, ciúme, imaturidade, estagnação, possessividade, engano (como a serpente no jardim).',
+        'personalidade': 'Equilibrada, harmoniosa, compassiva, generosa, prática, conectada com o crescimento.',
+        'diagnostico': 'Pode indicar necessidade de renovação, contato com a natureza, cura física ou emocional, ou questões de crescimento pessoal e inveja.',
+        'referencias': 'Simbolismo da natureza, o arquétipo da Grande Mãe (aspecto nutritivo), e a função sentimento. Ver estudos sobre simbolismo da natureza na psicologia analítica.'
     },
     '6': {
-        'cor': 'Amarelo',
-        'rgb': (255, 255, 0),
-        'anima_animus': 'Intelecto, intuição, otimismo, alegria, extroversão, inspiração.',
-        'sombra': 'Covardia, superficialidade, traição, ansiedade, crítica excessiva.',
-        'personalidade': 'Comunicativa, alegre, curiosa, criativa, espontânea.',
-        'diagnostico': 'Pode indicar necessidade de clareza mental, expressão ou sobrecarga de estímulos.'
+        'cor': 'Amarelo (Limão)',
+        'rgb': (255, 247, 0),
+        'anima_animus': 'Intelecto, intuição (como insight súbito), otimismo, alegria, extroversão, inspiração, clareza mental.',
+        'sombra': 'Covardia, superficialidade, traição (como Judas), ansiedade, crítica excessiva, racionalização excessiva.',
+        'personalidade': 'Comunicativa, alegre, curiosa, criativa, espontânea, pode ser volátil.',
+        'diagnostico': 'Pode indicar necessidade de clareza mental, expressão de alegria e otimismo, ou sobrecarga de estímulos e ansiedade.',
+        'referencias': 'Associações com a função intuição extrovertida e o simbolismo solar (aspecto de iluminação). Ver "Tipos Psicológicos" de Jung.'
+    },
+    '7': {
+        'cor': 'Laranja',
+        'rgb': (255, 165, 0),
+        'anima_animus': 'Criatividade, entusiasmo, alegria social, vitalidade extrovertida, prazer sensorial, aventura.',
+        'sombra': 'Superficialidade, dependência de aprovação, excesso de indulgência, falta de seriedade, exibicionismo.',
+        'personalidade': 'Otimista, sociável, aventureiro, enérgico, busca prazer e interação.',
+        'diagnostico': 'Pode indicar necessidade de expressão criativa, socialização, busca por prazer e alegria, ou uma fase de transição e exploração.',
+        'referencias': 'Combinação de energias do vermelho (ação) e amarelo (alegria/intelecto). Simbolismo da função sensação extrovertida. Ver "Tipos Psicológicos" de Jung.'
+    },
+    '8': {
+        'cor': 'Roxo/Violeta',
+        'rgb': (128, 0, 128),
+        'anima_animus': 'Espiritualidade elevada, intuição, transformação, nobreza, conexão com o inconsciente profundo e o mistério.',
+        'sombra': 'Luto não resolvido, melancolia, arrogância espiritual, escapismo, irrealismo, autopunição.',
+        'personalidade': 'Intuitiva, artística, sensível, misteriosa, busca significado e propósito, pode ser um tanto isolada.',
+        'diagnostico': 'Pode indicar um período de introspecção profunda, busca espiritual, necessidade de integrar experiências transformadoras, ou luto.',
+        'referencias': 'Simbolismo da transformação, espiritualidade e o transcendente. Conexão com o arquétipo do Mago ou da Sacerdotisa. Ver obras sobre simbolismo e alquimia.'
+    },
+    '9': {
+        'cor': 'Rosa (Claro)',
+        'rgb': (255, 182, 193),
+        'anima_animus': 'Amor incondicional, compaixão, cuidado, ternura, receptividade, inocência, o feminino jovem.',
+        'sombra': 'Imaturidade emocional, fragilidade excessiva, sentimentalismo, necessidade de resgate, ingenuidade perigosa.',
+        'personalidade': 'Gentil, afetuosa, carinhosa, empática, pode ser idealista e um pouco ingênua.',
+        'diagnostico': 'Pode indicar necessidade de amor próprio e cuidado, cura emocional, ou o desenvolvimento de qualidades mais suaves e receptivas.',
+        'referencias': 'Simbolismo do amor, cuidado e o arquétipo da Donzela ou da Criança Divina (aspecto vulnerável e puro). Associado à função sentimento.'
+    },
+    '10': {
+        'cor': 'Marrom (Terra)',
+        'rgb': (139, 69, 19),
+        'anima_animus': 'Conexão com a terra, estabilidade, segurança, simplicidade, raízes, o corpo físico, praticidade.',
+        'sombra': 'Estagnação, teimosia, materialismo excessivo, falta de aspiração, peso, sujeira (no sentido de não elaborado).',
+        'personalidade': 'Prática, confiável, sólida, aprecia o conforto e a tradição, pés no chão.',
+        'diagnostico': 'Pode indicar necessidade de aterramento (grounding), segurança material, ou uma fase de consolidação e praticidade, ou estagnação.',
+        'referencias': 'Simbolismo da terra, o corpo e a função sensação introvertida. Ver "Tipos Psicológicos" e discussões sobre o aspecto ctônico.'
+    },
+    '11': {
+        'cor': 'Cinza (Médio)',
+        'rgb': (128, 128, 128),
+        'anima_animus': 'Neutralidade, equilíbrio, objetividade, maturidade, contenção, o "entre-mundos".',
+        'sombra': 'Indiferença, falta de compromisso, depressão, medo da vida, repressão emocional, estagnação, falta de cor.',
+        'personalidade': 'Reservada, analítica, prudente, pode ser indecisa ou imparcial, busca moderação.',
+        'diagnostico': 'Pode indicar um período de transição, necessidade de distanciamento para avaliação, um estado de exaustão emocional, ou depressão.',
+        'referencias': 'Simbolismo da neutralidade, da sombra e da transição. Pode representar a conjunção dos opostos de forma não diferenciada.'
+    },
+    '12': {
+        'cor': 'Dourado',
+        'rgb': (255, 215, 0),
+        'anima_animus': 'Iluminação, sabedoria, o Self realizado, valor, prosperidade, poder espiritual, o Sol.',
+        'sombra': 'Ostentação, materialismo, ego inflado (inflação psíquica), corrupção pelo poder, falsidade, ganância.',
+        'personalidade': 'Carismática, confiante, generosa, busca excelência e reconhecimento, magnânima.',
+        'diagnostico': 'Pode indicar um período de grande realização e autoconfiança, ou a necessidade de reconhecer o próprio valor e brilho; cuidado com a inflação.',
+        'referencias': 'Simbolismo solar, o Self, o "ouro alquímico" (Lapis Philosophorum). Ver obras de Jung sobre alquimia e o processo de individuação.'
+    },
+    '13': {
+        'cor': 'Prateado',
+        'rgb': (192, 192, 192),
+        'anima_animus': 'Intuição, reflexão, o feminino arquetípico (Lua), clareza mental sutil, modernidade, valor intrínseco.',
+        'sombra': 'Frieza, distanciamento emocional, ilusão, indecisão, superficialidade elegante, inconstância.',
+        'personalidade': 'Intuitiva, elegante, sofisticada, busca harmonia e paz interior, pode ser adaptável.',
+        'diagnostico': 'Pode indicar necessidade de introspecção, conexão com a intuição e o feminino, ou um período de purificação e clareza.',
+        'referencias': 'Simbolismo lunar, Anima, o inconsciente. Associado à intuição e ao mundo dos sonhos e reflexos.'
+    },
+    '14': {
+        'cor': 'Turquesa/Ciano',
+        'rgb': (64, 224, 208),
+        'anima_animus': 'Cura emocional, comunicação clara (especialmente do coração), proteção, individualidade, tranquilidade expressiva.',
+        'sombra': 'Dificuldade em expressar sentimentos, isolamento autoimposto, frieza defensiva, superficialidade na comunicação.',
+        'personalidade': 'Calma, comunicativa, criativa, independente, busca clareza e expressão autêntica, curativa.',
+        'diagnostico': 'Pode indicar necessidade de cura emocional, melhoria na comunicação (falar a sua verdade), ou fortalecimento da individualidade e autoconfiança.',
+        'referencias': 'Combinação de azul (pensamento/calma) e verde (sentimento/cura). Simbolismo da comunicação e da autoexpressão curativa.'
+    },
+    '15': {
+        'cor': 'Magenta',
+        'rgb': (255, 0, 255),
+        'anima_animus': 'Espiritualidade prática, harmonia universal, compaixão não sentimental, transformação interior, gratidão.',
+        'sombra': 'Excentricidade, não praticidade, sentimento de superioridade espiritual, desequilíbrio emocional.',
+        'personalidade': 'Inovadora, artística, compassiva, busca equilíbrio entre o espiritual e o material, inconformista.',
+        'diagnostico': 'Pode indicar um período de grande insight espiritual, necessidade de alinhar ações com valores elevados, ou de expressar compaixão de forma ativa.',
+        'referencias': 'Cor não espectral, simboliza a união de opostos (vermelho e violeta). Associada à transformação e à espiritualidade que transcende o comum.'
+    },
+    '16': {
+        'cor': 'Índigo',
+        'rgb': (75, 0, 130),
+        'anima_animus': 'Intuição profunda (terceiro olho), sabedoria interior, percepção além do comum, autoridade espiritual, integridade.',
+        'sombra': 'Medo do desconhecido, fanatismo, isolamento por se sentir incompreendido, depressão por excesso de percepção, dogmatismo.',
+        'personalidade': 'Introspectiva, sábia, perceptiva, busca conhecimento profundo e verdade, pode ser vista como "diferente".',
+        'diagnostico': 'Pode indicar uma forte conexão com o inconsciente, necessidade de confiar na intuição, ou um período de busca por respostas existenciais e integridade.',
+        'referencias': 'Associado à intuição profunda e à percepção psíquica. Ver estudos sobre estados alterados de consciência e simbolismo do "terceiro olho".'
+    },
+    '17': {
+        'cor': 'Verde Oliva',
+        'rgb': (128, 128, 0),
+        'anima_animus': 'Paz, sabedoria prática, conexão com a natureza de forma madura, esperança resiliente, estratégia.',
+        'sombra': 'Amargura, ressentimento, engano, estagnação disfarçada de paz, covardia.',
+        'personalidade': 'Diplomática, observadora, perspicaz, valoriza a harmonia e a estratégia, resiliente.',
+        'diagnostico': 'Pode indicar necessidade de resolução de conflitos (internos ou externos), busca por paz interior duradoura, ou aplicação da sabedoria de forma prática.',
+        'referencias': 'Simbolismo da paz (ramo de oliveira) e da sabedoria terrena. Uma mistura de verde (natureza) e amarelo/marrom (terra/intelecto).'
+    },
+    '18': {
+        'cor': 'Verde Limão (Chartreuse)',
+        'rgb': (127, 255, 0),
+        'anima_animus': 'Juventude, vigor, otimismo efervescente, clareza mental e emocional, novidade, espontaneidade.',
+        'sombra': 'Imaturidade, inveja aguda, acidez, irritabilidade, ansiedade por novidade.',
+        'personalidade': 'Energética, alegre, comunicativa, pode ser um pouco impulsiva ou superficial, inovadora.',
+        'diagnostico': 'Pode indicar necessidade de renovação, leveza, ou um alerta para não ser excessivamente crítico, invejoso ou ansioso por constante mudança.',
+        'referencias': 'Combinação de verde (crescimento) e amarelo (alegria/intelecto). Simboliza energia nova e vibrante.'
+    },
+    '19': {
+        'cor': 'Azul Celeste/Claro',
+        'rgb': (173, 216, 230),
+        'anima_animus': 'Paz, tranquilidade, serenidade, comunicação suave, esperança e proteção espiritual, o céu.',
+        'sombra': 'Passividade, ingenuidade, frieza distante, dificuldade em impor limites, tristeza suave.',
+        'personalidade': 'Calma, sonhadora, idealista, busca harmonia e entendimento, gentil.',
+        'diagnostico': 'Pode indicar necessidade de paz interior, relaxamento, ou desenvolvimento de uma comunicação mais assertiva e suave, ou um toque de melancolia.',
+        'referencias': 'Simbolismo do céu, tranquilidade e espiritualidade serena. Associado à função pensamento de forma mais leve.'
+    },
+    '20': {
+        'cor': 'Azul Marinho',
+        'rgb': (0, 0, 128),
+        'anima_animus': 'Autoridade, responsabilidade, profundidade de conhecimento, confiança, ordem, o mar profundo.',
+        'sombra': 'Rigidez, conservadorismo excessivo, autoritarismo, melancolia profunda, repressão, medo da desordem.',
+        'personalidade': 'Séria, confiável, organizada, leal, com forte senso de dever, introspectiva.',
+        'diagnostico': 'Pode indicar necessidade de estrutura, disciplina, ou um período de introspecção séria e tomada de decisões importantes; cuidado com a rigidez.',
+        'referencias': 'Simbolismo da autoridade, profundidade e o inconsciente (como o mar). Associado ao arquétipo do Rei ou do Juiz.'
+    },
+    '21': {
+        'cor': 'Bege',
+        'rgb': (245, 245, 220),
+        'anima_animus': 'Simplicidade, conforto, neutralidade calma, praticidade e modéstia, o básico.',
+        'sombra': 'Falta de opinião, tédio, conformismo, falta de vitalidade, invisibilidade.',
+        'personalidade': 'Calma, conservadora, confiável, aprecia a estabilidade e o básico, discreta.',
+        'diagnostico': 'Pode indicar necessidade de simplicidade, redução de stress, ou um desejo por um ambiente neutro e acolhedor; atenção para não cair no tédio.',
+        'referencias': 'Simbolismo da neutralidade e do conforto básico. Uma cor "não declarativa", que pode ser um pano de fundo para outras energias.'
+    },
+    '22': {
+        'cor': 'Creme',
+        'rgb': (255, 253, 208),
+        'anima_animus': 'Suavidade, pureza com calor, conforto, elegância discreta, receptividade, nutrição.',
+        'sombra': 'Passividade excessiva, falta de assertividade, pode ser visto como sem graça ou insípido.',
+        'personalidade': 'Gentil, calma, apreciadora do conforto e da tradição, com um toque de sofisticação, acolhedora.',
+        'diagnostico': 'Pode indicar necessidade de nutrição emocional, um ambiente tranquilo, ou o desejo de expressar elegância de forma sutil e acolhedora.',
+        'referencias': 'Um branco "aquecido", simbolizando pureza com um toque de humanidade e conforto. Associado à nutrição e ao cuidado.'
+    },
+    '23': {
+        'cor': 'Salmão',
+        'rgb': (250, 128, 114),
+        'anima_animus': 'Saúde, felicidade, aceitação do corpo, compaixão e otimismo gentil, fluxo da vida.',
+        'sombra': 'Dependência emocional, superficialidade nas relações, busca por aprovação constante, medo da solidão.',
+        'personalidade': 'Amigável, sociável, otimista, busca harmonia nos relacionamentos, cuidadora.',
+        'diagnostico': 'Pode indicar foco na saúde e bem-estar (físico e emocional), necessidade de conexões sociais positivas, ou cura de questões de autoimagem.',
+        'referencias': 'Combinação de rosa (compaixão) e laranja (alegria social). Simboliza bem-estar e conexão interpessoal saudável.'
+    },
+    '24': {
+        'cor': 'Lavanda',
+        'rgb': (230, 230, 250),
+        'anima_animus': 'Espiritualidade delicada, intuição suave, paz interior, cura e purificação, nostalgia gentil.',
+        'sombra': 'Nostalgia excessiva, fragilidade, escapismo para um mundo de fantasia, melancolia suave.',
+        'personalidade': 'Sensível, imaginativa, calma, busca beleza e tranquilidade, um pouco etérea.',
+        'diagnostico': 'Pode indicar necessidade de relaxamento, conexão com o lado mais sutil da vida, ou um período de cura e introspecção suave; atenção ao escapismo.',
+        'referencias': 'Um violeta suavizado com branco. Simboliza espiritualidade gentil, cura e intuição delicada.'
+    },
+    '25': {
+        'cor': 'Bordô/Vinho',
+        'rgb': (128, 0, 32),
+        'anima_animus': 'Paixão madura, poder controlado, sofisticação, ambição, força interior, riqueza interior.',
+        'sombra': 'Raiva reprimida, crueldade, arrogância, manipulação, luxúria controladora.',
+        'personalidade': 'Forte, determinada, elegante, ambiciosa, pode ser introspectiva e intensa, líder.',
+        'diagnostico': 'Pode indicar um período de grande força pessoal, necessidade de expressar poder de forma construtiva, ou lidar com emoções intensas e profundas.',
+        'referencias': 'Um vermelho escurecido, simbolizando paixão internalizada, poder e sofisticação. Pode ter conotações de realeza e autoridade.'
+    },
+    '26': {
+        'cor': 'Carvão (Cinza Escuro)',
+        'rgb': (54, 69, 79),
+        'anima_animus': 'Força, resiliência, mistério, proteção, sofisticação discreta, a sombra integrada.',
+        'sombra': 'Depressão, pessimismo, isolamento, teimosia, negatividade, peso existencial.',
+        'personalidade': 'Forte, estável, séria, pode ser misteriosa ou introspectiva, confiável.',
+        'diagnostico': 'Pode indicar necessidade de introspecção, enfrentamento de desafios com força, ou um período de seriedade e foco; atenção à negatividade.',
+        'referencias': 'Um preto suavizado, mantendo o mistério mas com mais solidez e menos absoluto. Simboliza a força que vem da integração da sombra.'
+    },
+    '27': {
+        'cor': 'Terracota',
+        'rgb': (226, 114, 91),
+        'anima_animus': 'Conexão com as raízes ancestrais, calor terreno, criatividade manual, simplicidade rústica, fertilidade da terra.',
+        'sombra': 'Apego excessivo ao passado, resistência à mudança, teimosia, rusticidade excessiva.',
+        'personalidade': 'Acolhedora, prática, artística (especialmente manual), conectada com a natureza e o tangível.',
+        'diagnostico': 'Pode indicar necessidade de se conectar com a terra e as raízes, valorizar o simples, ou expressar criatividade de forma tangível.',
+        'referencias': 'Cor da argila cozida, simboliza a conexão com a terra, o artesanato e a ancestralidade. Uma mistura de marrom e laranja.'
+    },
+    '28': {
+        'cor': 'Mostarda (Amarelo Ocre)',
+        'rgb': (222, 170, 14),
+        'anima_animus': 'Intelecto maduro, sabedoria prática derivada da experiência, otimismo cauteloso, discernimento.',
+        'sombra': 'Cinismo, amargura, inveja disfarçada, crítica destrutiva, teimosia intelectual.',
+        'personalidade': 'Inteligente, observadora, com um humor particular, pode ser um pouco excêntrica ou antiquada.',
+        'diagnostico': 'Pode indicar um período de reflexão sobre experiências passadas, aplicação da sabedoria, ou a necessidade de evitar o cinismo e a amargura.',
+        'referencias': 'Um amarelo terroso, simbolizando um intelecto que foi temperado pela experiência. Menos brilhante que o amarelo limão, mais ponderado.'
+    },
+    '29': {
+        'cor': 'Coral',
+        'rgb': (255, 127, 80),
+        'anima_animus': 'Energia social, alegria, vitalidade, otimismo, criatividade expressiva e comunitária, empatia.',
+        'sombra': 'Necessidade excessiva de atenção, superficialidade, impulsividade em grupo, fofoca.',
+        'personalidade': 'Extrovertida, entusiasmada, amigável, gosta de estar em grupo e compartilhar, calorosa.',
+        'diagnostico': 'Pode indicar necessidade de interação social, expressão de alegria, ou participação em atividades comunitárias e colaborativas.',
+        'referencias': 'Mistura de laranja e rosa, simboliza a alegria da conexão social e a vitalidade empática. Associado ao calor humano.'
+    },
+    '30': {
+        'cor': 'Verde Água (Menta Claro)',
+        'rgb': (152, 251, 152),
+        'anima_animus': 'Renovação suave, clareza emocional, frescor, cura e tranquilidade mental, otimismo gentil.',
+        'sombra': 'Frieza emocional disfarçada de calma, superficialidade, dificuldade em aprofundar vínculos, ingenuidade.',
+        'personalidade': 'Calma, refrescante, otimista, busca harmonia e bem-estar, diplomática.',
+        'diagnostico': 'Pode indicar necessidade de limpeza emocional, clareza mental, ou um período de renovação e alívio do estresse; buscar profundidade.',
+        'referencias': 'Um verde claro e azulado, simbolizando frescor, cura suave e clareza. Associado à renovação e à tranquilidade.'
     }
-    # ... (adicione outras cores Junguianas conforme necessário)
 }
 
 def rgb_to_cmyk(r_norm, g_norm, b_norm): # Espera r,g,b normalizados (0-1)
@@ -153,7 +373,8 @@ def buscar_cor_proxima(rgb_query, cores_junguianas_dict):
         return {
             'cor': 'N/A', 'rgb': (0,0,0), 'anima_animus': 'Dicionário vazio.',
             'sombra': 'Dicionário vazio.', 'personalidade': 'Dicionário vazio.',
-            'diagnostico': 'Dicionário de cores Junguianas está vazio.'
+            'diagnostico': 'Dicionário de cores Junguianas está vazio.',
+            'referencias': ''
         }
 
     for key, cor_data in cores_junguianas_dict.items():
@@ -354,6 +575,9 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
                         st.write(f"**Sombra:** {cor_jung_representativa['sombra']}")
                         st.write(f"**Personalidade:** {cor_jung_representativa['personalidade']}")
                         st.write(f"**Diagnóstico:** {cor_jung_representativa['diagnostico']}")
+                        if 'referencias' in cor_jung_representativa and cor_jung_representativa['referencias']:
+                            st.markdown("**Pistas para Estudo:**")
+                            st.caption(cor_jung_representativa['referencias'])
                 else:
                     st.caption("Análise Junguiana para a cor representativa não disponível.")
                 
@@ -391,16 +615,19 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
                                 st.write(f"**Sombra:** {cor_jung_especifica['sombra']}")
                                 st.write(f"**Personalidade:** {cor_jung_especifica['personalidade']}")
                                 st.write(f"**Diagnóstico:** {cor_jung_especifica['diagnostico']}")
+                                if 'referencias' in cor_jung_especifica and cor_jung_especifica['referencias']:
+                                    st.markdown("**Pistas para Estudo:**")
+                                    st.caption(cor_jung_especifica['referencias'])
                         else:
                             st.caption("(Análise Junguiana não disponível para esta cor)")
                 st.markdown(f"---")
 
-                # NOVA SEÇÃO: CAMADAS DE CORES PARA PINTURA
+                # SEÇÃO: CAMADAS DE CORES PARA PINTURA
                 st.subheader("🖼️ Camadas de Cores para Pintura (PNG)")
                 st.caption("Cada imagem abaixo representa uma camada de cor. As áreas coloridas devem ser pintadas com a cor correspondente da paleta.")
 
                 if isinstance(colors_palette_norm_rgb, np.ndarray) and colors_palette_norm_rgb.shape[0] > 0:
-                    altura, largura, _ = segmented_image_uint8_rgb.shape # Usar segmented_image_uint8_rgb para dimensões
+                    altura, largura, _ = segmented_image_uint8_rgb.shape 
 
                     for i, color_norm_rgb_item in enumerate(colors_palette_norm_rgb):
                         cor_atual_uint8_rgb = np.array([int(c * 255) for c in color_norm_rgb_item], dtype=np.uint8)
