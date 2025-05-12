@@ -63,36 +63,110 @@ cores_junguianas = {
 }
 
 def rgb_to_cmyk(r_norm, g_norm, b_norm): # Espera r,g,b normalizados (0-1)
-    if (r_norm == 0) and (g_norm == 0) and (b_norm == 0): # Preto
-        return 0, 0, 0, 1
+    if r_norm < 0: r_norm = 0
+    if g_norm < 0: g_norm = 0
+    if b_norm < 0: b_norm = 0
+    if r_norm > 1: r_norm = 1
+    if g_norm > 1: g_norm = 1
+    if b_norm > 1: b_norm = 1
 
-    c = 1 - r_norm
-    m = 1 - g_norm
-    y = 1 - b_norm
+    if (r_norm == 0) and (g_norm == 0) and (b_norm == 0): # Preto
+        return 0.0, 0.0, 0.0, 1.0
+    if (r_norm == 1) and (g_norm == 1) and (b_norm == 1): # Branco
+        return 0.0, 0.0, 0.0, 0.0
+
+
+    c = 1.0 - r_norm
+    m = 1.0 - g_norm
+    y = 1.0 - b_norm
 
     min_cmy = min(c, m, y)
+    
+    denominator = 1.0 - min_cmy
+    if abs(denominator) < 1e-9: # Praticamente zero, acontece se min_cmy é 1 (preto)
+        if r_norm == 0 and g_norm == 0 and b_norm == 0: # Preto
+            return 0.0, 0.0, 0.0, 1.0
+        else: # Fallback se algo muito estranho acontecer (cor não preta resultando em denom zero)
+              # Isso não deveria ocorrer se r,g,b não são todos zero.
+            k_val = min_cmy # O preto é o mínimo de c,m,y
+            return 0.0,0.0,0.0, k_val
 
-    if (1 - min_cmy) == 0: # Caso de branco (r_norm=1, g_norm=1, b_norm=1)
-        return 0, 0, 0, 0 # k = min_cmy = 0
 
-    c_final = (c - min_cmy) / (1 - min_cmy)
-    m_final = (m - min_cmy) / (1 - min_cmy)
-    y_final = (y - min_cmy) / (1 - min_cmy)
-    k_final = min_cmy
+    c_final = (c - min_cmy) / denominator
+    m_final = (m - min_cmy) / denominator
+    y_final = (y - min_cmy) / denominator
+    k_final = min_cmy 
 
     return c_final, m_final, y_final, k_final
 
 
-def calculate_ml(c, m, y, k, total_ml):
-    total_ink = c + m + y + k
-    if total_ink == 0: # Nenhuma tinta necessária para branco ou cor sem componentes CMYK
-        return 0, 0, 0, 0
+def calculate_ml_with_white(r_norm, g_norm, b_norm, total_ml_target):
+    # Garante que r_norm, g_norm, b_norm estejam no intervalo [0,1]
+    r_norm = max(0.0, min(1.0, r_norm))
+    g_norm = max(0.0, min(1.0, g_norm))
+    b_norm = max(0.0, min(1.0, b_norm))
 
-    c_ml = (c / total_ink) * total_ml
-    m_ml = (m / total_ink) * total_ml
-    y_ml = (y / total_ink) * total_ml
-    k_ml = (k / total_ink) * total_ml
-    return c_ml, m_ml, y_ml, k_ml
+    white_proportion_in_rgb = min(r_norm, g_norm, b_norm)
+    white_ml = white_proportion_in_rgb * total_ml_target
+    colored_pigment_total_ml = total_ml_target - white_ml
+
+    if colored_pigment_total_ml < 1e-5 : # Praticamente não há pigmento colorido, tudo é branco
+        return 0.0, 0.0, 0.0, 0.0, total_ml_target
+
+    # Obter as proporções CMYK para a cor RGB original
+    c_pigment_prop, m_pigment_prop, y_pigment_prop, k_pigment_prop = rgb_to_cmyk(r_norm, g_norm, b_norm)
+
+    # Se a cor original já era branca, rgb_to_cmyk retorna (0,0,0,0)
+    # e white_proportion_in_rgb é 1. colored_pigment_total_ml será 0.
+    if r_norm == 1.0 and g_norm == 1.0 and b_norm == 1.0:
+        return 0.0, 0.0, 0.0, 0.0, total_ml_target
+
+    sum_cmyk_proportions = c_pigment_prop + m_pigment_prop + y_pigment_prop + k_pigment_prop
+
+    if abs(sum_cmyk_proportions) < 1e-5:
+        # Não há pigmentos CMYK significativos (cor é essencialmente branca ou um cinza muito claro)
+        # white_ml já foi calculado e deve cobrir o total_ml_target.
+        # Os pigmentos coloridos serão zero.
+        return 0.0, 0.0, 0.0, 0.0, total_ml_target
+    else:
+        c_ml = (c_pigment_prop / sum_cmyk_proportions) * colored_pigment_total_ml
+        m_ml = (m_pigment_prop / sum_cmyk_proportions) * colored_pigment_total_ml
+        y_ml = (y_pigment_prop / sum_cmyk_proportions) * colored_pigment_total_ml
+        k_ml = (k_pigment_prop / sum_cmyk_proportions) * colored_pigment_total_ml
+        
+    # Ajuste final para garantir que a soma seja exatamente total_ml_target,
+    # ajustando o branco se necessário (devido a erros de ponto flutuante).
+    current_sum_colored = c_ml + m_ml + y_ml + k_ml
+    # Recalcula white_ml para garantir que a soma seja exata,
+    # mas colored_pigment_total_ml já deveria ter limitado isso.
+    # O white_ml calculado inicialmente é o mais "correto" teoricamente.
+    # O que pode acontecer é que a soma de c_ml, m_ml, y_ml, k_ml não seja *exatamente* colored_pigment_total_ml.
+    
+    # Se a soma dos pigmentos coloridos calculados for ligeiramente diferente de colored_pigment_total_ml
+    # devido a erros de ponto flutuante, ajustamos o branco para compensar.
+    calculated_colored_ml = c_ml + m_ml + y_ml + k_ml
+    white_ml = total_ml_target - calculated_colored_ml # Garante que a soma seja total_ml_target
+
+    # Garante que nenhum ml seja negativo devido a erros de ponto flutuante extremos
+    c_ml = max(0.0, c_ml)
+    m_ml = max(0.0, m_ml)
+    y_ml = max(0.0, y_ml)
+    k_ml = max(0.0, k_ml)
+    white_ml = max(0.0, white_ml)
+    
+    # Renormalizar se a soma ainda estiver fora (improvável com o ajuste de white_ml acima)
+    final_sum = c_ml + m_ml + y_ml + k_ml + white_ml
+    if abs(final_sum - total_ml_target) > 1e-5 and final_sum > 1e-5 :
+        scale_factor = total_ml_target / final_sum
+        c_ml *= scale_factor
+        m_ml *= scale_factor
+        y_ml *= scale_factor
+        k_ml *= scale_factor
+        white_ml *= scale_factor
+
+
+    return c_ml, m_ml, y_ml, k_ml, white_ml
+
 
 def buscar_cor_proxima(rgb_query, cores_junguianas_dict):
     if max(rgb_query) <= 1.0: # Normaliza se estiver no formato 0-1
@@ -118,86 +192,70 @@ def buscar_cor_proxima(rgb_query, cores_junguianas_dict):
             cor_mais_proxima_info = cor_data
             
     if cor_mais_proxima_info is None and cores_junguianas_dict: # Fallback improvável
-        # Retorna a primeira cor do dicionário como fallback
         return cores_junguianas_dict[next(iter(cores_junguianas_dict))]
-
 
     return cor_mais_proxima_info
 
 
 class Canvas():
     def __init__(self, src_rgb, nb_color, target_dimension_px):
-        self.src_rgb = src_rgb # Espera-se NumPy array RGB
+        self.src_rgb = src_rgb 
         self.nb_color = nb_color
         self.target_dimension_px = target_dimension_px
-        self.colormap_rgb_0_255 = [] # Armazenará cores RGB (0-255)
+        self.colormap_rgb_0_255 = [] 
 
     def generate(self):
-        im_source_resized_rgb = self.resize() # RGB uint8
-        clean_img_rgb = self.cleaning(im_source_resized_rgb) # RGB uint8
+        im_source_resized_rgb = self.resize() 
+        clean_img_rgb = self.cleaning(im_source_resized_rgb) 
         
-        clean_img_norm_rgb = np.array(clean_img_rgb, dtype=np.float32) / 255.0 # RGB float32 (0-1)
+        clean_img_norm_rgb = np.array(clean_img_rgb, dtype=np.float32) / 255.0 
         
-        # Ambos RGB float32 (0-1)
         quantified_image_norm_rgb, colors_palette_norm_rgb = self.quantification(clean_img_norm_rgb)
         
-        quantified_image_uint8_rgb = (quantified_image_norm_rgb * 255).astype(np.uint8) # RGB uint8 (0-255)
+        quantified_image_uint8_rgb = (quantified_image_norm_rgb * 255).astype(np.uint8) 
 
-        canvas_paint = np.ones(quantified_image_uint8_rgb.shape[:2], dtype="uint8") * 255 # P&B uint8
+        canvas_paint = np.ones(quantified_image_uint8_rgb.shape[:2], dtype="uint8") * 255 
 
         self.colormap_rgb_0_255 = []
-        if colors_palette_norm_rgb.shape[0] > 0: # Se houver cores na paleta
+        if isinstance(colors_palette_norm_rgb, np.ndarray) and colors_palette_norm_rgb.shape[0] > 0:
             for ind, color_norm_rgb in enumerate(colors_palette_norm_rgb):
-                # Armazena como RGB 0-255
                 self.colormap_rgb_0_255.append([int(c * 255) for c in color_norm_rgb])
                 
                 color_uint8_rgb_val = (color_norm_rgb * 255).astype(np.uint8)
-
-                # Criar uma máscara para a cor exata na imagem quantizada (uint8)
                 mask = cv2.inRange(quantified_image_uint8_rgb, color_uint8_rgb_val, color_uint8_rgb_val)
-                
                 contours, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
                 for contour in contours:
-                    if cv2.contourArea(contour) > 100: # Filtra contornos muito pequenos
-                        # Desenha contornos na tela de pintura
-                        cv2.drawContours(canvas_paint, [contour], -1, (0, 0, 0), 1) # Contorno preto
-                        
+                    if cv2.contourArea(contour) > 100: 
+                        cv2.drawContours(canvas_paint, [contour], -1, (0, 0, 0), 1) 
                         M = cv2.moments(contour)
                         if M["m00"] != 0:
                             txt_x = int(M["m10"] / M["m00"])
                             txt_y = int(M["m01"] / M["m00"])
                             cv2.putText(canvas_paint, '{:d}'.format(ind + 1), (txt_x, txt_y),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1) # Texto preto
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1) 
         
-        # Retorna:
-        # 1. canvas_paint: Imagem P&B numerada para pintar (uint8, escala de cinza)
-        # 2. colors_palette_norm_rgb: Lista de cores da paleta (RGB, normalizado 0-1)
-        # 3. quantified_image_uint8_rgb: Imagem segmentada com cores da paleta (RGB, uint8 0-255)
         return canvas_paint, colors_palette_norm_rgb, quantified_image_uint8_rgb
 
     def resize(self):
         (height, width) = self.src_rgb.shape[:2]
-        if width == 0 or height == 0: # Lida com imagem vazia
+        if width == 0 or height == 0: 
             st.warning("Imagem de entrada parece estar vazia ou corrompida.")
-            return np.zeros((100,100,3), dtype=self.src_rgb.dtype) # Retorna uma imagem preta pequena
+            return np.zeros((100,100,3), dtype=self.src_rgb.dtype) 
 
         if height > width:
             new_width = int(width * self.target_dimension_px / float(height))
-            dim = (max(1, new_width), self.target_dimension_px) # Garante que new_width seja pelo menos 1
-        else: # width >= height
+            dim = (max(1, new_width), self.target_dimension_px) 
+        else: 
             new_height = int(height * self.target_dimension_px / float(width))
-            dim = (self.target_dimension_px, max(1, new_height)) # Garante que new_height seja pelo menos 1
+            dim = (self.target_dimension_px, max(1, new_height)) 
         
-        # Fallback final se algo der muito errado
         if dim[0] <= 0 or dim[1] <= 0:
              dim = (100,100)
-
 
         return cv2.resize(self.src_rgb, dim, interpolation=cv2.INTER_AREA)
 
     def cleaning(self, picture_rgb_uint8):
-        # picture_rgb é esperada como RGB uint8
         denoised_rgb = cv2.fastNlMeansDenoisingColored(picture_rgb_uint8, None, 10, 10, 7, 21)
         kernel = np.ones((5, 5), np.uint8)
         img_erosion_rgb = cv2.erode(denoised_rgb, kernel, iterations=1)
@@ -205,58 +263,49 @@ class Canvas():
         return img_dilation_rgb
 
     def quantification(self, picture_norm_rgb_float32):
-        # picture_norm_rgb é RGB, float32, normalizado (0-1)
         width, height, depth = picture_norm_rgb_float32.shape
-        if width * height == 0: # Imagem vazia
+        if width * height == 0: 
             return picture_norm_rgb_float32, np.array([])
 
         flattened_rgb = np.reshape(picture_norm_rgb_float32, (width * height, depth))
         
-        # Amostra para KMeans para eficiência
-        sample_size = min(1000, flattened_rgb.shape[0]) # Garante que a amostra não seja maior que a população
-        if sample_size == 0: # Se não houver pixels para amostrar
+        sample_size = min(1000, flattened_rgb.shape[0]) 
+        if sample_size == 0: 
             return picture_norm_rgb_float32, np.array([])
 
         sample_rgb = shuffle(flattened_rgb, random_state=42, n_samples=sample_size)
         
-        # n_clusters não pode ser > n_samples
         actual_nb_color = min(self.nb_color, sample_rgb.shape[0])
-        if actual_nb_color < 1: # Se não houver clusters para formar (ex: imagem monocromática e nb_color=1)
-            if sample_rgb.shape[0] > 0: # Se houver amostras, use a primeira como única cor
+        if actual_nb_color < 1: 
+            if sample_rgb.shape[0] > 0: 
                 return self.recreate_image(sample_rgb[0:1], np.zeros(flattened_rgb.shape[0], dtype=int), width, height), sample_rgb[0:1]
             return picture_norm_rgb_float32, np.array([])
-
 
         kmeans = KMeans(n_clusters=actual_nb_color, random_state=42, n_init='auto').fit(sample_rgb)
         labels = kmeans.predict(flattened_rgb)
         
-        # kmeans.cluster_centers_ são as cores (RGB normalizado)
-        new_img_norm_rgb = self.recreate_image(kmeans.cluster_centers_, labels, width, height) # RGB float32 (0-1)
-        return new_img_norm_rgb, kmeans.cluster_centers_ # kmeans.cluster_centers_ é RGB float32 (0-1)
+        new_img_norm_rgb = self.recreate_image(kmeans.cluster_centers_, labels, width, height) 
+        return new_img_norm_rgb, kmeans.cluster_centers_ 
 
     def recreate_image(self, codebook_norm_rgb, labels, width, height):
-        # codebook_norm_rgb são os centroides (cores RGB normalizadas)
-        # labels são os clusters para cada pixel
-        # Reconstrói a imagem
         d = codebook_norm_rgb.shape[1]
-        image = np.zeros((width * height, d), dtype=np.float32) # dtype float32
+        image = np.zeros((width * height, d), dtype=np.float32) 
         for i in range(width * height):
             image[i] = codebook_norm_rgb[labels[i]]
         return np.resize(image, (width, height, d))
 
 
 # --- Interface Streamlit ---
-st.set_page_config(layout="wide") # Usa layout mais largo
+st.set_page_config(layout="wide") 
 
 st.sidebar.title("🖌️ Criador de Tela para Pintar")
 st.sidebar.write("---")
 
 st.sidebar.header("ℹ️ Informações do Autor")
 try:
-    # Tente carregar a imagem. Se não encontrar, não quebre a aplicação.
     st.sidebar.image("clube.png", use_container_width=True)
 except Exception:
-    st.sidebar.caption("Logo 'clube.png' não encontrado.") # Mensagem mais suave
+    st.sidebar.caption("Logo 'clube.png' não encontrado.") 
 st.sidebar.write("Nome: Marcelo Claro")
 st.sidebar.write("Email: marceloclaro@geomaker.org")
 st.sidebar.write("WhatsApp: (88) 98158-7145")
@@ -265,7 +314,7 @@ st.sidebar.write("---")
 
 st.sidebar.header("⚙️ Configurações da Aplicação")
 uploaded_file = st.sidebar.file_uploader("Escolha uma imagem", type=["jpg", "png", "jpeg"])
-nb_color_slider = st.sidebar.slider('Número de cores na paleta', min_value=1, max_value=30, value=5, step=1) # min_value=1
+nb_color_slider = st.sidebar.slider('Número de cores na paleta', min_value=1, max_value=30, value=5, step=1) 
 total_ml_slider = st.sidebar.slider('Total em ml da tinta (por cor)', min_value=10, max_value=1000, value=50, step=10)
 target_dimension_slider = st.sidebar.slider(
     'Dimensão alvo da imagem (pixels)', 
@@ -296,7 +345,7 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
             
             with st.spinner('Processando imagem... Por favor, aguarde.'):
                 pil_image_rgb = pil_image.convert('RGB')
-                src_np_rgb = np.array(pil_image_rgb) # RGB uint8
+                src_np_rgb = np.array(pil_image_rgb) 
 
                 canvas_obj = Canvas(src_np_rgb, nb_color_slider, target_dimension_slider)
                 result_paint_screen, colors_palette_norm_rgb, segmented_image_uint8_rgb = canvas_obj.generate()
@@ -353,15 +402,16 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
                         st.image(color_block_display, caption=f"RGB: {tuple(color_uint8_rgb_item)}", width=80)
 
                     with col_info:
-                        c, m, y, k = rgb_to_cmyk(color_norm_rgb_item[0], color_norm_rgb_item[1], color_norm_rgb_item[2])
-                        c_ml, m_ml, y_ml, k_ml = calculate_ml(c, m, y, k, total_ml_slider)
+                        r_norm, g_norm, b_norm = color_norm_rgb_item[0], color_norm_rgb_item[1], color_norm_rgb_item[2]
+                        c_ml, m_ml, y_ml, k_ml, white_ml = calculate_ml_with_white(r_norm, g_norm, b_norm, total_ml_slider)
 
-                        st.markdown(f"**Dosagem CMYK ({total_ml_slider}ml):**")
+                        st.markdown(f"**Dosagem para {total_ml_slider}ml (incl. Branco):**")
                         st.markdown(f"""
                         - Ciano (C): {c_ml:.1f} ml
                         - Magenta (M): {m_ml:.1f} ml
                         - Amarelo (Y): {y_ml:.1f} ml
                         - Preto (K): {k_ml:.1f} ml
+                        - **Branco (W): {white_ml:.1f} ml**
                         """)
                         
                         cor_jung_especifica = buscar_cor_proxima(color_norm_rgb_item, cores_junguianas)
