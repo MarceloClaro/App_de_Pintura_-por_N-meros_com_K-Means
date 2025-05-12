@@ -519,10 +519,10 @@ if 'show_refs' not in st.session_state:
 
 st.sidebar.write("---")
 if st.sidebar.button("📚 Ver Referências Bibliográficas"):
-    st.session_state.show_refs = not st.session_state.show_refs
+    st.session_state.show_refs = not st.session_state.get('show_refs', False)
 
 
-if st.session_state.show_refs:
+if st.session_state.get('show_refs', False):
     st.sidebar.subheader("Referências Bibliográficas (ABNT NBR 6023:2018)")
     st.sidebar.markdown("""
     - EDWARDS, B. **Desenhando com o lado direito do cérebro**. Rio de Janeiro: Ediouro, 2005.
