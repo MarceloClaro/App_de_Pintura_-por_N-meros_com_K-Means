@@ -519,10 +519,10 @@ if 'show_refs' not in st.session_state:
 
 st.sidebar.write("---")
 if st.sidebar.button("📚 Ver Referências Bibliográficas"):
-    st.session_state.show_refs = not st.session_state.get('show_refs', False)
+    st.session_state.show_refs = not st.session_state.get('show_refs', False) # Toggle
 
 
-if st.session_state.get('show_refs', False):
+if st.session_state.get('show_refs', False): # Verifica o estado para exibir
     st.sidebar.subheader("Referências Bibliográficas (ABNT NBR 6023:2018)")
     st.sidebar.markdown("""
     - EDWARDS, B. **Desenhando com o lado direito do cérebro**. Rio de Janeiro: Ediouro, 2005.
@@ -543,7 +543,7 @@ if st.session_state.get('show_refs', False):
     st.sidebar.write("---")
 
 
-if st.sidebar.button('🎨 Gerar Paleta e Tela'):
+if st.sidebar.button('🎨 Gerar Paleta e Tela', key="generate_button"): # Adicionada chave ao botão principal
     if uploaded_file is not None:
         try:
             pil_image = Image.open(uploaded_file)
@@ -578,7 +578,8 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
                 _, segmented_buffer = cv2.imencode('.png', cv2.cvtColor(segmented_image_uint8_rgb, cv2.COLOR_RGB2BGR))
                 st.download_button(
                     label="📥 Baixar Segmentada (.png)", data=segmented_buffer.tobytes(),
-                    file_name=f'segmentada_{uploaded_file.name}.png', mime='image/png'
+                    file_name=f'segmentada_{uploaded_file.name}.png', mime='image/png',
+                    key="download_segmented"
                 )
                 st.write("---")
                 st.subheader("🖌️ Tela para Pintar")
@@ -586,7 +587,8 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
                 _, result_buffer = cv2.imencode('.png', result_paint_screen)
                 st.download_button(
                     label="📥 Baixar Tela para Pintar (.png)", data=result_buffer.tobytes(),
-                    file_name=f'tela_pintar_{uploaded_file.name}.png', mime='image/png'
+                    file_name=f'tela_pintar_{uploaded_file.name}.png', mime='image/png',
+                    key="download_paint_screen"
                 )
             
             st.write("---")
@@ -701,4 +703,5 @@ if st.sidebar.button('🎨 Gerar Paleta e Tela'):
         st.warning("Por favor, carregue uma imagem para gerar a paleta e a tela.")
 
 else:
-    st.info("👈 Ajuste as configurações na barra lateral, carregue uma imagem e clique em 'Gerar Paleta e Tela'.")
+    if not uploaded_file : # Só mostra esta mensagem se nenhum arquivo foi carregado e o botão não foi clicado
+        st.info("👈 Ajuste as configurações na barra lateral, carregue uma imagem e clique em 'Gerar Paleta e Tela'.")
