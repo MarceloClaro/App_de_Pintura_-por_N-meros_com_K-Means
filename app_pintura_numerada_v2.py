@@ -17,7 +17,7 @@ cores_junguianas = {
         'sombra': 'Repressão, medo do desconhecido, negação, luto não processado, vazio existencial, instintos primordiais não integrados.',
         'personalidade': 'Enigmática, introspectiva, poderosa, séria, pode buscar profundidade ou se isolar.',
         'diagnostico': 'Pode indicar um mergulho necessário no inconsciente, luto, depressão, ou a necessidade de confrontar a própria sombra e o desconhecido.',
-        'referencias': 'Interpretações baseadas nos conceitos de Sombra, Inconsciente Coletivo e simbolismo arquetípico de C.G. Jung (e.g., "O Homem e Seus Símbolos", "Arquétipos e o Inconsciente Coletivo"). O preto frequentemente simboliza o nigredo alquímico.'
+        'referencias': 'Conceitos: Sombra, Inconsciente, Nigredo (Alquimia). Obras relevantes: JUNG, C. G. *Arquétipos e o inconsciente coletivo*; JUNG, C. G. *Psicologia e alquimia*.'
     },
     '2': {
         'cor': 'Branco',
@@ -26,7 +26,7 @@ cores_junguianas = {
         'sombra': 'Frieza, vazio, negação da vida instintiva e da "sujeira" terrena, perfeccionismo estéril, isolamento idealista.',
         'personalidade': 'Idealista, busca clareza e perfeição, pode ser espiritualizada ou distante das realidades mundanas.',
         'diagnostico': 'Pode sugerir busca por paz e pureza, um novo começo, ou um distanciamento excessivo da realidade e das emoções "negativas".',
-        'referencias': 'Simbolismo do Self, individuação e o albedo alquímico. Ver obras de C.G. Jung sobre o Self e a totalidade psíquica.'
+        'referencias': 'Conceitos: Self, Individuação, Albedo (Alquimia). Obras relevantes: JUNG, C. G. *Arquétipos e o inconsciente coletivo*; JUNG, C. G. *Psicologia e alquimia*.'
     },
     '3': {
         'cor': 'Vermelho (Puro)',
@@ -35,7 +35,7 @@ cores_junguianas = {
         'sombra': 'Raiva, agressividade descontrolada, impulsividade destrutiva, perigo, luxúria, inflamação.',
         'personalidade': 'Extrovertida, assertiva, energética, competitiva, apaixonada, pode ser impulsiva.',
         'diagnostico': 'Excesso pode indicar stress, raiva contida, necessidade de ação e expressão da vitalidade, ou inflamação física/psíquica.',
-        'referencias': 'Associações com a função sentimento extrovertido, libido e o arquétipo do Guerreiro. O rubedo alquímico. Ver "Tipos Psicológicos" de Jung.'
+        'referencias': 'Conceitos: Libido, Função Sentimento Extrovertido, Rubedo (Alquimia). Obras relevantes: JUNG, C. G. *Tipos psicológicos*; JUNG, C. G. *Psicologia e alquimia*.'
     },
     '4': {
         'cor': 'Azul (Cobalto)',
@@ -44,7 +44,7 @@ cores_junguianas = {
         'sombra': 'Frieza emocional, distanciamento, depressão, melancolia, rigidez de pensamento, dogmatismo.',
         'personalidade': 'Calma, ponderada, intelectual, leal, conservadora, busca profundidade e significado.',
         'diagnostico': 'Pode indicar necessidade de introspecção, busca por verdade e calma, ou um período de tristeza e isolamento.',
-        'referencias': 'Associações com a função pensamento introvertido, o arquétipo do Sábio, e o simbolismo do céu e do mar profundo. Ver "Tipos Psicológicos" de Jung.'
+        'referencias': 'Conceitos: Função Pensamento Introvertido, Logos, Arquétipo do Sábio. Obras relevantes: JUNG, C. G. *Tipos psicológicos*.'
     },
     '5': {
         'cor': 'Verde (Esmeralda)',
@@ -53,7 +53,7 @@ cores_junguianas = {
         'sombra': 'Inveja, ciúme, imaturidade, estagnação, possessividade, engano (como a serpente no jardim).',
         'personalidade': 'Equilibrada, harmoniosa, compassiva, generosa, prática, conectada com o crescimento.',
         'diagnostico': 'Pode indicar necessidade de renovação, contato com a natureza, cura física ou emocional, ou questões de crescimento pessoal e inveja.',
-        'referencias': 'Simbolismo da natureza, o arquétipo da Grande Mãe (aspecto nutritivo), e a função sentimento. Ver estudos sobre simbolismo da natureza na psicologia analítica.'
+        'referencias': 'Conceitos: Simbolismo da Natureza, Função Sentimento, Arquétipo da Grande Mãe. Obras relevantes: FRANZ, M.-L. von (obras sobre contos de fadas).'
     },
     '6': {
         'cor': 'Amarelo (Limão)',
@@ -62,7 +62,7 @@ cores_junguianas = {
         'sombra': 'Covardia, superficialidade, traição (como Judas), ansiedade, crítica excessiva, racionalização excessiva.',
         'personalidade': 'Comunicativa, alegre, curiosa, criativa, espontânea, pode ser volátil.',
         'diagnostico': 'Pode indicar necessidade de clareza mental, expressão de alegria e otimismo, ou sobrecarga de estímulos e ansiedade.',
-        'referencias': 'Associações com a função intuição extrovertida e o simbolismo solar (aspecto de iluminação). Ver "Tipos Psicológicos" de Jung.'
+        'referencias': 'Conceitos: Função Intuição Extrovertida, Simbolismo Solar, Citrinitas (Alquimia). Obras relevantes: JUNG, C. G. *Tipos psicológicos*; JUNG, C. G. *Psicologia e alquimia*.'
     },
     '7': {
         'cor': 'Laranja',
@@ -71,7 +71,7 @@ cores_junguianas = {
         'sombra': 'Superficialidade, dependência de aprovação, excesso de indulgência, falta de seriedade, exibicionismo.',
         'personalidade': 'Otimista, sociável, aventureiro, enérgico, busca prazer e interação.',
         'diagnostico': 'Pode indicar necessidade de expressão criativa, socialização, busca por prazer e alegria, ou uma fase de transição e exploração.',
-        'referencias': 'Combinação de energias do vermelho (ação) e amarelo (alegria/intelecto). Simbolismo da função sensação extrovertida. Ver "Tipos Psicológicos" de Jung.'
+        'referencias': 'Conceitos: Função Sensação Extrovertida, Vitalidade. Obras relevantes: JUNG, C. G. *Tipos psicológicos*.'
     },
     '8': {
         'cor': 'Roxo/Violeta',
@@ -80,7 +80,7 @@ cores_junguianas = {
         'sombra': 'Luto não resolvido, melancolia, arrogância espiritual, escapismo, irrealismo, autopunição.',
         'personalidade': 'Intuitiva, artística, sensível, misteriosa, busca significado e propósito, pode ser um tanto isolada.',
         'diagnostico': 'Pode indicar um período de introspecção profunda, busca espiritual, necessidade de integrar experiências transformadoras, ou luto.',
-        'referencias': 'Simbolismo da transformação, espiritualidade e o transcendente. Conexão com o arquétipo do Mago ou da Sacerdotisa. Ver obras sobre simbolismo e alquimia.'
+        'referencias': 'Conceitos: Transformação, Espiritualidade, Mistério. Obras relevantes: JUNG, C. G. *Psicologia e alquimia*.'
     },
     '9': {
         'cor': 'Rosa (Claro)',
@@ -89,7 +89,7 @@ cores_junguianas = {
         'sombra': 'Imaturidade emocional, fragilidade excessiva, sentimentalismo, necessidade de resgate, ingenuidade perigosa.',
         'personalidade': 'Gentil, afetuosa, carinhosa, empática, pode ser idealista e um pouco ingênua.',
         'diagnostico': 'Pode indicar necessidade de amor próprio e cuidado, cura emocional, ou o desenvolvimento de qualidades mais suaves e receptivas.',
-        'referencias': 'Simbolismo do amor, cuidado e o arquétipo da Donzela ou da Criança Divina (aspecto vulnerável e puro). Associado à função sentimento.'
+        'referencias': 'Conceitos: Anima (aspecto jovem), Função Sentimento, Compaixão.'
     },
     '10': {
         'cor': 'Marrom (Terra)',
@@ -98,7 +98,7 @@ cores_junguianas = {
         'sombra': 'Estagnação, teimosia, materialismo excessivo, falta de aspiração, peso, sujeira (no sentido de não elaborado).',
         'personalidade': 'Prática, confiável, sólida, aprecia o conforto e a tradição, pés no chão.',
         'diagnostico': 'Pode indicar necessidade de aterramento (grounding), segurança material, ou uma fase de consolidação e praticidade, ou estagnação.',
-        'referencias': 'Simbolismo da terra, o corpo e a função sensação introvertida. Ver "Tipos Psicológicos" e discussões sobre o aspecto ctônico.'
+        'referencias': 'Conceitos: Função Sensação Introvertida, Aspecto Ctônico. Obras relevantes: JUNG, C. G. *Tipos psicológicos*.'
     },
     '11': {
         'cor': 'Cinza (Médio)',
@@ -107,7 +107,7 @@ cores_junguianas = {
         'sombra': 'Indiferença, falta de compromisso, depressão, medo da vida, repressão emocional, estagnação, falta de cor.',
         'personalidade': 'Reservada, analítica, prudente, pode ser indecisa ou imparcial, busca moderação.',
         'diagnostico': 'Pode indicar um período de transição, necessidade de distanciamento para avaliação, um estado de exaustão emocional, ou depressão.',
-        'referencias': 'Simbolismo da neutralidade, da sombra e da transição. Pode representar a conjunção dos opostos de forma não diferenciada.'
+        'referencias': 'Conceitos: Neutralidade, Transição, Conjunção dos Opostos (não diferenciada).'
     },
     '12': {
         'cor': 'Dourado',
@@ -116,7 +116,7 @@ cores_junguianas = {
         'sombra': 'Ostentação, materialismo, ego inflado (inflação psíquica), corrupção pelo poder, falsidade, ganância.',
         'personalidade': 'Carismática, confiante, generosa, busca excelência e reconhecimento, magnânima.',
         'diagnostico': 'Pode indicar um período de grande realização e autoconfiança, ou a necessidade de reconhecer o próprio valor e brilho; cuidado com a inflação.',
-        'referencias': 'Simbolismo solar, o Self, o "ouro alquímico" (Lapis Philosophorum). Ver obras de Jung sobre alquimia e o processo de individuação.'
+        'referencias': 'Conceitos: Self, Simbolismo Solar, Ouro Alquímico. Obras relevantes: JUNG, C. G. *Psicologia e alquimia*; JUNG, C. G. *Mysterium coniunctionis*.'
     },
     '13': {
         'cor': 'Prateado',
@@ -125,7 +125,7 @@ cores_junguianas = {
         'sombra': 'Frieza, distanciamento emocional, ilusão, indecisão, superficialidade elegante, inconstância.',
         'personalidade': 'Intuitiva, elegante, sofisticada, busca harmonia e paz interior, pode ser adaptável.',
         'diagnostico': 'Pode indicar necessidade de introspecção, conexão com a intuição e o feminino, ou um período de purificação e clareza.',
-        'referencias': 'Simbolismo lunar, Anima, o inconsciente. Associado à intuição e ao mundo dos sonhos e reflexos.'
+        'referencias': 'Conceitos: Anima, Simbolismo Lunar, Inconsciente, Intuição.'
     },
     '14': {
         'cor': 'Turquesa/Ciano',
@@ -134,7 +134,7 @@ cores_junguianas = {
         'sombra': 'Dificuldade em expressar sentimentos, isolamento autoimposto, frieza defensiva, superficialidade na comunicação.',
         'personalidade': 'Calma, comunicativa, criativa, independente, busca clareza e expressão autêntica, curativa.',
         'diagnostico': 'Pode indicar necessidade de cura emocional, melhoria na comunicação (falar a sua verdade), ou fortalecimento da individualidade e autoconfiança.',
-        'referencias': 'Combinação de azul (pensamento/calma) e verde (sentimento/cura). Simbolismo da comunicação e da autoexpressão curativa.'
+        'referencias': 'Conceitos: Comunicação, Cura Emocional. Interseção simbólica de Azul e Verde.'
     },
     '15': {
         'cor': 'Magenta',
@@ -143,7 +143,7 @@ cores_junguianas = {
         'sombra': 'Excentricidade, não praticidade, sentimento de superioridade espiritual, desequilíbrio emocional.',
         'personalidade': 'Inovadora, artística, compassiva, busca equilíbrio entre o espiritual e o material, inconformista.',
         'diagnostico': 'Pode indicar um período de grande insight espiritual, necessidade de alinhar ações com valores elevados, ou de expressar compaixão de forma ativa.',
-        'referencias': 'Cor não espectral, simboliza a união de opostos (vermelho e violeta). Associada à transformação e à espiritualidade que transcende o comum.'
+        'referencias': 'Conceitos: União dos Opostos (simbólica), Espiritualidade Integrada.'
     },
     '16': {
         'cor': 'Índigo',
@@ -152,7 +152,7 @@ cores_junguianas = {
         'sombra': 'Medo do desconhecido, fanatismo, isolamento por se sentir incompreendido, depressão por excesso de percepção, dogmatismo.',
         'personalidade': 'Introspectiva, sábia, perceptiva, busca conhecimento profundo e verdade, pode ser vista como "diferente".',
         'diagnostico': 'Pode indicar uma forte conexão com o inconsciente, necessidade de confiar na intuição, ou um período de busca por respostas existenciais e integridade.',
-        'referencias': 'Associado à intuição profunda e à percepção psíquica. Ver estudos sobre estados alterados de consciência e simbolismo do "terceiro olho".'
+        'referencias': 'Conceitos: Função Intuição Introvertida, Sabedoria Interior. Obras relevantes: JUNG, C. G. *Tipos psicológicos*.'
     },
     '17': {
         'cor': 'Verde Oliva',
@@ -161,7 +161,7 @@ cores_junguianas = {
         'sombra': 'Amargura, ressentimento, engano, estagnação disfarçada de paz, covardia.',
         'personalidade': 'Diplomática, observadora, perspicaz, valoriza a harmonia e a estratégia, resiliente.',
         'diagnostico': 'Pode indicar necessidade de resolução de conflitos (internos ou externos), busca por paz interior duradoura, ou aplicação da sabedoria de forma prática.',
-        'referencias': 'Simbolismo da paz (ramo de oliveira) e da sabedoria terrena. Uma mistura de verde (natureza) e amarelo/marrom (terra/intelecto).'
+        'referencias': 'Conceitos: Sabedoria Terrena, Paz. Interseção simbólica de Verde e Amarelo/Marrom.'
     },
     '18': {
         'cor': 'Verde Limão (Chartreuse)',
@@ -170,7 +170,7 @@ cores_junguianas = {
         'sombra': 'Imaturidade, inveja aguda, acidez, irritabilidade, ansiedade por novidade.',
         'personalidade': 'Energética, alegre, comunicativa, pode ser um pouco impulsiva ou superficial, inovadora.',
         'diagnostico': 'Pode indicar necessidade de renovação, leveza, ou um alerta para não ser excessivamente crítico, invejoso ou ansioso por constante mudança.',
-        'referencias': 'Combinação de verde (crescimento) e amarelo (alegria/intelecto). Simboliza energia nova e vibrante.'
+        'referencias': 'Conceitos: Energia Jovem, Novidade. Interseção simbólica de Verde e Amarelo.'
     },
     '19': {
         'cor': 'Azul Celeste/Claro',
@@ -179,7 +179,7 @@ cores_junguianas = {
         'sombra': 'Passividade, ingenuidade, frieza distante, dificuldade em impor limites, tristeza suave.',
         'personalidade': 'Calma, sonhadora, idealista, busca harmonia e entendimento, gentil.',
         'diagnostico': 'Pode indicar necessidade de paz interior, relaxamento, ou desenvolvimento de uma comunicação mais assertiva e suave, ou um toque de melancolia.',
-        'referencias': 'Simbolismo do céu, tranquilidade e espiritualidade serena. Associado à função pensamento de forma mais leve.'
+        'referencias': 'Conceitos: Tranquilidade, Espiritualidade Serena. Simbolismo do Céu.'
     },
     '20': {
         'cor': 'Azul Marinho',
@@ -188,7 +188,7 @@ cores_junguianas = {
         'sombra': 'Rigidez, conservadorismo excessivo, autoritarismo, melancolia profunda, repressão, medo da desordem.',
         'personalidade': 'Séria, confiável, organizada, leal, com forte senso de dever, introspectiva.',
         'diagnostico': 'Pode indicar necessidade de estrutura, disciplina, ou um período de introspecção séria e tomada de decisões importantes; cuidado com a rigidez.',
-        'referencias': 'Simbolismo da autoridade, profundidade e o inconsciente (como o mar). Associado ao arquétipo do Rei ou do Juiz.'
+        'referencias': 'Conceitos: Autoridade, Profundidade, Ordem. Arquétipo do Rei/Juiz.'
     },
     '21': {
         'cor': 'Bege',
@@ -197,7 +197,7 @@ cores_junguianas = {
         'sombra': 'Falta de opinião, tédio, conformismo, falta de vitalidade, invisibilidade.',
         'personalidade': 'Calma, conservadora, confiável, aprecia a estabilidade e o básico, discreta.',
         'diagnostico': 'Pode indicar necessidade de simplicidade, redução de stress, ou um desejo por um ambiente neutro e acolhedor; atenção para não cair no tédio.',
-        'referencias': 'Simbolismo da neutralidade e do conforto básico. Uma cor "não declarativa", que pode ser um pano de fundo para outras energias.'
+        'referencias': 'Conceitos: Neutralidade, Simplicidade, Conforto Básico.'
     },
     '22': {
         'cor': 'Creme',
@@ -206,7 +206,7 @@ cores_junguianas = {
         'sombra': 'Passividade excessiva, falta de assertividade, pode ser visto como sem graça ou insípido.',
         'personalidade': 'Gentil, calma, apreciadora do conforto e da tradição, com um toque de sofisticação, acolhedora.',
         'diagnostico': 'Pode indicar necessidade de nutrição emocional, um ambiente tranquilo, ou o desejo de expressar elegância de forma sutil e acolhedora.',
-        'referencias': 'Um branco "aquecido", simbolizando pureza com um toque de humanidade e conforto. Associado à nutrição e ao cuidado.'
+        'referencias': 'Conceitos: Nutrição, Conforto, Pureza Acolhedora.'
     },
     '23': {
         'cor': 'Salmão',
@@ -215,7 +215,7 @@ cores_junguianas = {
         'sombra': 'Dependência emocional, superficialidade nas relações, busca por aprovação constante, medo da solidão.',
         'personalidade': 'Amigável, sociável, otimista, busca harmonia nos relacionamentos, cuidadora.',
         'diagnostico': 'Pode indicar foco na saúde e bem-estar (físico e emocional), necessidade de conexões sociais positivas, ou cura de questões de autoimagem.',
-        'referencias': 'Combinação de rosa (compaixão) e laranja (alegria social). Simboliza bem-estar e conexão interpessoal saudável.'
+        'referencias': 'Conceitos: Bem-estar, Conexão Social Saudável. Interseção simbólica de Rosa e Laranja.'
     },
     '24': {
         'cor': 'Lavanda',
@@ -224,7 +224,7 @@ cores_junguianas = {
         'sombra': 'Nostalgia excessiva, fragilidade, escapismo para um mundo de fantasia, melancolia suave.',
         'personalidade': 'Sensível, imaginativa, calma, busca beleza e tranquilidade, um pouco etérea.',
         'diagnostico': 'Pode indicar necessidade de relaxamento, conexão com o lado mais sutil da vida, ou um período de cura e introspecção suave; atenção ao escapismo.',
-        'referencias': 'Um violeta suavizado com branco. Simboliza espiritualidade gentil, cura e intuição delicada.'
+        'referencias': 'Conceitos: Espiritualidade Gentil, Cura Suave. Interseção simbólica de Violeta e Branco.'
     },
     '25': {
         'cor': 'Bordô/Vinho',
@@ -233,7 +233,7 @@ cores_junguianas = {
         'sombra': 'Raiva reprimida, crueldade, arrogância, manipulação, luxúria controladora.',
         'personalidade': 'Forte, determinada, elegante, ambiciosa, pode ser introspectiva e intensa, líder.',
         'diagnostico': 'Pode indicar um período de grande força pessoal, necessidade de expressar poder de forma construtiva, ou lidar com emoções intensas e profundas.',
-        'referencias': 'Um vermelho escurecido, simbolizando paixão internalizada, poder e sofisticação. Pode ter conotações de realeza e autoridade.'
+        'referencias': 'Conceitos: Poder Internalizado, Paixão Madura. Um Vermelho escurecido.'
     },
     '26': {
         'cor': 'Carvão (Cinza Escuro)',
@@ -242,7 +242,7 @@ cores_junguianas = {
         'sombra': 'Depressão, pessimismo, isolamento, teimosia, negatividade, peso existencial.',
         'personalidade': 'Forte, estável, séria, pode ser misteriosa ou introspectiva, confiável.',
         'diagnostico': 'Pode indicar necessidade de introspecção, enfrentamento de desafios com força, ou um período de seriedade e foco; atenção à negatividade.',
-        'referencias': 'Um preto suavizado, mantendo o mistério mas com mais solidez e menos absoluto. Simboliza a força que vem da integração da sombra.'
+        'referencias': 'Conceitos: Sombra Integrada, Resiliência. Um Preto suavizado.'
     },
     '27': {
         'cor': 'Terracota',
@@ -251,7 +251,7 @@ cores_junguianas = {
         'sombra': 'Apego excessivo ao passado, resistência à mudança, teimosia, rusticidade excessiva.',
         'personalidade': 'Acolhedora, prática, artística (especialmente manual), conectada com a natureza e o tangível.',
         'diagnostico': 'Pode indicar necessidade de se conectar com a terra e as raízes, valorizar o simples, ou expressar criatividade de forma tangível.',
-        'referencias': 'Cor da argila cozida, simboliza a conexão com a terra, o artesanato e a ancestralidade. Uma mistura de marrom e laranja.'
+        'referencias': 'Conceitos: Conexão com a Terra, Artesanato, Ancestralidade. Interseção simbólica de Marrom e Laranja.'
     },
     '28': {
         'cor': 'Mostarda (Amarelo Ocre)',
@@ -260,7 +260,7 @@ cores_junguianas = {
         'sombra': 'Cinismo, amargura, inveja disfarçada, crítica destrutiva, teimosia intelectual.',
         'personalidade': 'Inteligente, observadora, com um humor particular, pode ser um pouco excêntrica ou antiquada.',
         'diagnostico': 'Pode indicar um período de reflexão sobre experiências passadas, aplicação da sabedoria, ou a necessidade de evitar o cinismo e a amargura.',
-        'referencias': 'Um amarelo terroso, simbolizando um intelecto que foi temperado pela experiência. Menos brilhante que o amarelo limão, mais ponderado.'
+        'referencias': 'Conceitos: Sabedoria Prática, Intelecto Experiencial. Um Amarelo terroso.'
     },
     '29': {
         'cor': 'Coral',
@@ -269,7 +269,7 @@ cores_junguianas = {
         'sombra': 'Necessidade excessiva de atenção, superficialidade, impulsividade em grupo, fofoca.',
         'personalidade': 'Extrovertida, entusiasmada, amigável, gosta de estar em grupo e compartilhar, calorosa.',
         'diagnostico': 'Pode indicar necessidade de interação social, expressão de alegria, ou participação em atividades comunitárias e colaborativas.',
-        'referencias': 'Mistura de laranja e rosa, simboliza a alegria da conexão social e a vitalidade empática. Associado ao calor humano.'
+        'referencias': 'Conceitos: Alegria Social, Vitalidade Empática. Interseção simbólica de Laranja e Rosa.'
     },
     '30': {
         'cor': 'Verde Água (Menta Claro)',
@@ -278,7 +278,7 @@ cores_junguianas = {
         'sombra': 'Frieza emocional disfarçada de calma, superficialidade, dificuldade em aprofundar vínculos, ingenuidade.',
         'personalidade': 'Calma, refrescante, otimista, busca harmonia e bem-estar, diplomática.',
         'diagnostico': 'Pode indicar necessidade de limpeza emocional, clareza mental, ou um período de renovação e alívio do estresse; buscar profundidade.',
-        'referencias': 'Um verde claro e azulado, simbolizando frescor, cura suave e clareza. Associado à renovação e à tranquilidade.'
+        'referencias': 'Conceitos: Renovação Suave, Clareza Emocional. Interseção simbólica de Verde e Azul claro.'
     }
 }
 
@@ -512,6 +512,36 @@ target_dimension_slider = st.sidebar.slider(
     min_value=300, max_value=2000, value=800, step=50,
     help="A maior dimensão (largura ou altura) da imagem será ajustada para este valor, mantendo a proporção."
 )
+
+# Inicializa o estado da sessão para controlar a exibição das referências
+if 'show_refs' not in st.session_state:
+    st.session_state.show_refs = False
+
+st.sidebar.write("---")
+if st.sidebar.button("📚 Ver Referências Bibliográficas"):
+    st.session_state.show_refs = not st.session_state.show_refs
+
+
+if st.session_state.show_refs:
+    st.sidebar.subheader("Referências Bibliográficas (ABNT NBR 6023:2018)")
+    st.sidebar.markdown("""
+    - EDWARDS, B. **Desenhando com o lado direito do cérebro**. Rio de Janeiro: Ediouro, 2005.
+    - FRANZ, M.-L. von. **Alquimia**: introdução ao simbolismo e à psicologia. São Paulo: Cultrix, 2006.
+    - FRANZ, M.-L. von. **A interpretação dos contos de fada**. São Paulo: Paulus, 1990.
+    - FRANZ, M.-L. von. **A sombra e o mal nos contos de fada**. São Paulo: Paulus, 1985.
+    - ITTEN, J. **A arte da cor**. São Paulo: Martins Fontes, 2009.
+    - JACOBI, J. **A psicologia de C.G. Jung**. Petrópolis: Vozes, 2006.
+    - JUNG, C. G. **O homem e seus símbolos**. Rio de Janeiro: Nova Fronteira, 2008.
+    - JUNG, C. G. **Arquétipos e o inconsciente coletivo**. Petrópolis: Vozes, 2000. (Obras Completas de C.G. Jung, v. 9/I).
+    - JUNG, C. G. **Mysterium coniunctionis**. Petrópolis: Vozes, 2007. (Obras Completas de C.G. Jung, v. 14).
+    - JUNG, C. G. **Psicologia e alquimia**. Petrópolis: Vozes, 1991. (Obras Completas de C.G. Jung, v. 12).
+    - JUNG, C. G. **Tipos psicológicos**. Petrópolis: Vozes, 1991. (Obras Completas de C.G. Jung, v. 6).
+    - LÜSCHER, M. **O teste das cores de Lüscher**. São Paulo: Manole, 1980.
+
+    *Nota: As datas de publicação podem variar conforme a edição consultada.*
+    """)
+    st.sidebar.write("---")
+
 
 if st.sidebar.button('🎨 Gerar Paleta e Tela'):
     if uploaded_file is not None:
